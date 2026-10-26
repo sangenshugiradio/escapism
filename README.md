@@ -13,38 +13,21 @@
 
 - AMBIENT / BEAT でビートの有無を選べます（再生中に切り替えると、いまの曲がそのまま変わります）
 - 空いているところをタップすると音が鳴り、ダブルタップでグリッチ、長押しで音が引き、写真をなぞるとフィルターとエコー、上下にはじくと転調します
-- 「動画で保存」で、いまの曲と画面を15秒の横長動画にできます（iPhoneでは共有シートから「ビデオを保存」）
+- 「動画で保存」で、いまの曲と画面を15秒の横長動画にできます（iPhoneでは共有シートから「ビデオを保存」、パソコンではダウンロード）
+- 入力した悩みは、数秒で文字がほどけて消えます
 
 ## 構成
 
 | パス | 内容 |
 |---|---|
-| `src/page.html` | ページ本体（音のエンジン、デザイン、端末内の解析） |
+| `src/page.html` | ページ本体（音のエンジン、デザイン、解析） |
 | `docs/index.html` | GitHub Pages で配信するファイル。`python3 tools/build.py` で `src/page.html` から生成 |
-| `worker/` | Claude を誰でも使えるようにする中継API（Cloudflare Workers、任意） |
 
-## 解析のしくみ
+## しくみ
 
-- **標準（ログイン不要・サーバー不要）**: 写真の色・明るさと、書いた言葉のキーワードから、端末の中でジャンル・編成・調・環境音・曲名・流れる文章を組み立てます。
-- **Claude を使う（任意）**: `worker/` をデプロイすると、写真と言葉を Claude が読み取って選曲と文章を作ります。APIキーはサーバー側にだけ置かれ、利用者はログインなしで使えます。費用はAPIキーの持ち主にかかります。
-
-### Claude を有効にする手順
-
-```sh
-cd worker
-npm install
-npx wrangler login                          # Cloudflare アカウントでログイン
-npx wrangler secret put ANTHROPIC_API_KEY   # Anthropic の APIキーを貼り付け
-# wrangler.toml の ALLOWED_ORIGINS がサイトのアドレスになっているか確認
-npx wrangler deploy                         # 表示された https://escapism-api.<you>.workers.dev を控える
-cd ..
-echo "https://escapism-api.<you>.workers.dev" > tools/api_url.txt
-python3 tools/build.py                      # docs/index.html にAPIのアドレスが入る
-git commit -am "Enable Claude API" && git push
-```
-
-- モデルは `claude-opus-5-5`（`wrangler.toml` の `MODEL` で変更可）。応答を速くするため effort は `low`。
-- 1つのIPあたり10分に30回までの簡易制限があります。公開規模に応じて Cloudflare の Rate Limiting ルールや、Anthropic Console の利用上限も設定してください。
+- サーバーもAIも使いません。写真の色・明るさと、書いた言葉のキーワードから、端末の中でジャンル・編成・調・環境音・曲名・流れる文章を組み立てます。
+- 書いた言葉と写真はどこにも送られず、保存もされません。
+- 音はすべて Web Audio API でリアルタイムに合成しています（5-limit 純正律、Eno 式の割り切れない周期のループ、グラニュラー、テープ、畳み込みリバーブ、合成した環境音、16ステップのビート）。
 
 ## 注意
 

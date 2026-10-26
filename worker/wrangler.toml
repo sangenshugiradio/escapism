@@ -1,9 +1,0 @@
-name = "escapism-api"
-main = "src/index.ts"
-compatibility_date = "2025-09-01"
-compatibility_flags = ["nodejs_compat"]
-
-[vars]
-# the address of the site that may call this API (no trailing slash)
-ALLOWED_ORIGINS = "https://melodichxckk-svg.github.io"
-# MODEL = "claude-opus-5-5"
