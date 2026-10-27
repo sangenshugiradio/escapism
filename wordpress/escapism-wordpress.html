@@ -660,6 +660,8 @@ class Engine {
     this.ctx = new AC({ latencyHint: "playback" });
     this.build();
     this.ctx.resume().catch(() => {});
+    // one silent frame, started inside the tap: what iOS needs to let this context make sound later
+    const quiet = this.ctx.createBufferSource(); quiet.buffer = this.ctx.createBuffer(1, 1, this.ctx.sampleRate); quiet.connect(this.ctx.destination); quiet.start();
     this.watch();
   }
 
@@ -2520,7 +2522,7 @@ function renderRecs(cat) {
 $("esc-recsMore").addEventListener("click", () => renderRecs(recCat));
 
 function setStatus(text, live) { els.status.textContent = text; els.status.classList.toggle("live", !!live); }
-function onAudioStuck() { setStatus("画面をタップすると音が戻ります", true); }
+function onAudioStuck() { if (state === "playing") setStatus("画面をタップすると音が戻ります", true); }
 
 function prevMood() { const s = engine.scene; return s && !s.mood.listen ? s.mood : null; }
 
@@ -2709,6 +2711,11 @@ $("esc-timer").addEventListener("change", e => {
 // phones take the audio away (camera, share sheet, another app); bring it back on return or on the next tap
 const revive = () => { if (engine.ctx && !engine.userPaused && (engine.ctx.state !== "running" || engine.broken)) { engine.ensure(); if (state === "playing") setStatus("Now playing", true); } };
 document.addEventListener("pointerdown", revive, true);
+// a phone's audio hardware can click as it wakes, and building the sound takes a moment: do both, silently,
+// on the first real tap (the photo frame, the text field), so pressing 手放す only starts the music
+const warmAudio = () => { if (!engine.userPaused && (!engine.ctx || engine.ctx.state !== "running" || engine.broken)) engine.ensure(); };
+document.addEventListener("click", warmAudio, true);
+$("esc-worry").addEventListener("keydown", warmAudio);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) { revive(); if (state !== "idle") keepAwake(); } });
 addEventListener("pageshow", revive);
 
