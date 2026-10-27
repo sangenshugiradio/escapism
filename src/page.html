@@ -63,6 +63,8 @@ body { background: var(--surround); color: var(--ink); font-family: var(--jp); f
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode: overlay; opacity: 0.3;
 }
+/* phones: the page is the whole screen, so what shows past it when the keyboard shifts things is paper, not black */
+@media (max-width: 699px) { html, body { background: var(--paper); } }
 @media (min-width: 700px) {
   .poster { height: calc(100% - 48px); margin-block: 24px; box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55); }
 }
@@ -173,9 +175,11 @@ h2#title { font: 800 clamp(22px, 6.6vw, 31px)/1.08 var(--grotesk); text-transfor
 h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform: none; letter-spacing: 0.08em; font-feature-settings: "palt"; }
 .sub { font: 500 9.5px/1.5 var(--grotesk); letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-2); }
 .reflection { font-size: 14px; line-height: 1.95; letter-spacing: 0.05em; max-width: 24em; margin: 2px 0 0; text-wrap: pretty; font-feature-settings: "palt"; }
-.actions { display: flex; gap: 6px 18px; flex-wrap: wrap; justify-content: center; }
-.actions button { background: none; border: 0; border-bottom: 1px solid var(--ink); color: var(--ink); padding: 3px 0; font: 500 12px/1.4 var(--jp); letter-spacing: 0.06em; cursor: pointer; display: inline-flex; gap: 8px; align-items: baseline; }
-.actions button small { font: 9px var(--mono); letter-spacing: 0.14em; color: var(--ink-2); text-transform: uppercase; }
+.actions { display: flex; }
+.actions button { flex: 1 1 auto; background: transparent; border: 1px solid var(--ink); color: var(--ink); padding: 11px 14px; font: 700 14px/1.2 var(--jp); letter-spacing: 0.1em; cursor: pointer; display: flex; gap: 10px; align-items: center; justify-content: center; }
+.actions button i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+.actions button small { font: 9px var(--mono); letter-spacing: 0.14em; color: var(--ink-2); text-transform: uppercase; font-weight: 400; }
+.actions button:not(:disabled):active { background: var(--ink); color: var(--paper); }
 .actions button:disabled { opacity: 0.6; cursor: default; }
 .liner { font: 8.5px/1.6 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-2); max-width: 52ch; margin: 2px 0 0; font-variant-numeric: tabular-nums; }
 .badges { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 2px; }
@@ -311,6 +315,9 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
     </form>
     <input id="pick" class="sr" type="file" accept="image/*">
     <p class="cnote ja" id="cnote">写真を入れて、今の気持ちを書いたら「手放す」。</p>
+    <div class="actions" id="actions" hidden>
+      <button type="button" id="videoBtn" hidden><i aria-hidden="true"></i><span>動画で保存</span><small id="videoState">15s · 16:9 · sound</small></button>
+    </div>
   </section>
 
   <div class="bandwrap" id="bandwrap" hidden>
@@ -328,9 +335,6 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
     <h2 id="title">Escapism</h2>
     <div class="sub" id="sub">Ambient for right now</div>
     <p class="reflection ja" id="reflection"></p>
-    <div class="actions" id="actions" hidden>
-      <button type="button" id="videoBtn" hidden>動画で保存 <small id="videoState">15s · 16:9 · sound</small></button>
-    </div>
     <div class="crisis ja" id="crisis" hidden>
       ひとりで抱えなくて大丈夫です。話を聞いてくれる窓口があります。
       <ul>
@@ -372,7 +376,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
   <section class="radio" aria-labelledby="radioHead">
     <div class="sechead"><span>Podcast</span><span>毎週木曜 20:00</span></div>
     <div class="radiobody">
-      <a class="radioart" href="https://listen.style/p/sangenshugi" target="_blank" rel="noopener"><img src="sangenshugi-radio.jpg" alt="三現主義ラジオのアートワーク。青地に白抜きで「現場 現物 現実逃避」" width="800" height="800" loading="lazy" decoding="async"></a>
+      <a class="radioart" href="https://www.youtube.com/@Sangenshugi_radio" target="_blank" rel="noopener"><img src="sangenshugi-radio.jpg" alt="三現主義ラジオのアートワーク。青地に白抜きで「現場 現物 現実逃避」" width="800" height="800" loading="lazy" decoding="async"></a>
       <div class="radiotxt ja">
         <span class="tagline">The scene. The substance. Escapism.</span>
         <h3 id="radioHead">三現主義ラジオ</h3>
@@ -381,7 +385,6 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
           <a href="https://www.youtube.com/@Sangenshugi_radio" target="_blank" rel="noopener">YouTube</a>
           <a href="https://open.spotify.com/show/2c0bC5o7lLPCMYSbKafk2o" target="_blank" rel="noopener">Spotify</a>
           <a href="https://podcasts.apple.com/jp/podcast/id1878945126" target="_blank" rel="noopener">Apple</a>
-          <a href="https://listen.style/p/sangenshugi" target="_blank" rel="noopener">LISTEN</a>
         </div>
       </div>
     </div>
@@ -454,6 +457,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
 /* ---------- helpers ---------- */
 const $ = id => document.getElementById(id);
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const sweepHz = xr => 160 * Math.pow(2, xr * 5.6), sweepEcho = yr => clamp(1.1 - yr * 1.1);   // left→right opens the filter, lower→higher adds echo
 const lerp = (a, b, t) => a + (b - a) * t;
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -724,6 +728,14 @@ class Engine {
     this.dL.connect(pL).connect(echoOut); this.dR.connect(pR).connect(echoOut);
     echoOut.connect(this.music);
 
+    // sweeping the photo throws the whole mix, after the filter, into an echo of its own (straight to the master, so it cannot feed itself)
+    this.sweepSend = G(0); this.sweepFb = G(0.3);
+    this.sdL = c.createDelay(2); this.sdR = c.createDelay(2); this.sdL.delayTime.value = 0.42; this.sdR.delayTime.value = 0.63;
+    const sOut = G(0.8), spL = c.createStereoPanner(), spR = c.createStereoPanner(); spL.pan.value = -0.8; spR.pan.value = 0.8;
+    this.tone.connect(this.sweepSend); this.sweepSend.connect(F("highpass", 160)).connect(this.sdL);
+    this.sdL.connect(F("lowpass", 3400)).connect(this.sweepFb).connect(this.sdR); this.sdR.connect(this.sdL);
+    this.sdL.connect(spL).connect(sOut); this.sdR.connect(spR).connect(sOut); sOut.connect(this.master);
+
     const wave = amps => { const re = new Float32Array(amps.length + 1), im = new Float32Array(amps.length + 1); amps.forEach((a, i) => { im[i + 1] = a; }); return c.createPeriodicWave(re, im); };
     this.padWave = wave(Array.from({ length: 32 }, (_, i) => (1 / Math.pow(i + 1, 1.35)) * ((i + 1) % 2 ? 1 : 0.6)));
     this.organWave = wave([1, 0.6, 0.4, 0.25, 0, 0.15, 0, 0.1]);
@@ -828,6 +840,8 @@ class Engine {
     const [l, r, fb] = bpm ? [60 / bpm / 4 * 3, 60 / bpm / 4 * 6, style === "dub" ? 0.55 : 0.4] : [0.61, 0.87, 0.42];
     this.dL.delayTime.setTargetAtTime(l, now, 0.4); this.dR.delayTime.setTargetAtTime(r, now, 0.4);
     this.fbL.gain.setTargetAtTime(fb, now, 0.4); this.fbR.gain.setTargetAtTime(fb, now, 0.4);
+    const beat = bpm ? 60 / bpm : 0.56;
+    this.sdL.delayTime.setTargetAtTime(beat * 0.75, now, 0.2); this.sdR.delayTime.setTargetAtTime(beat * 1.5, now, 0.2);
   }
 
   mark(t) { if (this.offline) return; this.events.push(t); if (this.events.length > 48) this.events.shift(); }
@@ -885,7 +899,10 @@ class Engine {
   hush(on) { const s = this.scene; if (!s) return; s.hushed = on; this.apply(this.p, on ? 0.25 : 1.4); }
   sweep(xr, yr) {
     const now = this.ctx.currentTime; this.dragging = true;
-    this.tone.frequency.setTargetAtTime(220 * Math.pow(2, xr * 6.2), now, 0.05);
+    this.tone.frequency.setTargetAtTime(sweepHz(xr), now, 0.03);
+    this.tone.Q.setTargetAtTime(6, now, 0.08);              // a resonant peak you can hear moving
+    this.sweepSend.gain.setTargetAtTime(sweepEcho(yr) * 0.9, now, 0.05);
+    this.sweepFb.gain.setTargetAtTime(0.25 + sweepEcho(yr) * 0.5, now, 0.08);
     const fb = 0.35 + (1 - yr) * 0.55;
     this.fbL.gain.setTargetAtTime(fb, now, 0.1); this.fbR.gain.setTargetAtTime(fb, now, 0.1);
     this.echoSend.gain.setTargetAtTime(0.25 + (1 - yr) * 0.75, now, 0.1);
@@ -893,6 +910,10 @@ class Engine {
   release() {
     if (!this.dragging) return;
     this.dragging = false; this.apply(this.p, 0.8);
+    const now = this.ctx.currentTime;
+    this.tone.Q.setTargetAtTime(0.5, now, 0.4);
+    this.sweepSend.gain.setTargetAtTime(0, now, 0.15);     // the echoes already thrown keep ringing out
+    this.sweepFb.gain.setTargetAtTime(0.3, now + 1.5, 1);
     const m = this.scene && this.scene.mood; if (m) this.setEcho(m.start.beat > 0.02 ? m.bpm : 0, m.beat_style);
   }
   transpose(dir) {
@@ -2326,7 +2347,7 @@ async function exportVideo() {
     // second tap: the share sheet needs a fresh tap after the file is made
     const rf = readyFile; readyFile = null;
     try { await deliver(rf.file, rf.name); } catch (e) { $("videoState").textContent = e && e.name === "AbortError" ? "保存しませんでした" : "保存できませんでした"; }
-    $("videoBtn").firstChild.textContent = "動画で保存 ";
+    $("videoBtn").querySelector("span").textContent = "動画で保存";
     return;
   }
   if (exporting || !engine.scene || engine.scene.mood.listen) return;
@@ -2342,7 +2363,7 @@ async function exportVideo() {
     const stamp = `${born.getFullYear()}${pad2(born.getMonth() + 1)}${pad2(born.getDate())}-${pad2(born.getHours())}${pad2(born.getMinutes())}`;
     const name = `escapism-${stamp}.${file.ext}`;
     if (downloads) await deliver(file, name);
-    else { readyFile = { file, name }; btn.firstChild.textContent = "できました。タップして保存 "; st.textContent = `${file.ext} · 15s`; }
+    else { readyFile = { file, name }; btn.querySelector("span").textContent = "できました。タップして保存"; st.textContent = `${file.ext} · 15s`; }
   } catch (e) {
     const code = e && e.code;
     st.textContent = code === "declined" ? "保存しませんでした" : code === "rate_limited" ? "少し待ってからもう一度" : code === "too_large" ? "ファイルが大きすぎます" : code ? "この画面では保存できません" : "書き出しに失敗しました";
@@ -2643,7 +2664,11 @@ function revealComposer() {
 }
 let revealTimer = 0;
 const revealSoon = delay => setTimeout(() => { if (document.activeElement === $("worry")) revealComposer(); }, delay);
-$("worry").addEventListener("focus", () => { revealSoon(80); revealSoon(450); });   // the keyboard takes a moment to rise
+// when the page owns the screen, iOS can leave the whole document pushed up after the keyboard: put it back
+let preFocusY = 0;
+const ownsScreen = () => getComputedStyle(document.body).overflow === "hidden";
+$("worry").addEventListener("focus", () => { preFocusY = scrollY; revealSoon(80); revealSoon(450); });
+$("worry").addEventListener("blur", () => setTimeout(() => { if (ownsScreen() && scrollY !== preFocusY) scrollTo(0, preFocusY); }, 120));   // the keyboard takes a moment to rise
 if (window.visualViewport) visualViewport.addEventListener("resize", () => { clearTimeout(revealTimer); revealTimer = revealSoon(60); });
 $("pick").addEventListener("change", () => { const input = $("pick"), f = input.files && input.files[0]; input.value = ""; if (f) stagePhoto(f); });
 figure.addEventListener("dragover", e => { e.preventDefault(); figure.classList.add("drag"); });
@@ -2721,7 +2746,7 @@ function tear(x, y) {
 // sweeping the photo: crosshair, readout and colour follow the finger, with a fading trail
 let lastTrail = 0;
 function showSweep(xr, yr, x, y) {
-  const hz = 220 * Math.pow(2, xr * 6.2), echo = 0.25 + (1 - yr) * 0.75;
+  const hz = sweepHz(xr), echo = sweepEcho(yr);
   figure.classList.add("sweeping");
   figure.style.setProperty("--sx", `${(xr * 100).toFixed(1)}%`); figure.style.setProperty("--sy", `${(yr * 100).toFixed(1)}%`);
   figure.style.setProperty("--hue", `${((xr - 0.5) * 120).toFixed(0)}deg`); figure.style.setProperty("--smear", `${((1 - yr) * 2.5).toFixed(1)}px`);
