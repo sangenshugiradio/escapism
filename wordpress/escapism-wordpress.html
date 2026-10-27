@@ -404,6 +404,11 @@
     <div class="row"><h3 id="esc-sheetTitle" class="grow">Index</h3><button class="linkbtn" id="esc-closeSheet" type="button" style="font:9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase">Close ×</button></div>
     <p>ESCAPISM（現現現）は、今の気持ちと目の前の景色から、その瞬間だけの音楽を生むアンビエントの装置です。音はすべてブラウザの中でリアルタイムに合成しています。言葉を手放すたびに、ジャンル・編成・構成・調が新しく選ばれ、前の曲から数秒かけて移り変わります。</p>
 
+    <h4>Arrangements</h4>
+    <ul>
+      <li>曲ごとに、最初に鳴る楽器から変わります。グランドピアノの独奏／リズムを刻む電子音（アシッド、プラック、ダブ・テクノのコード、FMベル）／環境音だけの導入／シンセ（スーパーソウ、アナログ風のパルス、FMパッド、リード）／ディレイのかかったギターのアルペジオ／低いドローン。書いた言葉の気持ちと写真の色から選び、同じ始まり方が続かないようにしています。「ピアノ」「雨」「海」「テクノ」など、言葉に楽器や場所を書くと、それが選ばれやすくなります。</li>
+    </ul>
+
     <h4>Genres</h4>
     <ul>
       <li>Kankyō ongaku（吉村弘、芦川聡、高田みどり）／Drone（Éliane Radigue、La Monte Young）／Dark ambient（Lustmord、Thomas Köner）／Melodic・neoclassical（Max Richter、Ólafur Arnalds）／Kosmische・Berlin School（Tangerine Dream、Klaus Schulze）／Tape loop（William Basinski）／Noise ambient（Tim Hecker、Fennesz）／Microsound・lowercase（Taylor Deupree、Steve Roden）／Fourth World（Jon Hassell）／Generative（Brian Eno）の10系統から、言葉や景色に合うものを選びます。</li>
@@ -520,7 +525,10 @@ const ENSEMBLES = {
   mallet:  { label: "Mallets", pad: "sine", lead: "mallet", voicing: "quartal", reg: 12, grain: "sine" },
   guitar:  { label: "Plucked guitar", pad: "noise", lead: "pluck", voicing: "open", reg: 0, grain: "triangle" },
   sine:    { label: "Pure sine tones", pad: "sine", lead: "sine", voicing: "cluster", reg: 0, grain: "sine" },
-  haze:    { label: "Haze — resonant noise", pad: "noise", lead: "none", voicing: "cluster", reg: -12, grain: "sawtooth" }
+  haze:    { label: "Haze — resonant noise", pad: "noise", lead: "none", voicing: "cluster", reg: -12, grain: "sawtooth" },
+  supersaw:{ label: "Supersaw — wide detuned synth", pad: "super", lead: "fm", voicing: "open", reg: 0, grain: "sawtooth" },
+  juno:    { label: "Pulse strings — analog poly", pad: "pulse", lead: "mallet", voicing: "triad", reg: 0, grain: "triangle" },
+  dx:      { label: "FM pad — digital glass", pad: "fmpad", lead: "rhodes", voicing: "quartal", reg: 0, grain: "sine" }
 };
 const ENS_KEYS = Object.keys(ENSEMBLES);
 // genre = which extra layers play, how the piece is built over time, and how busy it is
@@ -537,26 +545,68 @@ const GENRES = {
   generative:{ label: "Generative (after Eno)", layers: [], form: "waves", ev: 1, bpm: 112, style: "dub" }
 };
 const GENRE_KEYS = Object.keys(GENRES);
+/* arrangement: what leads the piece and what you hear in its first seconds.
+   prelude = the opening section's gates (sig = the leading instrument), mul = how loud each other part may get */
+const ARCHES = {
+  piano:  { label: "Grand piano", ens: ["strings", "sine", "choir", "felt"], genres: ["generative", "tape", "micro", "drone"], level: 1,
+            prelude: { len: [34, 48], g: { pad: 0, lead: 0, grain: 0, layer: 0, sub: 0.2, tex: 0.5, beat: 0 } }, mul: { pad: 0.35, lead: 0.12, grain: 0.35, layer: 0.6 } },
+  pulse:  { label: "Pulse — sequenced electronics", ens: ["juno", "dx", "glass", "rhodes", "supersaw"], genres: ["kosmische", "micro", "generative", "fourth"], level: 1,
+            prelude: { len: [26, 36], g: { pad: 0.25, lead: 0, grain: 0, layer: 0.3, sub: 0.8, tex: 0.35, beat: 1 } }, mul: { pad: 0.6, lead: 0.4 } },
+  field:  { label: "Field recording", ens: ["mallet", "sine", "felt", "glass"], genres: ["fourth", "kankyo", "generative", "micro"], level: 0.9,
+            prelude: { len: [18, 26], g: { pad: 0, lead: 0, grain: 0, layer: 0, sub: 0, tex: 1, beat: 0, sig: 0 } }, mul: { pad: 0.55, tex: 1.7 } },
+  synth:  { label: "Synth", ens: ["supersaw", "juno", "dx", "glass", "choir"], genres: ["kosmische", "generative", "dark", "tape"], level: 0.9, fast: true,
+            prelude: { len: [24, 34], g: { pad: 1, lead: 0, grain: 0.2, layer: 0, sub: 0.7, tex: 0.3, beat: 0.5 } }, mul: { lead: 0.5 } },
+  guitar: { label: "Echo guitar", ens: ["strings", "haze", "rhodes", "sine"], genres: ["generative", "tape", "drone", "noise"], level: 1,
+            prelude: { len: [28, 40], g: { pad: 0, lead: 0, grain: 0, layer: 0, sub: 0.3, tex: 0.5, beat: 0.4 } }, mul: { pad: 0.5, lead: 0.2, grain: 0.5 } },
+  drone:  { label: "Drone", ens: ["haze", "choir", "strings", "sine"], genres: ["drone", "dark", "noise", "tape"], level: 0,
+            prelude: { len: [30, 44], g: { pad: 0.3, lead: 0, grain: 0.2, layer: 1, sub: 1, tex: 0.5, beat: 0.3 } }, mul: { lead: 0.5 } }
+};
+const ARCH_BY_CAT = {
+  anxious:   { piano: 3, pulse: 3, field: 2, synth: 2, guitar: 1, drone: 1 },
+  tired:     { field: 4, piano: 3, guitar: 2, synth: 1, drone: 1, pulse: 1 },
+  sad:       { piano: 5, guitar: 2, field: 2, drone: 2, synth: 1, pulse: 0.5 },
+  angry:     { pulse: 4, drone: 3, synth: 2, guitar: 2, piano: 1, field: 0.5 },
+  overthink: { pulse: 4, synth: 3, piano: 2, field: 1, guitar: 1, drone: 1 },
+  sleepless: { piano: 4, drone: 3, field: 2, synth: 2, pulse: 1, guitar: 1 },
+  empty:     { drone: 3, field: 3, piano: 2, synth: 2, guitar: 1, pulse: 1 },
+  joy:       { pulse: 3, guitar: 3, synth: 3, field: 2, piano: 2, drone: 0.3 },
+  gentle:    { piano: 2, field: 2, synth: 2, guitar: 2, pulse: 2, drone: 1 }
+};
+const ARCH_BY_PHOTO = { night: { piano: 1.5, drone: 1.5, synth: 1.2 }, sky: { synth: 1.5, field: 1.3, guitar: 1.2 }, green: { field: 2, guitar: 1.3 }, warm: { guitar: 1.6, piano: 1.3 }, street: { pulse: 1.8, synth: 1.2 }, other: {} };
+// naming an instrument or a place in the words asks for it
+const ARCH_WORDS = [[/ピアノ|鍵盤/, "piano"], [/ギター/, "guitar"], [/シンセ|電子|テクノ|踊|ダンス|クラブ|リズム|ゲーム/, "pulse"], [/雨|海|波|川|森|鳥|風|虫|焚き?火|自然|山|公園/, "field"], [/宇宙|星|夢|未来|ネオン|映画/, "synth"], [/重|沈|底|闇|深い|地鳴り/, "drone"]];
+const TEX_WORDS = [[/雨/, "rain"], [/海|波|浜/, "ocean"], [/川|水/, "stream"], [/森|鳥|木/, "forest"], [/風/, "wind"], [/虫|夜/, "night"], [/街|駅|電車|都会/, "city"], [/火|暖炉|キャンプ/, "fire"]];
+function chooseArch(text, cat, kind, prev) {
+  const w = { ...ARCH_BY_CAT[cat] || ARCH_BY_CAT.gentle };
+  for (const [k, f] of Object.entries(ARCH_BY_PHOTO[kind] || {})) w[k] = (w[k] || 1) * f;
+  for (const [re, k] of ARCH_WORDS) if (re.test(text)) w[k] = (w[k] || 1) * 40;
+  if (prev && w[prev]) w[prev] = 0;                       // two pieces in a row never open the same way
+  const keys = Object.keys(w).filter(k => w[k] > 0), sum = keys.reduce((a, k) => a + w[k], 0);
+  let r = Math.random() * sum;
+  for (const k of keys) { r -= w[k]; if (r <= 0) return k; }
+  return keys[0];
+}
+const euclid = (k, n, rot = 0) => Array.from({ length: n }, (_, i) => ((i + rot) * k) % n < k);
 const VOWELS = [[[800, 1], [1150, 0.5], [2900, 0.15]], [[450, 1], [800, 0.45], [2830, 0.1]], [[325, 1], [700, 0.3], [2530, 0.08]], [[400, 1], [1700, 0.3], [2600, 0.15]]];
-const PAD_GAIN = { saw: 1, sine: 1.1, choir: 1.4, bowed: 0.75, organ: 0.7, noise: 1 };
+const PAD_GAIN = { saw: 1, sine: 1.1, choir: 1.4, bowed: 0.75, organ: 0.7, noise: 1, super: 0.5, pulse: 0.6, fmpad: 0.9 };
 const LEAD_GAIN = { fm: 1, felt: 1.2, rhodes: 1, mallet: 1.1, pluck: 1.3, voice: 1.1, swell: 0.9, sine: 0.8, none: 0, flute: 1 };
 const KEYS = ["brightness", "density", "warmth", "space", "motion", "tape", "grain", "bells", "pad", "sub", "texture_level", "beat"];
 const LOOP_PERIODS = [17.9, 19.7, 23.5, 25.875, 29.9375, 31.3, 37.1];
 const ARC_SECONDS = 240;
 
 /* forms: sections with gates for each part of the music (0 = out, 1 = full) */
-const S = (name, len, g) => ({ name, len, g: { pad: 1, lead: 1, grain: 1, tex: 1, layer: 1, beat: 1, sub: 1, ...g } });
+const S = (name, len, g) => ({ name, len, g: { pad: 1, lead: 1, grain: 1, tex: 1, layer: 1, beat: 1, sub: 1, sig: 1, ...g } });
 const FORMS = {
   arch: () => [S("intro", rnd(28, 40), { lead: 0, grain: 0.3, layer: 0, beat: 0, sub: 0.6, pad: 0.75 }), S("entry", rnd(35, 50), { lead: 0.6, grain: 0.5, layer: 0.5, beat: 0.6, sub: 0.8 }),
-    S("peak", rnd(50, 70), {}), S("thin", rnd(35, 50), { lead: 0.5, grain: 0.7, layer: 0.3, beat: 0.4, tex: 0.8 }), S("still", rnd(45, 65), { lead: 0.25, grain: 0.3, layer: 0, beat: 0, sub: 0.5, pad: 0.8 })],
+    S("peak", rnd(50, 70), {}), S("thin", rnd(35, 50), { lead: 0.5, grain: 0.7, layer: 0.3, beat: 0.4, tex: 0.8 }), S("still", rnd(45, 65), { lead: 0.25, grain: 0.3, layer: 0, beat: 0, sub: 0.5, pad: 0.8, sig: 0.55 })],
   waves: () => [0, 1, 2].flatMap(() => [S("swell", rnd(35, 50), {}), S("ebb", rnd(28, 40), { lead: 0.3, grain: 0.4, layer: 0.25, beat: 0.3, sub: 0.7 })]),
   build: () => [S("ground", rnd(25, 35), { lead: 0, grain: 0.2, layer: 0.4, beat: 0, sub: 0.5, pad: 0.8 }), S("motion", rnd(30, 40), { lead: 0.4, layer: 0.7, beat: 0.5 }),
     S("rise", rnd(35, 45), { lead: 0.7, beat: 0.8 }), S("peak", rnd(50, 65), {}), S("break", rnd(20, 28), { lead: 0.4, beat: 0, grain: 0.8, sub: 0.4 }), S("return", rnd(40, 55), {}),
     S("fade", rnd(35, 45), { lead: 0.3, layer: 0.4, beat: 0.3, pad: 0.8 })],
   monolith: () => [S("mass", rnd(100, 140), { lead: 0.15, grain: 0.3, tex: 0.8, beat: 0.5 }), S("shift", rnd(70, 90), { pad: 0.8, lead: 0.5, grain: 0.6, layer: 0.7 }), S("mass", rnd(100, 130), { lead: 0, grain: 0.2, beat: 0.5 })],
   decay: () => [S("whole", rnd(45, 60), {}), S("wear", rnd(45, 60), { lead: 0.8, grain: 0.8, layer: 0.9, beat: 0.8 }), S("erosion", rnd(45, 60), { lead: 0.5, grain: 0.6, layer: 0.75, beat: 0.6, pad: 0.9 }),
-    S("remains", rnd(45, 60), { lead: 0.3, grain: 0.4, layer: 0.55, beat: 0.4 }), S("dust", rnd(50, 70), { lead: 0.15, grain: 0.2, layer: 0.35, beat: 0.2, sub: 0.6 })],
-  sparse: () => [0, 1, 2].flatMap(() => [S("event", rnd(35, 45), { pad: 0.6, lead: 0.5, grain: 0.2, layer: 0.8, beat: 0.5, sub: 0.4 }), S("hush", rnd(25, 35), { pad: 0.4, lead: 0.15, grain: 0.1, layer: 0.4, beat: 0.25, sub: 0.3 })])
+    S("remains", rnd(45, 60), { lead: 0.3, grain: 0.4, layer: 0.55, beat: 0.4 }), S("dust", rnd(50, 70), { lead: 0.15, grain: 0.2, layer: 0.35, beat: 0.2, sub: 0.6, sig: 0.45 })],
+  sparse: () => [0, 1, 2].flatMap(() => [S("event", rnd(35, 45), { pad: 0.6, lead: 0.5, grain: 0.2, layer: 0.8, beat: 0.5, sub: 0.4 }), S("hush", rnd(25, 35), { pad: 0.4, lead: 0.15, grain: 0.1, layer: 0.4, beat: 0.25, sub: 0.3, sig: 0.6 })])
 };
 
 const P = o => Object.fromEntries(KEYS.map(k => [k, clamp(Number(o[k] ?? (k === "beat" ? 0 : 0.4)))]));
@@ -747,10 +797,50 @@ class Engine {
     const wave = amps => { const re = new Float32Array(amps.length + 1), im = new Float32Array(amps.length + 1); amps.forEach((a, i) => { im[i + 1] = a; }); return c.createPeriodicWave(re, im); };
     this.padWave = wave(Array.from({ length: 32 }, (_, i) => (1 / Math.pow(i + 1, 1.35)) * ((i + 1) % 2 ? 1 : 0.6)));
     this.organWave = wave([1, 0.6, 0.4, 0.25, 0, 0.15, 0, 0.1]);
+    this.pulseWaves = [0.18, 0.36].map(d => wave(Array.from({ length: 40 }, (_, i) => 2 / ((i + 1) * Math.PI) * Math.sin((i + 1) * Math.PI * d))));
     this.HANN = new Float32Array(64).map((_, i) => 0.5 - 0.5 * Math.cos(2 * Math.PI * i / 63));
     this.crushCurve = new Float32Array(1024).map((_, i) => Math.round((i / 511.5 - 1) * 4) / 4);
     this.wallCurve = new Float32Array(1024).map((_, i) => Math.tanh(4 * (i / 511.5 - 1)));
     this.lastMorph = -1;
+  }
+
+  // one grand-piano note, synthesised once per pitch: stretched partials, paired strings that beat,
+  // a fast then a slow decay, the hammer's knock. Rendered at a low rate to stay quick; the browser resamples.
+  piano(f) {
+    const key = `p${Math.round(f * 2)}`;
+    if (this.ksCache.has(key)) return this.ksCache.get(key);
+    const sr = f < 220 ? 16000 : 24000, low = clamp(Math.log2(600 / f) / 3.2), len = Math.floor(sr * (2.8 + low * 4.2)), d = new Float32Array(len);
+    const B = 0.00008 + (1 - low) * 0.0005;
+    for (let n = 1; n <= 14; n++) {
+      const fn = f * n * Math.sqrt(1 + B * n * n); if (fn > sr * 0.42) break;
+      const a = Math.pow(n, -1.2) * (0.3 + 0.7 * Math.abs(Math.sin(Math.PI * n * 0.125))); if (a < 0.004) continue;
+      const t1 = 0.18 + 0.5 * low, t2 = (0.9 + 5.5 * low) / (1 + 0.22 * n);
+      const k1 = Math.exp(-1 / (t1 * sr)), k2 = Math.exp(-1 / (t2 * sr)), end = Math.min(len, Math.floor(t2 * 7 * sr));
+      const strings = n <= 3 ? [0.99972, 1.00028] : [1];
+      for (const st of strings) {
+        const w = 2 * Math.PI * fn * st / sr, cw = Math.cos(w), sw = Math.sin(w), amp = a / strings.length;
+        let x = 1, y = 0, e1 = 0.6, e2 = 0.4;
+        for (let i = 0; i < end; i++) { const nx = x * cw - y * sw; y = x * sw + y * cw; x = nx; d[i] += amp * y * (e1 + e2); e1 *= k1; e2 *= k2; }
+      }
+    }
+    const hl = Math.floor(0.03 * sr), cut = Math.min(0.85, f * 40 / sr);
+    for (let i = 0, lp = 0; i < hl; i++) { lp += cut * ((Math.random() * 2 - 1) - lp); d[i] += lp * 0.4 * Math.exp(-i / (0.005 * sr)); }
+    const atk = Math.floor(0.0025 * sr), rel = Math.floor(0.3 * sr);
+    let pk = 0; for (let i = 0; i < len; i++) { if (i < atk) d[i] *= i / atk; if (i > len - rel) d[i] *= (len - i) / rel; pk = Math.max(pk, Math.abs(d[i])); }
+    const gain = 0.85 / (pk || 1); for (let i = 0; i < len; i++) d[i] *= gain;
+    const b = this.ctx.createBuffer(1, len, sr); b.copyToChannel(d, 0);
+    if (this.ksCache.size > 72) this.ksCache.delete(this.ksCache.keys().next().value);
+    this.ksCache.set(key, b);
+    return b;
+  }
+  // while the release light spreads, build the piano's notes one at a time so the first bars do not stall
+  prewarm(mood) {
+    if (mood.arch !== "piano" || !this.ctx || this.offline) return;
+    const root = 440 * Math.pow(2, (36 + NOTES.indexOf(mood.root) - 69) / 12), sc = MODES[mood.mode];
+    const semis = []; for (let o = 0; o < 5; o++) sc.forEach(x => semis.push(o * 12 + x));
+    const order = [...semis.filter(x => x >= 12 && x < 32), ...semis.filter(x => x >= 32 && x < 54), ...semis.filter(x => x < 12)];
+    const ctx = this.ctx, step = () => { if (this.ctx !== ctx || !order.length) return; const x = order.shift(); this.piano(root * Math.pow(2, Math.floor(x / 12)) * JI[x % 12]); setTimeout(step, 16); };
+    setTimeout(step, 30);
   }
 
   ks(f) {
@@ -789,13 +879,13 @@ class Engine {
       if (prev.mood.genre === mood.genre) mood.genre = pick(GENRE_KEYS.filter(k => k !== mood.genre));
     }
     if (prev) prev.fadeOut(now, prev.mood.listen ? 2.5 : opts.keep ? 3 : 6);
-    this.scene = new Scene(this, mood);
+    this.scene = new Scene(this, mood, !!opts.keep);
     this.scene.fadeIn(now, prev ? (opts.keep ? 2 : 3.5) : 2);
     const from = opts.from || mood.start;
     this.arc = [{ t: now, p: from }, { t: now + (opts.arc ?? ARC_SECONDS), p: mood.settle }];
     this.p = { ...from };
     this.roomReady = this.setRoom(4 + Math.max(mood.start.space, mood.settle.space) * 7);
-    this.setEcho(mood.start.beat > 0.02 ? mood.bpm : 0, mood.beat_style);
+    this.setEcho(mood.start.beat > 0.02 ? mood.bpm : mood.echoBpm || 0, mood.beat_style);
     this.master.gain.setTargetAtTime(this.userPaused ? 0 : 0.9, now, 0.8);
     this.apply(this.p, 0.6);
     if (!this.timer && !this.offline) this.timer = setInterval(() => this.tick(), 100);
@@ -874,7 +964,7 @@ class Engine {
     const loops = s.ens.lead === "none" ? [] : s.bellVoices.filter(v => v.idx < s.activeVoices(p)).map(v => v.base * (1.5 - p.density * 0.6));
     const sec = s.section(this.ctx.currentTime);
     return {
-      key: `${m.root} ${MODE_LABEL[m.mode]}`, ensemble: s.ens.label, genre: s.genre.label, form: `${s.genre.form} / ${sec.name}`,
+      key: `${m.root} ${MODE_LABEL[m.mode]}`, arch: s.arch ? s.arch.label : "", ensemble: s.ens.label, genre: s.genre.label, form: `${s.genre.form} / ${sec.name}`,
       loops: p.bells > 0.02 ? loops : [], room: this.irSeconds, tape: Math.round(p.tape * 100), field: TEX_LABEL[m.texture] || "—", breath: m.breath,
       beat: p.beat > 0.02 ? `${m.beat_style} ${m.bpm} BPM` : "", bpm: p.beat > 0.02 ? m.bpm : 0,
       hz: s.rootHz * 2, arc: Math.round(clamp((this.ctx.currentTime - this.arc[0].t) / ARC_SECONDS) * 100)
@@ -922,7 +1012,7 @@ class Engine {
     this.tone.Q.setTargetAtTime(0.5, now, 0.4);
     this.sweepSend.gain.setTargetAtTime(0, now, 0.15);     // the echoes already thrown keep ringing out
     this.sweepFb.gain.setTargetAtTime(0.3, now + 1.5, 1);
-    const m = this.scene && this.scene.mood; if (m) this.setEcho(m.start.beat > 0.02 ? m.bpm : 0, m.beat_style);
+    const m = this.scene && this.scene.mood; if (m) this.setEcho(m.start.beat > 0.02 ? m.bpm : m.echoBpm || 0, m.beat_style);
   }
   transpose(dir) {
     const s = this.scene; if (!s || s.mood.listen) return null;
@@ -937,8 +1027,9 @@ class Engine {
 }
 
 class Scene {
-  constructor(E, mood) {
+  constructor(E, mood, keep) {
     this.E = E; this.mood = mood; const c = this.c = E.ctx, G = E.G, F = E.F;
+    this.arch = ARCHES[mood.arch] || null;
     this.t0 = c.currentTime;
     this.ens = ENSEMBLES[mood.ensemble] || ENSEMBLES.glass;
     this.genre = GENRES[mood.genre] || GENRES.generative;
@@ -947,7 +1038,13 @@ class Scene {
     this.rootHz = 440 * Math.pow(2, (36 + NOTES.indexOf(mood.root) - 69) / 12);
     this.p = { ...mood.start };
     this.persist = []; this.alive = true; this.padVoices = []; this.chordNotes = []; this.pending = [];
-    this.sections = []; this.extendForm(this.t0);
+    this.sections = [];
+    if (this.arch && !keep) {
+      // the opening belongs to the arrangement's own instrument; the form follows it
+      const pr = this.arch.prelude, len = rnd(...pr.len) * (mood.start.beat > 0.02 ? 0.6 : 1);
+      this.sections.push({ ...S("prelude", len, pr.g), t: this.t0 });
+      this.extendForm(this.t0 + len);
+    } else this.extendForm(this.t0);
 
     this.out = G(0); this.out.connect(E.music);
     this.echoTap = G(0); this.echoTap.connect(E.echoSend);
@@ -987,6 +1084,9 @@ class Scene {
     this.setupBells(); this.setupSub();
     this.tex = this.makeTexture(mood.texture);
     this.layerTicks = this.genre.layers.map(name => this["layer_" + name].call(this)).filter(Boolean);
+    this.sigBus = G(0); this.sigBus.connect(this.out);
+    const sv = G(0.45); this.sigBus.connect(sv); sv.connect(this.verbTap);
+    this.sigTick = this.arch && this["sig_" + mood.arch] ? this["sig_" + mood.arch].call(this) : null;
     this.apply(this.p, 0.05);
   }
 
@@ -1037,11 +1137,14 @@ class Scene {
   apply(p, tc) {
     const now = this.c.currentTime, set = (param, v) => param.setTargetAtTime(v, now, tc);
     const g0 = this.g = this.gate(now), hz = this.hushed ? 0.04 : 1;
-    const g = { ...g0, lead: g0.lead * hz, layer: g0.layer * hz, grain: g0.grain * hz, beat: g0.beat * hz, tex: g0.tex * (this.hushed ? 0.3 : 1) };
+    const am = (this.arch && this.arch.mul) || {}, M = k => am[k] ?? 1;
+    const g = { ...g0, pad: g0.pad * M("pad"), lead: g0.lead * hz * M("lead"), layer: g0.layer * hz * M("layer"), grain: g0.grain * hz * M("grain"), beat: g0.beat * hz,
+      tex: g0.tex * (this.hushed ? 0.3 : 1) * M("tex"), sub: g0.sub * M("sub"), sig: (g0.sig ?? 1) * (this.hushed ? 0.15 : 1) * (this.arch ? this.arch.level : 0) };
     this.p = p;
     const pg = PAD_GAIN[this.ens.pad];
     const cutoff = (220 + Math.pow(p.brightness, 2) * 4200) * (1 - 0.35 * p.warmth) * (this.ens.pad === "bowed" || this.ens.pad === "choir" ? 1.8 : 1);
-    set(this.padFilter.frequency, (this.ens.pad === "sine" || this.ens.pad === "noise" ? 9000 : cutoff) * (this.hushed ? 0.35 : 1));
+    const open = { sine: 9000, noise: 9000, fmpad: 9000 }[this.ens.pad] || cutoff * (this.ens.pad === "super" || this.ens.pad === "pulse" ? 1.8 : 1);
+    set(this.padFilter.frequency, open * (this.hushed ? 0.35 : 1));
     set(this.padLfoGain.gain, cutoff * 0.4 * p.motion);
     set(this.padBus.gain, p.pad * 0.85 * pg * g.pad);
     set(this.breathDepth.gain, p.pad * 0.22 * pg * g.pad);
@@ -1051,6 +1154,7 @@ class Scene {
     set(this.subBus.gain, p.sub * 0.16 * g.sub);
     set(this.texLevel.gain, p.texture_level * 0.6 * g.tex);
     set(this.beatBus.gain, p.beat * 0.9 * g.beat);
+    if (this.sigBus) set(this.sigBus.gain, g.sig);
   }
 
   tick(now, ahead, p) {
@@ -1070,6 +1174,7 @@ class Scene {
     }
     this.tex.tick(now, ahead);
     for (const lt of this.layerTicks) lt(now, ahead, p, g);
+    if (this.sigTick) this.sigTick(now, ahead, p, g);
     if (this.nextStep < now) { const lag = Math.ceil((now - this.nextStep) / this.stepDur); this.nextStep += lag * this.stepDur; this.stepIdx += lag; }
     while (this.nextStep < ahead) {
       if (p.beat > 0.02 && g.beat > 0.05) this.step(this.stepIdx % 16, this.nextStep, Math.floor(this.stepIdx / 16));
@@ -1083,6 +1188,7 @@ class Scene {
     const cands = n === 7 ? [0, 0, 0, 3, 3, 5, 5, 1, 4] : [0, 0, 0, 2, 3, 1, 4];
     let b = pick(cands);
     if (b === this.lastBass && Math.random() < 0.7) b = pick(cands);
+    if (this.harmonyB !== undefined) b = this.harmonyB;
     if (this.genre.form === "monolith" && this.chordNotes.length) b = 0;
     this.lastBass = b;
     const V = {
@@ -1094,7 +1200,7 @@ class Scene {
     const reg = this.reg;
     let notes = pick(V[this.ens.voicing]).map(d => 12 + reg + this.degSemis(b + d)).map(s => s > 40 + reg ? s - 12 : s);
     notes = [...new Set(notes)].sort((x, y) => x - y);
-    const atk = this.padVoices.length ? rnd(6, 11) : 3;
+    const atk = this.padVoices.length ? rnd(6, 11) : this.arch && this.arch.fast ? 0.35 : 3;
     this.padVoices.forEach(v => v.release(now, atk * 1.3));
     this.padVoices = notes.map(s => this.padVoice(this.freq(s), now, atk, notes.length));
     this.chordNotes = notes;
@@ -1131,6 +1237,19 @@ class Scene {
         const mix = G(1), vg = vibrato(rnd(4.6, 5.6), 9);
         [-det, det].forEach(d => vg.connect(add("pad", f, d, 1, mix).detune));
         pick(VOWELS).forEach(([ff, gn]) => { const bp = F("bandpass", ff, 9); mix.connect(bp); bp.connect(G(gn * 3.2)).connect(g); });
+        break;
+      }
+      case "super": [-22, -13, -6, 0, 6, 13, 22].forEach(d => add("sawtooth", f, d * (0.6 + p.motion * 0.6), 0.32)); add("sawtooth", f / 2, 3, 0.2); break;
+      case "pulse": {
+        const ch = vibrato(rnd(0.3, 0.7), 14);                // slow chorus, like an old polysynth
+        [[0, -det], [1, det]].forEach(([w, d]) => { const o = c.createOscillator(); o.setPeriodicWave(E.pulseWaves[w]); o.frequency.value = f; o.detune.value = d; ch.connect(o.detune); o.connect(G(0.7)).connect(g); o.start(t); srcs.push(o); });
+        break;
+      }
+      case "fmpad": {
+        const mod = G(0), ratio = pick([2, 3, 3.5]);
+        mod.gain.setValueAtTime(0, t); mod.gain.linearRampToValueAtTime(f * rnd(0.8, 1.6), t + atk * 1.5);
+        [[-det * 0.5, 1], [det * 0.5, 0.8]].forEach(([d, gn]) => { const car = add("sine", f, d, gn); mod.connect(car.frequency); });
+        const m = c.createOscillator(); m.frequency.value = f * ratio; m.connect(mod); m.start(t); srcs.push(m);
         break;
       }
       case "noise": {
@@ -1258,17 +1377,17 @@ class Scene {
   }
 
   /* ----- genre layers: each returns its tick(now, ahead, p, gate) ----- */
-  melodyLayer(inst, unitRange, restRange) {
+  melodyLayer(inst, unitRange, restRange, dest = this.layerBus, key = "layer") {
     let next = this.t0 + rnd(5, 12), deg = Math.floor(rnd(0, 4));
     return (now, ahead, p, g) => {
       while (next < ahead) {
-        if (g.layer < 0.05) { next += 4; continue; }
+        if (g[key] < 0.05) { next += 4; continue; }
         const n = Math.floor(rnd(3, 7)), unit = this.mood.bpm && p.beat > 0.02 ? 60 / this.mood.bpm * pick([1, 2]) : rnd(...unitRange);
         let t = Math.max(next, now + 0.02);
         for (let k = 0; k < n; k++) {
           deg = clamp(deg + pick([-2, -1, -1, 1, 1, 2, 0, 3, -3]), -2, 9);
           if (k === n - 1 && Math.random() < 0.6) deg = pick([0, 2, 4, 7]);
-          this.note(inst, this.freq(24 + this.reg + this.degSemis(deg)), t, rnd(0.6, 0.95), rnd(-0.3, 0.3), this.layerBus);
+          this.note(inst, this.freq(24 + this.reg + this.degSemis(deg)), t, rnd(0.6, 0.95), rnd(-0.3, 0.3), dest);
           t += unit * pick([1, 1, 2, 1.5, 0.5, 2, 3]);
         }
         next = t + rnd(...restRange) * (1.4 - p.density);
@@ -1280,6 +1399,159 @@ class Scene {
     return this.melodyLayer(map[this.ens.lead] || this.ens.lead, [0.55, 0.9], [3, 9]);
   }
   layer_flute() { return this.melodyLayer("flute", [0.9, 1.6], [4, 10]); }
+
+  /* ----- arrangements: the instrument that leads, each returns its tick(now, ahead, p, gate) ----- */
+  // arrangements that play in time walk a chord progression; the pad takes its roots from it
+  progression() {
+    return pick(this.scale.length === 7
+      ? [[0, 5, 3, 4], [0, 3, 5, 4], [5, 3, 0, 4], [0, 4, 5, 3], [0, 5, 1, 4], [3, 4, 2, 5], [0, 2, 3, 3], [0, 0, 3, 3]]
+      : [[0, 3, 2, 0], [0, 2, 3, 1], [3, 2, 0, 0], [0, 1, 3, 2]]);
+  }
+  pianoNote(s, t, vel, dest) {
+    const c = this.c, src = c.createBufferSource(); src.buffer = this.E.piano(this.freq(s));
+    // touch: a harder note is louder and brighter
+    const tone = this.E.F("lowpass", 900 + Math.pow(clamp(vel), 2) * 7000, 0.4);
+    const g = this.E.G(clamp(vel) * 0.55), pan = c.createStereoPanner(); pan.pan.value = clamp((s - 26) / 40, -0.5, 0.5);
+    src.connect(tone).connect(g).connect(pan).connect(dest); src.start(t); this.E.mark(t);
+  }
+  sig_piano() {
+    const beatOn = this.mood.start.beat > 0.02, bpm = beatOn ? this.mood.bpm : pick([58, 63, 66, 72, 76]), q = 60 / bpm;
+    const meter = beatOn ? 4 : pick([3, 4, 4]), n7 = this.scale.length === 7;
+    const lh = pick(meter === 3 ? ["waltz", "arp", "rolled"] : ["arp", "arp", "rolled", "waltz"]);
+    const prog = this.progression(), per = pick([1, 2]); this.harmonyB = prog[0];
+    const RHY = meter === 3 ? [[2, 1], [1, 1, 1], [3], [1.5, 0.5, 1], [1, 2]] : [[2, 1, 1], [1, 1, 2], [3, 1], [1.5, 0.5, 2], [4], [2, 2], [1, 1, 1, 1]];
+    const motifOf = () => { let d = pick([0, 2, 4]), at = 0; return [pick(RHY), pick(RHY)].flat().map(len => { d = clamp(d + pick([-1, -1, 1, 1, 2, -2, 0]), -2, 7); const n = { at, len, d }; at += len; return n; }); };
+    let motif = motifOf(), bar = 0, next = this.t0 + 0.25;
+    return (now, ahead, p, g) => {
+      if (next < now - 0.5) next = now + 0.05;            // fell behind (hidden tab): carry on from here
+      while (next < ahead) {
+        const t = next, b = prog[Math.floor(bar / per) % prog.length], deg = k => this.degSemis(b + k);
+        this.harmonyB = b;
+        const play = (s, at, vel) => this.pianoNote(s, at + rnd(-0.01, 0.012), vel * (0.85 + p.density * 0.2), this.sigBus);
+        if (g.sig > 0.03) {
+          if (lh === "arp") {
+            const shape = n7 ? [0, 4, 7, 9, 11, 9, 7, 4] : [0, 3, 5, 6, 8, 6, 5, 3];
+            for (let k = 0; k < meter * 2; k++) play(12 + deg(shape[k % 8]), t + k * q / 2, k === 0 ? 0.6 : 0.4);
+          } else if (lh === "waltz") {
+            const r = deg(0); play(r + (r < 5 ? 12 : 0), t, 0.62);
+            for (let k = 1; k < meter; k++) [2, 4, n7 ? 7 : 5].forEach((x, j) => play(24 + deg(x) - 12, t + k * q + j * 0.01, 0.34));
+          } else {
+            [0, 4, n7 ? 7 : 5, n7 ? 9 : 6].forEach((x, j) => play(12 + deg(x), t + j * 0.07, 0.52 - j * 0.04));
+            if (meter === 4) play(12 + deg(4), t + 2 * q, 0.34);
+          }
+          // the right hand comes in on the third bar, and sometimes leaves a bar empty
+          if (bar >= 2 && Math.random() < 0.6 + p.density * 0.35) {
+            const half = bar % 2;
+            for (const n of motif) {
+              if (n.at < half * meter || n.at >= (half + 1) * meter) continue;
+              let s = 36 + this.degSemis(b + n.d); if (s > 53) s -= 12; if (s < 33) s += 12;
+              play(s, t + (n.at - half * meter) * q, n.at % meter === 0 ? 0.78 : 0.66);
+            }
+          }
+        }
+        bar++;
+        if (bar % 8 === 0) motif = Math.random() < 0.5 ? motifOf() : motif.map(n => ({ ...n, d: n.d + pick([-1, 0, 1]) }));
+        next += q * meter;
+      }
+    };
+  }
+
+  synthHit(type, s, t, sd, cut, acc, dest, b) {
+    const c = this.c, G = this.E.G, F = this.E.F, f = this.freq(s), env = G(0); env.connect(dest);
+    const O = (w, fr, to) => { const o = c.createOscillator(); if (typeof w === "string") o.type = w; else o.setPeriodicWave(w); o.frequency.value = fr; o.connect(to); o.start(t); return o; };
+    const perc = (peak, dec) => { env.gain.setValueAtTime(0, t); env.gain.linearRampToValueAtTime(peak * acc, t + 0.004); env.gain.setTargetAtTime(0, t + 0.006, dec / 3); return t + dec * 1.6; };
+    let end = t + 0.5; const os = [];
+    switch (type) {
+      case "acid": { const lp = F("lowpass", cut * 3, 11); lp.connect(env); lp.frequency.setTargetAtTime(cut * 0.6, t, 0.05); os.push(O("sawtooth", f, lp)); end = perc(0.085, sd * 1.4); break; }
+      case "pluck": { const lp = F("lowpass", cut * 4, 2); lp.connect(env); lp.frequency.setTargetAtTime(cut * 0.4, t, 0.04); os.push(O(this.E.pulseWaves[0], f, lp)); end = perc(0.1, 0.22); break; }
+      case "bell": { const mi = G(0); mi.gain.setValueAtTime(f * 2.5, t); mi.gain.setTargetAtTime(0, t, 0.08); const car = O("sine", f * 2, env); os.push(car, O("sine", f * 7, mi)); mi.connect(car.frequency); end = perc(0.07, 0.4); break; }
+      case "stab": { const lp = F("lowpass", 700 + cut * 0.5, 1); lp.connect(env); [0, 2, 4].forEach(k => os.push(O("sawtooth", this.freq(24 + this.degSemis(b + k)), lp))); end = perc(0.045, 0.24); break; }
+      case "sub": { const o = O("triangle", f, env); o.frequency.setValueAtTime(f * 1.5, t); o.frequency.setTargetAtTime(f, t, 0.012); os.push(o); end = perc(0.24, sd * 3); break; }
+    }
+    os.forEach(o => o.stop(end + 0.05));
+    this.E.mark(t);
+  }
+  sig_pulse() {
+    const G = this.E.G, beatOn = this.mood.start.beat > 0.02;
+    const bpm = beatOn ? this.mood.bpm : pick([96, 104, 110, 116, 122]), sd = 60 / bpm / 4;
+    this.mood.echoBpm = bpm;
+    const voice = pick(["acid", "pluck", "stab", "bell"]), prog = this.progression(); this.harmonyB = prog[0];
+    const pattern = () => euclid(pick(voice === "stab" ? [3, 4, 5] : [5, 7, 9, 11]), 16, Math.floor(rnd(0, 16))).map(on => on ? { o: pick([0, 0, 2, 4, 7, 4, 9]), up: Math.random() < 0.2 } : null);
+    const bassPat = pick([[0, 8], [2, 6, 10, 14], [0, 3, 6, 10, 12], [0, 6, 8, 14]]);
+    const bus = G(1), echo = G(voice === "stab" ? 0.8 : 0.35); bus.connect(this.sigBus); bus.connect(echo); echo.connect(this.echoTap);
+    let pat = pattern(), i = 0, next = this.t0 + 0.15;
+    return (now, ahead, p, g) => {
+      if (next < now - 0.5) next = now + 0.05;
+      while (next < ahead) {
+        const t = next, k = i % 16, b = prog[Math.floor(i / 32) % prog.length];
+        this.harmonyB = b;
+        if (g.sig > 0.03) {
+          const st = pat[k], cut = 300 + (p.brightness * 0.6 + (0.5 + 0.5 * Math.sin(t * 0.13))) * 1500;
+          if (st) this.synthHit(voice, 24 + this.degSemis(b + st.o) + (st.up ? 12 : 0), t, sd, cut, k % 4 === 0 ? 1 : 0.7, bus, b);
+          if (bassPat.includes(k)) { const r = this.degSemis(b); this.synthHit("sub", 12 + r - (r > 6 ? 12 : 0), t, sd, 0, 1, bus, b); }
+        }
+        i++;
+        if (i % 64 === 0 && Math.random() < 0.6) { const np = pattern(); pat = pat.map((x, j) => Math.random() < 0.35 ? np[j] : x); }
+        next += sd;
+      }
+    };
+  }
+
+  sig_field() { return this.melodyLayer(pick(["mallet", "felt", "fm"]), [0.6, 1.1], [6, 14], this.sigBus, "sig"); }
+
+  sig_synth() {
+    const G = this.E.G, F = this.E.F, kind = pick(["brass", "square", "soft"]);
+    const o1 = this.osc(kind === "square" ? "square" : kind === "soft" ? "triangle" : "sawtooth", 220), o2 = this.osc(kind === "soft" ? "sine" : "sawtooth", 220);
+    o2.detune.value = kind === "soft" ? 0 : 9;
+    const vg = G(0); this.osc("sine", 5.2).connect(vg); vg.connect(o1.detune); vg.connect(o2.detune);
+    const lp = F("lowpass", 600, kind === "brass" ? 2.5 : 1), env = G(0);
+    o1.connect(lp); o2.connect(G(0.7)).connect(lp); lp.connect(env).connect(this.sigBus);
+    const es = G(0.5); env.connect(es); es.connect(this.echoTap);
+    let next = this.t0 + rnd(4, 7), deg = pick([0, 2, 4]);
+    return (now, ahead, p, g) => {
+      while (next < ahead) {
+        let at = Math.max(next, now + 0.02);
+        if (g.sig < 0.05) { next = at + 3; continue; }
+        const n = Math.floor(rnd(3, 6));
+        for (let k = 0; k < n; k++) {
+          deg = clamp(deg + pick([-2, -1, 1, 1, 2, 3, -3]), -1, 9); if (k === n - 1) deg = pick([0, 2, 4]);
+          const f = this.freq(24 + this.degSemis(deg));
+          o1.frequency.setTargetAtTime(f, at, 0.07); o2.frequency.setTargetAtTime(f, at, 0.07);
+          env.gain.setTargetAtTime(0.085, at, 0.12);
+          lp.frequency.setTargetAtTime(700 + p.brightness * 3000, at, 0.15); lp.frequency.setTargetAtTime(500 + p.brightness * 1000, at + 0.4, 0.8);
+          vg.gain.setTargetAtTime(0, at, 0.05); vg.gain.setTargetAtTime(12, at + 0.5, 0.4);
+          at += rnd(1.2, 3.2);
+        }
+        env.gain.setTargetAtTime(0, at - 0.3, 0.6);
+        next = at + rnd(4, 10) * (1.4 - p.density);
+      }
+    };
+  }
+
+  sig_guitar() {
+    const c = this.c, G = this.E.G, F = this.E.F, beatOn = this.mood.start.beat > 0.02;
+    const bpm = beatOn ? this.mood.bpm : pick([70, 76, 84, 90]), e8 = 60 / bpm / 2;
+    // its own dotted-eighth echo, the post-rock way
+    const dl = c.createDelay(2); dl.delayTime.value = e8 * 1.5;
+    const fb = G(0.5), tone = F("lowpass", 2600), wet = G(0.6); dl.connect(tone).connect(fb).connect(dl); tone.connect(wet).connect(this.sigBus);
+    const bus = G(1); bus.connect(this.sigBus); bus.connect(dl);
+    const prog = this.progression(); this.harmonyB = prog[0];
+    const shape = pick([[0, 2, 4, 7, 9, 7, 4, 2], [0, 4, 7, 4, 9, 4, 7, 4], [0, 7, 4, 9, 2, 7, 4, 11], [7, 4, 0, 4, 9, 7, 4, 2]]);
+    let i = 0, next = this.t0 + 0.2;
+    return (now, ahead, p, g) => {
+      if (next < now - 0.5) next = now + 0.05;
+      while (next < ahead) {
+        const t = next, b = prog[Math.floor(i / 16) % prog.length];
+        this.harmonyB = b;
+        if (g.sig > 0.03 && !(i % 8 === 7 && Math.random() < 0.3)) {
+          const src = c.createBufferSource(); src.buffer = this.E.ks(this.freq(12 + this.degSemis(b + shape[i % 8])));
+          src.connect(F("lowpass", 1800 + p.brightness * 2500)).connect(G((i % 4 === 0 ? 0.55 : 0.4) * rnd(0.85, 1.1))).connect(bus);
+          src.start(t); this.E.mark(t);
+        }
+        i++; next += e8;
+      }
+    };
+  }
 
   layer_arp() {
     const c = this.c, G = this.E.G, F = this.E.F;
@@ -1793,6 +2065,14 @@ function localMood(text, stats, beat) {
   const m = buildPreset(pr, pk.scene, beat);
   Object.assign(m, { texture: pk.texture, genre: pick([...pr.genres, ...pk.genres]), ensemble: pick([...pr.ens, pk.ens]), kind: pk.kind, cat });
   if (Math.random() < 0.4) m.mode = pk.mode;
+  const prev = prevMood(), arch = m.arch = chooseArch(text, cat, pk.kind, prev && prev.arch), A = ARCHES[arch];
+  const fits = l => l.filter(x => A.genres.includes(x));
+  m.genre = pick(fits([...pr.genres, ...pk.genres]).length ? fits([...pr.genres, ...pk.genres]) : A.genres);
+  m.ensemble = pick(A.ens);
+  const tw = TEX_WORDS.find(([re]) => re.test(text)); if (tw) m.texture = tw[1];
+  if (arch === "field") { m.start.texture_level = Math.max(m.start.texture_level, 0.85); m.settle.texture_level = Math.max(m.settle.texture_level, 0.6); }
+  if (arch === "piano") { m.start.bells = Math.min(m.start.bells, 0.3); }
+  if (arch === "pulse") { m.start.motion = Math.max(m.start.motion, 0.55); }
   m.beat_style = (GENRES[m.genre] || GENRES.generative).style; m.bpm = beat ? (GENRES[m.genre] || GENRES.generative).bpm : 0;
   applyBeat(m, beat);
   m.start.brightness = clamp(m.start.brightness * 0.5 + (0.15 + stats.lum * 0.7) * 0.5);
@@ -2429,69 +2709,118 @@ setMode(beatMode, false);
 
 /* ---------- works for this feeling: three at random, from the words' category ---------- */
 const F = (t, by, y, why) => ({ k: "Film", t, by, y, why }), N = (t, by, y, why) => ({ k: "Novel", t, by, y, why });
+const MG = (t, by, y, why) => ({ k: "Manga", t, by, y, why }), ES = (t, by, y, why) => ({ k: "Essay", t, by, y, why });
 const RECS = {
   anxious: [
     F("リトル・ミス・サンシャイン", "ジョナサン・デイトン、ヴァレリー・ファリス", 2006, "うまくいかない家族の、うまくいかない旅。失敗してもいいと思えてくる。"),
     F("LIFE!", "ベン・スティラー", 2013, "空想ばかりしていた人が、一歩だけ外へ出る話。"),
+    F("ブータン 山の教室", "パオ・チョニン・ドルジ", 2019, "やる気のない若い教師が、標高4800mの村の学校へ行かされる。"),
+    F("ケイコ 目を澄ませて", "三宅唱", 2022, "耳の聞こえないボクサーの、迷いながら続ける日々。"),
+    F("パンチドランク・ラブ", "ポール・トーマス・アンダーソン", 2002, "不安と癇癪を抱えた男が、それでも恋に向かって走る。"),
+    F("百円の恋", "武正晴", 2014, "実家でくすぶっていた32歳が、ボクシングに出会う。"),
     N("夜のピクニック", "恩田陸", 2004, "ただ夜通し歩くだけの一日に、言えなかったことがほどけていく。"),
-    N("博士の愛した数式", "小川洋子", 2003, "80分しか記憶がもたない博士と過ごす、静かで確かな時間。"),
-    F("セッション", "デイミアン・チャゼル", 2014, "本番の恐怖を、そのまま音の熱に変えてしまう映画。")
+    N("この世にたやすい仕事はない", "津村記久子", 2015, "燃え尽きた人が、少し変わった仕事を転々とする。"),
+    N("変身", "フランツ・カフカ", 1915, "朝起きたら虫になっていた。それでも会社のことが気になってしまう。"),
+    MG("ブルーピリオド", "山口つばさ", 2017, "要領よく生きてきた高校生が、絵に本気になってしまう。"),
+    ES("センス・オブ・ワンダー", "レイチェル・カーソン", 1965, "先のことより、いま目の前の自然に驚くこと。")
   ],
   tired: [
     F("PERFECT DAYS", "ヴィム・ヴェンダース", 2023, "同じ毎日の中の、少しずつ違う木もれ日。"),
     F("パターソン", "ジム・ジャームッシュ", 2016, "バスの運転手が詩を書く一週間。何も起きないことのやさしさ。"),
-    F("リトル・フォレスト 夏・秋", "森淳一", 2014, "畑と台所だけの日々。食べて眠ることを思い出させてくれる。"),
+    F("川っぺりムコリッタ", "荻上直子", 2022, "古いアパートの隣人たちと、ごはんを食べるだけの日々。"),
+    F("珈琲時光", "ホウ・シャオシェン", 2003, "東京の電車と古書店と喫茶店。ゆっくり流れる時間の映画。"),
+    F("過去のない男", "アキ・カウリスマキ", 2002, "記憶をなくした男が、コンテナ暮らしの人たちと生活を立て直す。"),
+    F("コロンバス", "コゴナダ", 2017, "足止めされた町で、建築を眺めながら交わす静かな会話。"),
+    N("ポトスライムの舟", "津村記久子", 2009, "工場で働く29歳が、年収と同じ額の世界一周に思いを寄せる。"),
     N("ツバキ文具店", "小川糸", 2016, "鎌倉の代書屋で、誰かの言葉をゆっくり書く。"),
-    F("かもめ食堂", "荻上直子", 2006, "ヘルシンキの小さな食堂。急がなくていい場所がある。")
+    MG("ヨコハマ買い出し紀行", "芦奈野ひとし", 1994, "夕凪の時代、海辺の喫茶店で過ごす、穏やかな時間。"),
+    MG("リトル・フォレスト", "五十嵐大介", 2002, "東北の小さな集落で、畑と台所だけの日々。"),
+    ES("阿房列車", "内田百閒", 1952, "用事もないのに汽車に乗りに行く。それだけの旅の記録。")
   ],
   sad: [
     N("キッチン", "吉本ばなな", 1988, "大切な人を失ったあと、台所の明かりの下でまた眠れるようになるまで。"),
     F("アフターサン", "シャーロット・ウェルズ", 2022, "父と過ごした夏休みのビデオ。あとから届く感情の映画。"),
-    F("ドライブ・マイ・カー", "濱口竜介", 2021, "言えなかった悲しみを、車の中で少しずつ言葉にしていく。"),
-    F("マンチェスター・バイ・ザ・シー", "ケネス・ロナーガン", 2016, "乗り越えられない悲しみを、乗り越えないまま生きる話。"),
-    N("西の魔女が死んだ", "梨木香歩", 1994, "学校に行けなくなった少女と祖母の、森の中のひと夏。")
+    F("春原さんのうた", "杉田協士", 2021, "大切な人がいなくなったあとの日々を、静かな光で映す。"),
+    F("ぐるりのこと。", "橋口亮輔", 2008, "子どもを亡くした夫婦が、十年をかけて少しずつ持ち直していく。"),
+    F("インサイド・ルーウィン・デイヴィス 名もなき男の歌", "ジョエル・コーエン、イーサン・コーエン", 2013, "売れないフォーク歌手の、何もかもうまくいかない一週間。"),
+    F("ウェンディ&ルーシー", "ケリー・ライカート", 2008, "車が壊れ、愛犬を見失った女性の数日間。"),
+    F("はちどり", "キム・ボラ", 2018, "1994年のソウル。14歳の少女が見つめる、家族と世界。"),
+    N("夏の庭 The Friends", "湯本香樹実", 1992, "ひとり暮らしの老人を見張っていた少年たちが、友だちになっていく。"),
+    N("ムーミン谷の十一月", "トーベ・ヤンソン", 1970, "ムーミン一家のいない家に、さみしさを抱えた人たちが集まる。"),
+    MG("違国日記", "ヤマシタトモコ", 2017, "両親を亡くした少女と、人づきあいが苦手な叔母の暮らし。"),
+    ES("ノラや", "内田百閒", 1957, "いなくなった猫を、ただひたすら待ち続けた日々の記録。")
   ],
   angry: [
-    F("スリー・ビルボード", "マーティン・マクドナー", 2017, "怒りの行き先を、最後まで見届ける映画。"),
+    F("わたしは、ダニエル・ブレイク", "ケン・ローチ", 2016, "理不尽な制度に、最後まで自分の名前で抗う大工の話。"),
+    F("ナミビアの砂漠", "山中瑶子", 2024, "うまく言えない苛立ちを抱えた21歳の、むきだしの毎日。"),
     F("マッドマックス 怒りのデス・ロード", "ジョージ・ミラー", 2015, "2時間ずっとアクセル全開。熱を外に出しきれる。"),
-    F("ロッキー", "ジョン・G・アヴィルドセン", 1976, "勝つためではなく、最後まで立っているために戦う。"),
+    F("ゴッドスピード・ユー！ BLACK EMPEROR", "柳町光男", 1976, "1970年代の暴走族を追ったドキュメンタリー。"),
+    F("セッション", "デイミアン・チャゼル", 2014, "理不尽への怒りが、最後にドラムの音になる。"),
+    N("檸檬", "梶井基次郎", 1925, "えたいの知れない不吉な塊を、一個のレモンで吹き飛ばす短編。"),
+    N("苦役列車", "西村賢太", 2011, "日雇いで暮らす19歳の、ひねくれた孤独と怒り。"),
+    N("勝手に生きろ！", "チャールズ・ブコウスキー", 1975, "仕事を転々としながら、それでも書くことをやめない男。"),
     N("蹴りたい背中", "綿矢りさ", 2003, "うまく言えない苛立ちを、そのままの形で書いた小説。"),
-    F("セッション", "デイミアン・チャゼル", 2014, "理不尽への怒りが、最後にドラムの音になる。")
+    MG("ボーイズ・オン・ザ・ラン", "花沢健吾", 2005, "冴えない29歳の営業マンが、負けっぱなしのまま立ち上がる。")
   ],
   overthink: [
-    F("エブリシング・エブリウェア・オール・アット・ワンス", "ダニエルズ", 2022, "無数の可能性に迷った末に、目の前の人を選ぶ話。"),
+    F("ハッピーアワー", "濱口竜介", 2015, "30代の4人の女性の会話を、5時間かけてじっくり聴く映画。"),
+    F("ヤンヤン 夏の想い出", "エドワード・ヤン", 2000, "台北の一家それぞれの迷いを、少年のカメラが見つめる。"),
     F("フランシス・ハ", "ノア・バームバック", 2012, "思うように進まない27歳の、軽やかな足取り。"),
     F("わたしは最悪。", "ヨアキム・トリアー", 2021, "決められないまま揺れる日々を、そのまま肯定する。"),
-    N("コンビニ人間", "村田沙耶香", 2016, "「普通」とは何かを、まっすぐな目で問い直す。"),
-    N("世界の終りとハードボイルド・ワンダーランド", "村上春樹", 1985, "頭の中の二つの世界を行き来する、長い考えごとの物語。")
+    F("さよなら、退屈なレオニー", "セバスチャン・ピロット", 2018, "卒業を前に、行き場のない17歳の夏。"),
+    N("スティル・ライフ", "池澤夏樹", 1988, "宇宙や雪を眺めるように、静かに世界を見つめ直す短い小説。"),
+    N("推し、燃ゆ", "宇佐見りん", 2020, "「推し」が炎上した日から、わたしの背骨が揺らぎはじめる。"),
+    N("砂の女", "安部公房", 1962, "砂の穴の家に閉じこめられた男が、やがて考えを変えていく。"),
+    N("ハイ・フィデリティ", "ニック・ホーンビィ", 1995, "レコード店主が、失恋のトップ5を本気で考え直す。"),
+    MG("セトウツミ", "此元和津也", 2013, "放課後の川べりで、二人の高校生がしゃべるだけ。")
   ],
   sleepless: [
     F("ロスト・イン・トランスレーション", "ソフィア・コッポラ", 2003, "眠れない東京の夜に出会った二人。"),
     F("恋する惑星", "ウォン・カーウァイ", 1994, "夜の香港と、何度もかかる「夢のカリフォルニア」。"),
-    F("ナイト・オン・ザ・プラネット", "ジム・ジャームッシュ", 1991, "同じ夜、世界の五つの街のタクシーで起きること。"),
+    F("きみの鳥はうたえる", "三宅唱", 2018, "函館の夏の夜、三人で過ごす終わらない時間。"),
+    F("夜空はいつでも最高密度の青色だ", "石井裕也", 2017, "東京でうまく生きられない二人が、夜の街で出会う。"),
+    F("夜明けのすべて", "三宅唱", 2024, "体と心の不調を抱えた二人が、夜明けを待つように支え合う。"),
     N("アフターダーク", "村上春樹", 2004, "深夜から夜明けまでの、ひと晩だけの物語。"),
-    F("夜明けのすべて", "三宅唱", 2024, "体と心の不調を抱えた二人が、夜明けを待つように支え合う。")
+    N("夜間飛行", "サン＝テグジュペリ", 1931, "夜空を飛ぶ郵便機と、地上で待つ人たち。"),
+    N("停電の夜に", "ジュンパ・ラヒリ", 1999, "停電のあいだだけ、夫婦がろうそくの下で打ち明け話をする。"),
+    N("ボクたちはみんな大人になれなかった", "燃え殻", 2017, "深夜に思い出す、昔の恋と90年代の東京。"),
+    N("銀河鉄道の夜", "宮沢賢治", 1934, "夜の列車で、友だちと星の間を旅する。")
   ],
   empty: [
-    F("PERFECT DAYS", "ヴィム・ヴェンダース", 2023, "何かを成し遂げなくても、一日はちゃんと美しい。"),
+    F("ストレンジャー・ザン・パラダイス", "ジム・ジャームッシュ", 1984, "退屈な若者たちが、退屈なまま旅をする。"),
+    F("オールド・ジョイ", "ケリー・ライカート", 2006, "疎遠になった友人と、森の温泉へ向かう一泊の旅。"),
+    F("ザ・ライダー", "クロエ・ジャオ", 2017, "馬に乗れなくなったロデオ乗りが、次の生き方を探す。"),
+    F("ハロルドとモード 少年は虹を渡る", "ハル・アシュビー", 1971, "死ばかり考える青年と、79歳の自由な女性。"),
     F("ストレイト・ストーリー", "デヴィッド・リンチ", 1999, "芝刈り機で兄に会いに行く、とてもゆっくりの旅。"),
-    F("ゴースト・ワールド", "テリー・ツワイゴフ", 2001, "どこにも馴染めない夏を、皮肉と一緒に過ごす。"),
-    N("ライ麦畑でつかまえて", "J・D・サリンジャー", 1951, "何もかもが嘘っぽく見える数日間の、正直な声。"),
-    N("羊と鋼の森", "宮下奈都", 2015, "やりたいことのなかった青年が、ピアノの音に出会う。")
+    N("パーク・ライフ", "吉田修一", 2002, "日比谷公園でぼんやり過ごす昼休みの、淡い出会い。"),
+    N("ストーナー", "ジョン・ウィリアムズ", 1965, "目立たない大学教師の一生。地味で、静かで、美しい。"),
+    N("西瓜糖の日々", "リチャード・ブローティガン", 1968, "西瓜糖でできた世界の、ふしぎに静かな暮らし。"),
+    N("ムーン・パレス", "ポール・オースター", 1989, "すべてを失った青年が、どん底から世界を見つけ直す。"),
+    MG("ソラニン", "浅野いにお", 2005, "会社をやめた彼女と、バンドをあきらめきれない彼。")
   ],
   joy: [
-    F("アメリ", "ジャン＝ピエール・ジュネ", 2001, "小さないたずらで、まわりの人を少しだけ幸せにする。"),
+    F("ストップ・メイキング・センス", "ジョナサン・デミ", 1984, "トーキング・ヘッズのライブ。体が勝手に動きだす。"),
+    F("音楽", "岩井澤健治", 2019, "楽器を触ったこともない不良たちが、思いつきでバンドを始める。"),
     F("シング・ストリート 未来へのうた", "ジョン・カーニー", 2016, "バンドを組めば、世界が変わる気がした頃のこと。"),
-    F("スクール・オブ・ロック", "リチャード・リンクレイター", 2003, "音楽を鳴らす楽しさが、まっすぐ伝わってくる。"),
-    F("パディントン2", "ポール・キング", 2017, "親切がめぐりめぐって返ってくる、明るい一本。"),
-    N("夜は短し歩けよ乙女", "森見登美彦", 2006, "京都の夜をどこまでも歩いていく、にぎやかな恋の話。")
+    F("ブックスマート", "オリヴィア・ワイルド", 2019, "勉強ばかりしてきた二人が、卒業前夜にはじける。"),
+    F("ONCE ダブリンの街角で", "ジョン・カーニー", 2007, "路上で歌う男と、ピアノを弾く女性の数日間。"),
+    F("四月物語", "岩井俊二", 1998, "北海道から武蔵野へ。春の新生活の、小さなときめき。"),
+    N("夜は短し歩けよ乙女", "森見登美彦", 2006, "京都の夜をどこまでも歩いていく、にぎやかな恋の話。"),
+    N("オン・ザ・ロード", "ジャック・ケルアック", 1957, "アメリカを横断する、勢いだけの旅。"),
+    N("麦ふみクーツェ", "いしいしんじ", 2002, "音楽と、ふしぎな人たちに囲まれて育つ少年の物語。"),
+    MG("BECK", "ハロルド作石", 1999, "退屈な中学生が、ギターとバンドで世界を広げていく。")
   ],
   gentle: [
-    F("となりのトトロ", "宮崎駿", 1988, "雨のバス停で待つ時間まで、やさしく描かれている。"),
+    F("横道世之介", "沖田修一", 2013, "人のいい大学生のことを、みんなが少しずつ思い出す。"),
+    F("枯れ葉", "アキ・カウリスマキ", 2023, "ヘルシンキの孤独な二人の、不器用でやさしい恋。"),
     F("リンダ リンダ リンダ", "山下敦弘", 2005, "文化祭までの数日、ブルーハーツを練習する高校生たち。"),
-    F("パターソン", "ジム・ジャームッシュ", 2016, "同じ道、同じバー、少しずつ違う詩。"),
-    N("ツバキ文具店", "小川糸", 2016, "手紙を書くように、自分の気持ちを整えていく。"),
-    N("博士の愛した数式", "小川洋子", 2003, "数字の美しさと、人を大切にするしぐさ。")
+    F("となりのトトロ", "宮崎駿", 1988, "雨のバス停で待つ時間まで、やさしく描かれている。"),
+    N("TUGUMI", "吉本ばなな", 1989, "海辺の町で過ごした、最後の夏の思い出。"),
+    N("春の庭", "柴崎友香", 2014, "古いアパートの窓から見える、気になる家の話。"),
+    N("夜想曲集", "カズオ・イシグロ", 2009, "音楽と夕暮れをめぐる、五つの短い物語。"),
+    N("博士の愛した数式", "小川洋子", 2003, "80分しか記憶がもたない博士と過ごす、静かで確かな時間。"),
+    MG("海街diary", "吉田秋生", 2006, "鎌倉の古い家で、四姉妹がゆっくり家族になっていく。"),
+    ES("センス・オブ・ワンダー", "レイチェル・カーソン", 1965, "子どもと一緒に、夜の海や森の音に耳をすます。")
   ]
 };
 const REC_LEAD = {
@@ -2506,7 +2835,7 @@ function renderRecs(cat) {
   const from = fresh.length >= 3 ? fresh : pool;
   const picks = [...from].sort(() => Math.random() - 0.5).slice(0, 3);
   recShown = picks.map(r => r.t);
-  setJa($("esc-recsLead"), `${REC_LEAD[recCat]}いまの言葉に合いそうな映画と小説を、ランダムに選びました。`);
+  setJa($("esc-recsLead"), `${REC_LEAD[recCat]}いまの言葉に合いそうな映画・小説・マンガを、ランダムに選びました。`);
   $("esc-recsList").replaceChildren(...picks.map(r => {
     const li = document.createElement("li");
     const kind = document.createElement("span"); kind.className = "kind"; kind.textContent = r.k;
@@ -2538,7 +2867,7 @@ function present(mood, note) {
   $("esc-playHint").hidden = false;
   els.title.classList.toggle("ja", hasJa(mood.title));
   if (hasJa(mood.title)) setJa(els.title, mood.title); else els.title.textContent = mood.title;
-  els.sub.textContent = mood.scene;
+  els.sub.textContent = mood.arch && ARCHES[mood.arch] ? `${ARCHES[mood.arch].label} — ${mood.scene}` : mood.scene;
   setJa(els.reflection, mood.reflection);
   els.crisis.hidden = !mood.crisis;
   els.figcap.textContent = `No.${String(piece).padStart(3, "0")} — ${TEX_LABEL[mood.texture] === "—" ? "no field" : TEX_LABEL[mood.texture]}`;
@@ -2555,7 +2884,7 @@ function renderData() {
   const m = engine.scene.mood;
   const loops = i.loops.map(x => x.toFixed(1)).join(" / ");
   els.liner.textContent = [
-    `genre: ${i.genre}`, `form: ${i.form}`, `ensemble: ${i.ensemble}`, `${i.key} — 5-limit just intonation`,
+    i.arch ? `lead: ${i.arch}` : null, `genre: ${i.genre}`, `form: ${i.form}`, `ensemble: ${i.ensemble}`, `${i.key} — 5-limit just intonation`,
     loops ? `loops ${loops} s` : null, i.beat || null,
     `IR ${i.room.toFixed(1)} s`, `tape ${i.tape}%`, `field: ${i.field}`, `breath ${i.breath.toFixed(1)}/min`,
     `arc ${i.arc}% → still`, m.lineage ? `after ${m.lineage}` : null
@@ -2625,6 +2954,7 @@ async function submitRelease() {
   setStatus(beat ? "Releasing — beat on" : "Releasing", true);
 
   const mood = localMood(text, stats, beat);
+  engine.prewarm(mood);
   // let the light spread first, then the music
   await new Promise(r => setTimeout(r, 1700));
   if (my !== ctl) return;
