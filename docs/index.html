@@ -101,6 +101,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-
 .figure { position: relative; min-height: 0; margin: 0; overflow: hidden; background: var(--paper-2); touch-action: none; }
 .crisp { display: none !important; position: absolute; left: var(--cx, 30%); top: var(--cy, 20%); width: var(--cw, 40%); height: auto; max-width: 100%; display: block; pointer-events: none; }
 #field { transition: opacity 1.2s ease; }
+#halo { position: absolute; inset: 0; width: 100%; height: 100%; display: block; mix-blend-mode: screen; opacity: 0.45; pointer-events: none; filter: blur(2px); }
+.figure.empty #halo { visibility: hidden; }
 .worryline { position: absolute; left: 10px; right: 10px; top: 70%; padding: 5px 8px; box-sizing: border-box; white-space: nowrap; overflow: hidden; pointer-events: none; color: var(--type-blue); font: 500 14px/1.5 var(--jp); background-color: var(--strip); transition: background-color 1.8s ease 1.2s; }
 .worryline span { display: inline-block; }
 .worryline i { display: inline-block; font-style: normal; transition: opacity 1.6s ease, filter 1.6s ease, transform 2.4s ease; transition-delay: calc(var(--i, 0) * 55ms); }
@@ -108,7 +110,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-
 .worryline.vanish i { opacity: 0; filter: blur(6px); transform: translateY(-12px) scale(1.15); }
 .worryline.marquee span { animation: marquee var(--dur, 20s) linear infinite; }
 @keyframes marquee { from { transform: translateX(var(--from, 300px)); } to { transform: translateX(var(--to, -600px)); } }
-.pcap { position: absolute; font: 9px/1.3 var(--mono); letter-spacing: 0.08em; color: var(--ink); pointer-events: none; white-space: nowrap; }
+.pcap { position: absolute; left: 10px; bottom: 10px; font: 9px/1.3 var(--mono); letter-spacing: 0.08em; color: #fff; mix-blend-mode: difference; pointer-events: none; white-space: nowrap; }
 .figure.need { animation: need 0.9s ease 2; }
 @keyframes need { 50% { outline: 2px solid var(--accent); outline-offset: -6px; } }
 .poster.hush #field { opacity: 0.4; }
@@ -181,6 +183,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
 .crisis .num { font-family: var(--mono); user-select: all; }
 
 #scatter { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+#fxlayer { position: fixed; inset: 0; pointer-events: none; z-index: 8; overflow: hidden; }
 #scatter .w { position: absolute; white-space: nowrap; opacity: 0; color: #fff; mix-blend-mode: difference; transition: opacity 1.2s ease, transform 1.2s ease; }
 #scatter .w.on { opacity: 0.92; }
 #scatter .w.gone { opacity: 0; transition: opacity 24s ease-in, transform 26s linear; }
@@ -251,6 +254,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
 
   <figure class="figure empty" id="figure">
     <canvas id="field" aria-hidden="true"></canvas>
+    <canvas id="halo" aria-hidden="true" hidden></canvas>
     <canvas class="crisp" id="crisp" hidden aria-hidden="true"></canvas>
     <div class="figcap" id="figcap"></div>
     <div class="vnum" id="vnum" aria-hidden="true"></div>
@@ -325,6 +329,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
   </section>
 
   <div id="scatter" aria-hidden="true"></div>
+  <div id="fxlayer" aria-hidden="true"></div>
 </div>
 
 <div class="sheet" id="sheet" hidden lang="ja">
@@ -367,6 +372,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
     <ul>
       <li>題名の上の灯りは、毎分5〜6回の呼吸のペースでふくらみ、しぼみます。心拍と呼吸が同調しやすい「共鳴周波数呼吸」の目安（約0.1Hz）です。</li>
       <li class="src">— <a href="https://pubmed.ncbi.nlm.nih.gov/28890890/" target="_blank" rel="noopener">Steffen et al. (2017) Resonance Frequency Breathing, HRV, BP and Mood</a></li>
+      <li>写真は全面に大きく置き、フィルムの粒子、うっすらとしたソフトフォーカス、ハイライトがにじむハレーション（呼吸に合わせて明滅）、長時間露光のような残像を重ねています。</li>
       <li>写真の右下の縦の数字は、曲が生まれた日付と時刻、テンポ（または呼吸数）、根音の周波数です。</li>
       <li>写真の下の帯には、その人に向けた2〜3分の文章が右端から流れ、読み終えると冒頭に戻ります。帯に触れると止まります。</li>
     </ul>
@@ -1793,7 +1799,7 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => queu
 if (window.ResizeObserver) new ResizeObserver(resize).observe(figure);
 
 const blobs = [0, 1, 2, 3, 4].map(i => ({ a: rnd(0.5, 1.3), b: rnd(0.5, 1.3), ph: rnd(0, 6.28), ph2: rnd(0, 6.28), c: i % 3 }));
-const glowEl = $("glow"), cueEl = $("cue");
+const glowEl = $("glow"), cueEl = $("cue"), haloEl = $("halo");
 let lvl = 0, lastCue = "", lastFrame = 0;
 const themeK = () => parseFloat(getComputedStyle(cssRoot()).getPropertyValue("--field-k")) || 1;
 
@@ -1828,6 +1834,7 @@ function frame(ms) {
     const b = (br.v + 1) / 2;
     glowEl.style.transform = `scale(${(0.6 + b * 0.7).toFixed(3)})`;
     glowEl.style.opacity = (0.55 + b * 0.45).toFixed(3);
+    if (photo) haloEl.style.opacity = (0.3 + b * 0.35 + lvl * 0.8).toFixed(3);
     const cue = br.rising ? "Inhale" : "Exhale";
     if (cue !== lastCue) { lastCue = cue; cueEl.textContent = cue; }
   }
@@ -1859,67 +1866,62 @@ function scatter(text) {
 let photo = null;                 // { img, stats } of the photo in the frame
 let layout = null;                // relative positions for this piece
 const cropCv = document.createElement("canvas");
-const tokens = () => { const c = getComputedStyle(cssRoot()); const g = n => c.getPropertyValue(n).trim(); return { paper: g("--paper-2"), ink: g("--ink"), blue: g("--type-blue"), dark: (parseFloat(g("--field-k")) || 1) < 1 }; };
-
-function squareColour(stats) {
-  // the most saturated band, pushed a little further; a muted photo gets the house red
-  let best = null, bs = 0;
-  for (const [r, g, b] of stats.bands) { const mx = Math.max(r, g, b), mn = Math.min(r, g, b), s = mx ? (mx - mn) / mx : 0; if (s > bs) { bs = s; best = [r, g, b]; } }
-  if (!best || bs < 0.22) return "#d8432b";
-  const m = (best[0] + best[1] + best[2]) / 3;
-  return hexOf(best.map(v => clamp(m + (v - m) * 1.9, 20, 235)));
-}
+const tokens0 = () => { const c = getComputedStyle(cssRoot()); const g = n => c.getPropertyValue(n).trim(); return { paper: g("--paper-2"), ink: g("--ink"), blue: g("--type-blue"), dark: (parseFloat(g("--field-k")) || 1) < 1 }; };
 
 function makeLayout(img, stats, fw, fh) {
-  const asp = pick([1, 0.8, 1.25, 1.5]);
-  let w = asp > 1 ? rnd(0.42, 0.52) : rnd(0.3, 0.38);
-  if (w * fw / asp > fh * 0.66) w = fh * 0.66 * asp / fw;
-  const h = w * fw / asp / fh;
-  // keep the photo clear of the numbers in the lower right
-  const l = rnd(0.06, Math.max(0.07, 0.62 - w)), t = rnd(0.14, Math.max(0.15, 0.8 - h));
-  const s = w * rnd(0.34, 0.5), sh = s * fw / fh;
-  const left = l + w > 0.5 ? true : Math.random() < 0.5, top = Math.random() < 0.4;
-  const sq = { x: clamp(left ? l - s * 0.35 : l + w - s * 0.65, 0.02, 0.98 - s), y: clamp(top ? t - sh * 0.35 : t + h - sh * 0.65, 0.04, 0.96 - sh), s };
-  const textY = rnd(0.2, 0.62);
-  const half = Math.random() < 0.5 ? { x: 0, w: 1 } : { x: rnd(0, 0.15), w: rnd(0.7, 0.95) };
-  return { l, t, w, asp, sq, sqColor: squareColour(stats), textY, half };
+  const dir = Math.random() < 0.5 ? -1 : 1;
+  return { textY: rnd(0.22, 0.6), trail: { dx: dir * rnd(0.008, 0.016), dy: rnd(-0.004, 0.004) } };
 }
 
-function crop(img, asp) {
-  const iw = img.naturalWidth, ih = img.naturalHeight;
-  let cw = iw, ch = iw / asp; if (ch > ih) { ch = ih; cw = ih * asp; }
-  cropCv.width = Math.round(Math.min(1000, cw)); cropCv.height = Math.round(cropCv.width / asp);
-  cropCv.getContext("2d").drawImage(img, (iw - cw) / 2, (ih - ch) * 0.4, cw, ch, 0, 0, cropCv.width, cropCv.height);
+// draw the photo to fill the box, cropped like object-fit: cover
+function cover(g, img, W, H, dx = 0, dy = 0) {
+  const s = Math.max(W / img.naturalWidth, H / img.naturalHeight), w = img.naturalWidth * s, h = img.naturalHeight * s;
+  g.drawImage(img, (W - w) / 2 + dx, (H - h) / 2 + dy, w, h);
+}
+// a soft copy: scaling down and back up is a cheap gaussian-like blur that works in every browser
+function softCopy(img, W, H, div) {
+  const a = document.createElement("canvas"); a.width = Math.max(2, Math.round(W / div)); a.height = Math.max(2, Math.round(H / div));
+  const g = a.getContext("2d"); g.imageSmoothingQuality = "high"; cover(g, img, a.width, a.height);
+  return a;
+}
+let grainCv = null;
+function filmGrain() {
+  if (grainCv) return grainCv;
+  grainCv = document.createElement("canvas"); grainCv.width = grainCv.height = 192;
+  const g = grainCv.getContext("2d"), id = g.createImageData(192, 192);
+  for (let i = 0; i < id.data.length; i += 4) { const v = 128 + (Math.random() + Math.random() + Math.random() - 1.5) * 120; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; }
+  g.putImageData(id, 0, 0);
+  return grainCv;
+}
+// halation: the brightest parts bleed a warm, red-orange glow, as on film
+function halation(img, W, H) {
+  const c = softCopy(img, W, H, 10), g = c.getContext("2d");
+  g.globalCompositeOperation = "multiply";
+  g.drawImage(c, 0, 0); g.drawImage(c, 0, 0);          // v^3 keeps only the highlights
+  g.fillStyle = "#ff8a4c"; g.fillRect(0, 0, c.width, c.height);
+  return c;
 }
 
-function composePoster(g, W, H, img, L, tk) {
+function composePoster(g, W, H, img, L) {
   g.save();
   g.globalCompositeOperation = "source-over"; g.globalAlpha = 1;
-  g.fillStyle = tk.paper; g.fillRect(0, 0, W, H);
-  // halftone: the whole photo as ink dots, like a newsprint reproduction
-  const hx = L.half.x * W, hw = L.half.w * W;
-  const cell = Math.max(4, Math.round(Math.min(hw, H) / 52));
-  const cols = Math.ceil(hw / cell), rows = Math.ceil(H / cell);
-  const sm = document.createElement("canvas"); sm.width = cols; sm.height = rows;
-  const sx = sm.getContext("2d", { willReadFrequently: true });
-  const s = Math.max(cols / img.naturalWidth, rows / img.naturalHeight);
-  sx.drawImage(img, (cols - img.naturalWidth * s) / 2, (rows - img.naturalHeight * s) / 2, img.naturalWidth * s, img.naturalHeight * s);
-  const d = sx.getImageData(0, 0, cols, rows).data;
-  g.fillStyle = tk.ink; g.globalAlpha = tk.dark ? 0.22 : 0.26;
-  g.beginPath();
-  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-    const i = (y * cols + x) * 4, lum = (0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2]) / 255;
-    const r = cell * 0.5 * Math.sqrt(tk.dark ? lum : 1 - lum) * 0.92;
-    if (r > 0.35) { const cx = hx + x * cell + cell / 2, cy = y * cell + cell / 2; g.moveTo(cx + r, cy); g.arc(cx, cy, r, 0, Math.PI * 2); }
-  }
-  g.fill();
-  g.globalAlpha = 1;
-  // the photo itself, untouched
-  const pw = L.w * W, ph = pw / L.asp;
-  g.drawImage(cropCv, L.l * W, L.t * H, pw, ph);
-  // a colour square laid over a corner, printed on top
-  g.globalCompositeOperation = tk.dark ? "screen" : "multiply"; g.globalAlpha = tk.dark ? 0.7 : 0.88;
-  g.fillStyle = L.sqColor; g.fillRect(L.sq.x * W, L.sq.y * H, L.sq.s * W, L.sq.s * W);
+  cover(g, img, W, H);
+  // motion trail: faint copies drifting one way, like a long exposure
+  g.globalCompositeOperation = "screen";
+  for (let k = 1; k <= 3; k++) { g.globalAlpha = 0.14 / k; cover(g, img, W, H, L.trail.dx * W * k * 2, L.trail.dy * H * k * 2); }
+  // a thin veil of soft focus over the sharp photo
+  const soft = softCopy(img, W, H, 28);
+  g.imageSmoothingQuality = "high";
+  g.globalCompositeOperation = "soft-light"; g.globalAlpha = 0.55; g.drawImage(soft, 0, 0, W, H);
+  g.globalCompositeOperation = "screen"; g.globalAlpha = 0.16; g.drawImage(soft, 0, 0, W, H);
+  // vignette
+  g.globalCompositeOperation = "multiply"; g.globalAlpha = 1;
+  const v = g.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
+  v.addColorStop(0, "rgba(255,255,255,1)"); v.addColorStop(1, "rgba(120,110,105,1)");
+  g.fillStyle = v; g.fillRect(0, 0, W, H);
+  // film grain
+  g.globalCompositeOperation = "overlay"; g.globalAlpha = 0.28;
+  g.fillStyle = g.createPattern(filmGrain(), "repeat"); g.fillRect(0, 0, W, H);
   g.restore();
 }
 
@@ -1927,7 +1929,10 @@ function renderFigure() {
   if (!photo || !layout) return;
   const r = figure.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
   field.width = Math.max(8, Math.round(r.width * dpr)); field.height = Math.max(8, Math.round(r.height * dpr));
-  composePoster(fx, field.width, field.height, photo.img, layout, tokens());
+  composePoster(fx, field.width, field.height, photo.img, layout);
+  const halo = $("halo"), h = halation(photo.img, field.width, field.height);
+  halo.width = h.width; halo.height = h.height; halo.getContext("2d").drawImage(h, 0, 0);
+  halo.hidden = false;
   placeOverlays();
 }
 let rfPending = false;
@@ -1972,15 +1977,7 @@ function fitWorry() {
   }
 }
 
-function placeOverlays() {
-  if (!layout) return;
-  const cap = $("pcap"), h = layout.w * figure.clientWidth / layout.asp / figure.clientHeight;
-  const below = layout.t + h + 0.05 < 0.9;
-  cap.style.left = `${(layout.l * 100).toFixed(1)}%`;
-  cap.style.top = below ? `${((layout.t + h) * 100 + 1.5).toFixed(1)}%` : "";
-  cap.style.bottom = below ? "" : `${((1 - layout.t) * 100 + 1.5).toFixed(1)}%`;
-  fitWorry();
-}
+function placeOverlays() { if (layout) fitWorry(); }
 const MON = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
 function captionText(born, scene) { return `${MON[born.getMonth()]}${born.getDate()} ${pad2(born.getHours())}:${pad2(born.getMinutes())} — ${scene}`; }
 
@@ -1988,7 +1985,6 @@ function setPhoto(img, stats) {
   photo = { img, stats };
   const r = figure.getBoundingClientRect();
   layout = makeLayout(img, stats, r.width || 360, r.height || 260);
-  crop(img, layout.asp);
   figure.classList.remove("empty", "need");
   renderFigure();
 }
@@ -2092,7 +2088,8 @@ function makePainter(m) {
   const paper = css.getPropertyValue("--paper").trim(), ink = css.getPropertyValue("--ink").trim(), ink2 = css.getPropertyValue("--ink-2").trim();
   const gc = css.getPropertyValue("--glow-core").trim(), gh = css.getPropertyValue("--glow-halo").trim();
   const fc = document.createElement("canvas"); fc.width = 700; fc.height = 590;
-  if (photo && layout) composePoster(fc.getContext("2d"), 700, 590, photo.img, layout, tokens());
+  if (photo && layout) composePoster(fc.getContext("2d"), 700, 590, photo.img, layout);
+  const haloCv = photo ? halation(photo.img, 700, 590) : null;
   const blue = getComputedStyle(cssRoot()).getPropertyValue("--type-blue").trim(), strip = getComputedStyle(cssRoot()).getPropertyValue("--strip").trim(), worry = m.userText || "", cap = captionText(m.born || new Date(), m.scene);
   const info = engine.info(), born = m.born || new Date(), nums = numberSet(m, info, born);
   const titleJa = hasJa(m.title), liner = $("liner").textContent.toUpperCase(), pal = palTo.map(c => c.slice()), k = themeK();
@@ -2103,12 +2100,12 @@ function makePainter(m) {
     x.fillStyle = paper; x.fillRect(0, 0, VW, VH);
     const ix = 40, iy = 40, iw = 700, ih = 590;
     x.imageSmoothingQuality = "high"; x.drawImage(fc, ix, iy, iw, ih);
+    if (haloCv) { x.save(); x.globalCompositeOperation = "screen"; x.globalAlpha = 0.3 + (brV + 1) / 2 * 0.35; x.drawImage(haloCv, ix, iy, iw, ih); x.restore(); }
     if (layout) {
       // caption and the words, in one line
       x.save(); x.beginPath(); x.rect(ix, iy, iw, ih); x.clip();
-      const ph = layout.w * iw / layout.asp, below = layout.t + ph / ih + 0.05 < 0.9;
-      x.fillStyle = ink; x.font = "11px 'IBM Plex Mono', monospace"; x.textBaseline = below ? "top" : "bottom"; x.textAlign = "left";
-      x.fillText(cap, ix + layout.l * iw, below ? iy + layout.t * ih + ph + 10 : iy + layout.t * ih - 10);
+      x.save(); x.globalCompositeOperation = "difference"; x.fillStyle = "#fff"; x.font = "11px 'IBM Plex Mono', monospace"; x.textBaseline = "bottom"; x.textAlign = "left";
+      x.fillText(cap, ix + 16, iy + ih - 14); x.restore();
       const wa = sec < 4 ? 1 : Math.max(0, 1 - (sec - 4) / 2.2);
       if (worry && wa > 0) {
         x.globalAlpha = 0.9 * wa; x.fillStyle = strip; x.fillRect(ix + 12, iy + layout.textY * ih - 4, iw - 24, 36);
@@ -2137,7 +2134,16 @@ function makePainter(m) {
     x.restore();
     const cx = 780, cw = 460, mid = cx + cw / 2;
     x.textBaseline = "alphabetic"; x.textAlign = "left"; x.fillStyle = ink;
-    x.font = "800 15px Archivo, sans-serif"; x.fillText("ESCAPISM 現", cx, 64);
+    x.font = "800 15px Archivo, sans-serif"; x.fillText("ESCAPISM", cx, 64);
+    // 現現現, each one wavering on its own, as in the header
+    let gx = cx + x.measureText("ESCAPISM ").width + 2;
+    x.font = "700 17px 'Zen Kaku Gothic New', sans-serif";
+    [[1, 0, 6.5], [0.8, 2.1, 7.3], [0.6, 4.4, 5.9]].forEach(([a, ph, per]) => {
+      const w = Math.sin((sec + ph) / per * Math.PI * 2);
+      x.save(); x.globalAlpha = a * (0.75 + 0.25 * w); x.translate(gx, 64 + w * 0.8); x.transform(1, 0, -0.06 * w, 1, 0, 0);
+      x.fillText("現", 0, 0); x.globalAlpha *= 0.35; x.fillText("現", 0.8 * w, -0.6); x.restore();
+      gx += x.measureText("現").width + 1;
+    });
     x.font = "11px 'IBM Plex Mono', monospace"; x.textAlign = "right"; x.fillStyle = ink2;
     x.fillText(`NO. ${String(piece).padStart(3, "0")} · ${born.getFullYear()}.${pad2(born.getMonth() + 1)}.${pad2(born.getDate())} ${pad2(born.getHours())}:${pad2(born.getMinutes())}`, cx + cw, 64);
     x.textAlign = "center";
@@ -2403,10 +2409,11 @@ async function stagePhoto(file) {
 }
 
 function bloom() {
-  const poster = $("poster"), btn = $("send").getBoundingClientRect(), r = poster.getBoundingClientRect(), el = document.createElement("span");
+  const btn = $("send").getBoundingClientRect(), el = document.createElement("span");
   el.className = "bloom";
-  el.style.left = `${btn.left + btn.width / 2 - r.left}px`; el.style.top = `${btn.top + btn.height / 2 - r.top + poster.scrollTop}px`;
-  $("scatter").append(el); setTimeout(() => el.remove(), 2400);
+  $("fxlayer").append(el);
+  el.style.margin = "0"; el.style.left = `${btn.left + btn.width / 2 - el.offsetWidth / 2}px`; el.style.top = `${btn.top + btn.height / 2 - el.offsetHeight / 2}px`;
+  setTimeout(() => el.remove(), 2400);
 }
 
 async function submitRelease() {
@@ -2517,10 +2524,11 @@ const posterEl = $("poster");
 const INTERACTIVE = "button, a, input, textarea, select, label, .band, .crisis";
 let press = null, lastTap = 0;
 function ripple(x, y, kind) {
-  const r = posterEl.getBoundingClientRect(), el = document.createElement("span");
+  const el = document.createElement("span");
   el.className = "ripple " + (kind || "");
-  el.style.left = `${x - r.left}px`; el.style.top = `${y - r.top + posterEl.scrollTop}px`;
-  $("scatter").append(el); setTimeout(() => el.remove(), 2800);
+  $("fxlayer").append(el);
+  el.style.margin = "0"; el.style.left = `${x - el.offsetWidth / 2}px`; el.style.top = `${y - el.offsetHeight / 2}px`;
+  setTimeout(() => el.remove(), 2800);
 }
 posterEl.addEventListener("pointerdown", e => {
   if (e.target.closest(INTERACTIVE) || state !== "playing" || !engine.scene) return;
