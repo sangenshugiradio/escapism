@@ -19,6 +19,10 @@ script = re.search(r"<script>(.*?)</script>", page, re.S).group(1)
 fonts = re.search(r'<link rel="stylesheet" href="https://fonts.googleapis.com[^>]*>', page).group(0)
 body = page[page.index("</style>") + len("</style>"):page.index("<script>")]
 
+# ---- the podcast artwork is served next to the GitHub Pages build ----
+SITE = "https://sangenshugiradio.github.io/escapism/"
+body = body.replace('src="sangenshugi-radio.jpg"', f'src="{SITE}sangenshugi-radio.jpg"')
+
 # ---- ids get a prefix everywhere they are referenced ----
 ids = sorted(set(re.findall(r'\bid="([^"]+)"', body)), key=len, reverse=True)
 for i in ids:
@@ -91,7 +95,7 @@ scoped = scope(style)
 embed_css = f"""
 {ROOT} {{ position: relative; isolation: isolate; padding: 0; overflow: hidden; text-align: left; }}
 {ROOT} *, {ROOT} *::before, {ROOT} *::after {{ box-sizing: border-box; }}
-{ROOT} :where(h1, h2, p, ul, li, figure, form) {{ margin: 0; padding: 0; border: 0; background: none; color: inherit; font-size: inherit; line-height: inherit; text-transform: none; }}
+{ROOT} :where(h1, h2, h3, p, ul, ol, li, figure, form) {{ margin: 0; padding: 0; border: 0; background: none; color: inherit; font-size: inherit; line-height: inherit; text-transform: none; }}
 {ROOT} :where(button, textarea, select, input, label) {{ padding: 0; border: 0; background: none; font: inherit; color: inherit; letter-spacing: inherit; text-transform: none; text-shadow: none; box-shadow: none; border-radius: 0; margin: 0; min-height: 0; min-width: 0; width: auto; max-width: none; }}
 {ROOT} .poster {{ height: min(100svh, 900px); min-height: 680px; }}
 @media (min-width: 700px) {{ {ROOT} .poster {{ height: min(calc(100svh - 48px), 900px); margin: 24px auto; }} }}

@@ -119,6 +119,27 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-
 .ripple { position: absolute; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, var(--glow-core), var(--glow-halo) 45%, transparent 100%); filter: blur(3px); animation: ripple 1.4s ease-out forwards; }
 .ripple.hold { animation-duration: 2.6s; }
 .ripple.glitch { background: radial-gradient(closest-side, var(--accent), transparent); animation-duration: 0.6s; }
+.ripple.trail { width: 34px; height: 34px; margin: -17px 0 0 -17px; filter: blur(2px); animation-duration: 0.9s; }
+/* what a gesture just did: a small label at the finger */
+.tag { position: absolute; transform: translate(-50%, -150%); white-space: nowrap; font: 600 9.5px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper); background: var(--ink); padding: 4px 6px; pointer-events: none; animation: tag 1.1s ease-out forwards; }
+.tag.glitch { background: var(--accent); color: #fff; animation-duration: 0.8s; }
+@keyframes tag { 0% { opacity: 0; transform: translate(-50%, -110%); } 15% { opacity: 1; transform: translate(-50%, -150%); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -190%); } }
+/* double tap: the whole poster tears for a moment */
+.slices { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: difference; }
+.slices i { position: absolute; left: 0; right: 0; background: #fff; animation: slice 0.5s steps(4) forwards; }
+@keyframes slice { 0% { opacity: 0.9; } 50% { opacity: 0.6; transform: translateX(var(--dx, 12px)); } 100% { opacity: 0; transform: translateX(calc(var(--dx, 12px) * -1)); } }
+/* not on .poster itself: a transform there would unpin the fixed light layer inside it */
+.poster.tear > :not(#fxlayer):not(#scatter):not(.figure) { animation: tear 0.45s steps(5); }
+@keyframes tear { 20% { transform: translate(-5px, 1px); filter: hue-rotate(60deg) saturate(2.2); } 45% { transform: translate(4px, -2px); filter: invert(0.12); } 70% { transform: translate(-2px, 0); } }
+/* sweeping the photo: a crosshair and a readout follow the finger, the picture shifts colour */
+.scope { position: absolute; inset: 0; pointer-events: none; z-index: 4; opacity: 0; transition: opacity 0.3s ease; }
+.figure.sweeping .scope { opacity: 1; }
+.scope::before, .scope::after { content: ""; position: absolute; background: var(--accent); opacity: 0.75; }
+.scope::before { left: var(--sx, 50%); top: 0; bottom: 0; width: 1px; }
+.scope::after { top: var(--sy, 50%); left: 0; right: 0; height: 1px; }
+.scope b { position: absolute; left: var(--sx, 50%); top: var(--sy, 50%); transform: translate(8px, -130%); font: 600 9px/1.3 var(--mono); letter-spacing: 0.12em; color: #fff; background: rgba(0, 0, 0, 0.55); padding: 3px 5px; white-space: nowrap; }
+.scope b.flip { transform: translate(calc(-100% - 8px), -130%); }
+.figure.sweeping #field { filter: hue-rotate(var(--hue, 0deg)) saturate(1.25) blur(var(--smear, 0px)); transition: none; }
 @keyframes ripple { from { transform: scale(0.2); opacity: 0.9; } to { transform: scale(1.5); opacity: 0; } }
 #field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .figure.empty #field, .figure.empty .vnum, .figure.empty .figcap, .figure.empty .change { visibility: hidden; }
@@ -218,6 +239,31 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
 .transport .tool { padding: 5px 8px; }
 .note { font-size: 10.5px; color: var(--ink-2); margin: 0; line-height: 1.6; }
 
+/* works for this feeling, and the podcast at the very bottom */
+.sechead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-top: 1px solid var(--ink); padding-top: 8px; font: 500 9.5px/1.4 var(--grotesk); letter-spacing: 0.26em; text-transform: uppercase; }
+.sechead .linkbtn { font: 9.5px var(--mono); letter-spacing: 0.14em; }
+.recs { display: grid; gap: 8px; padding-top: 18px; }
+.recs .lead { margin: 0; font-size: 12px; color: var(--ink-2); line-height: 1.7; }
+.recslist { list-style: none; margin: 0; padding: 0; display: grid; }
+.recslist li { display: grid; grid-template-columns: 4.6em minmax(0, 1fr); gap: 2px 10px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.recslist .kind { grid-row: span 3; font: 600 8.5px/1.6 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); padding-top: 3px; }
+.recslist .kind span { display: block; font-weight: 400; }
+.recslist b { font: 700 15px/1.45 var(--jp); letter-spacing: 0.04em; }
+.recslist .by { font-size: 11.5px; color: var(--ink-2); }
+.recslist .why { font-size: 12.5px; line-height: 1.75; margin: 2px 0 0; }
+.radio { display: grid; gap: 10px; padding-top: 28px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+.radiobody { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 14px; align-items: start; }
+.radioart { display: block; line-height: 0; }
+.radioart img { width: 100%; height: auto; display: block; }
+.radiotxt { display: grid; gap: 6px; align-content: start; }
+.radiotxt h3 { margin: 0; font: 700 19px/1.3 var(--jp); letter-spacing: 0.06em; }
+.radiotxt .tagline { font: 600 9px/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }
+.radiotxt p { margin: 0; font-size: 12px; line-height: 1.8; }
+.listen { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.listen a { color: var(--ink); text-decoration: none; border: 1px solid var(--ink); padding: 5px 8px; font: 600 9.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.listen a:first-child { background: var(--ink); color: var(--paper); }
+@media (max-width: 380px) { .radiobody { grid-template-columns: minmax(0, 1fr); } .radioart { max-width: 260px; } }
+
 .sheet { position: fixed; inset: 0; z-index: 20; background: rgba(0, 0, 0, 0.55); display: grid; place-items: end center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .sheet article { width: 100%; max-width: 560px; max-height: 86%; overflow-y: auto; box-sizing: border-box; background: var(--paper); color: var(--ink); padding: 20px 20px calc(28px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ink); }
 .sheet h3 { font: 800 22px/1.1 var(--grotesk); text-transform: uppercase; margin: 0; }
@@ -260,6 +306,7 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
     <div class="vnum" id="vnum" aria-hidden="true"></div>
     <div class="pcap" id="pcap" aria-hidden="true"></div>
     <div class="worryline" id="worryline" hidden><span></span></div>
+    <div class="scope" id="scope" aria-hidden="true"><b id="scopeRead"></b></div>
     <label class="drop" for="pick">
       <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="12"/><path d="M17 8v18M8 17h18"/></svg>
       <span class="l1 ja">目の前の景色を、ここに</span>
@@ -326,6 +373,30 @@ h2#title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform:
     </div>
     <p class="note ja" id="playHint" hidden>空いているところをタップすると音が鳴ります。ダブルタップでグリッチ、長押しで音が引き、写真をなぞるとフィルターとエコー、上下にはじくと転調します。</p>
     <p class="note ja" id="privacy">書いた言葉と写真は、この端末の中だけで使われます。どこにも送られず、保存もされません。</p>
+  </section>
+
+  <section class="recs" id="recs" hidden aria-labelledby="recsHead">
+    <div class="sechead"><span id="recsHead">For this feeling</span><button class="linkbtn" id="recsMore" type="button">Shuffle ↻</button></div>
+    <p class="lead ja" id="recsLead"></p>
+    <ol class="recslist" id="recsList"></ol>
+  </section>
+
+  <section class="radio" aria-labelledby="radioHead">
+    <div class="sechead"><span>Podcast</span><span>毎週木曜 20:00</span></div>
+    <div class="radiobody">
+      <a class="radioart" href="https://listen.style/p/sangenshugi" target="_blank" rel="noopener"><img src="sangenshugi-radio.jpg" alt="三現主義ラジオのアートワーク。青地に白抜きで「現場 現物 現実逃避」" width="800" height="800" loading="lazy" decoding="async"></a>
+      <div class="radiotxt ja">
+        <span class="tagline">The scene. The substance. Escapism.</span>
+        <h3 id="radioHead">三現主義ラジオ</h3>
+        <p>現場・現物・現実逃避。音楽や映画の話が、いつのまにか人生の話になっている。渋谷・円山町から届く、バンドマン2人のビデオポッドキャスト。</p>
+        <div class="listen">
+          <a href="https://www.youtube.com/@Sangenshugi_radio" target="_blank" rel="noopener">YouTube</a>
+          <a href="https://open.spotify.com/show/2c0bC5o7lLPCMYSbKafk2o" target="_blank" rel="noopener">Spotify</a>
+          <a href="https://podcasts.apple.com/jp/podcast/id1878945126" target="_blank" rel="noopener">Apple</a>
+          <a href="https://listen.style/p/sangenshugi" target="_blank" rel="noopener">LISTEN</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <div id="scatter" aria-hidden="true"></div>
@@ -2339,6 +2410,100 @@ $("modeAmbient").addEventListener("click", () => { engine.ensure(); setMode(fals
 $("modeBeat").addEventListener("click", () => { engine.ensure(); setMode(true, true); });
 setMode(beatMode, false);
 
+/* ---------- works for this feeling: three at random, from the words' category ---------- */
+const F = (t, by, y, why) => ({ k: "Film", t, by, y, why }), N = (t, by, y, why) => ({ k: "Novel", t, by, y, why });
+const RECS = {
+  anxious: [
+    F("リトル・ミス・サンシャイン", "ジョナサン・デイトン、ヴァレリー・ファリス", 2006, "うまくいかない家族の、うまくいかない旅。失敗してもいいと思えてくる。"),
+    F("LIFE!", "ベン・スティラー", 2013, "空想ばかりしていた人が、一歩だけ外へ出る話。"),
+    N("夜のピクニック", "恩田陸", 2004, "ただ夜通し歩くだけの一日に、言えなかったことがほどけていく。"),
+    N("博士の愛した数式", "小川洋子", 2003, "80分しか記憶がもたない博士と過ごす、静かで確かな時間。"),
+    F("セッション", "デイミアン・チャゼル", 2014, "本番の恐怖を、そのまま音の熱に変えてしまう映画。")
+  ],
+  tired: [
+    F("PERFECT DAYS", "ヴィム・ヴェンダース", 2023, "同じ毎日の中の、少しずつ違う木もれ日。"),
+    F("パターソン", "ジム・ジャームッシュ", 2016, "バスの運転手が詩を書く一週間。何も起きないことのやさしさ。"),
+    F("リトル・フォレスト 夏・秋", "森淳一", 2014, "畑と台所だけの日々。食べて眠ることを思い出させてくれる。"),
+    N("ツバキ文具店", "小川糸", 2016, "鎌倉の代書屋で、誰かの言葉をゆっくり書く。"),
+    F("かもめ食堂", "荻上直子", 2006, "ヘルシンキの小さな食堂。急がなくていい場所がある。")
+  ],
+  sad: [
+    N("キッチン", "吉本ばなな", 1988, "大切な人を失ったあと、台所の明かりの下でまた眠れるようになるまで。"),
+    F("アフターサン", "シャーロット・ウェルズ", 2022, "父と過ごした夏休みのビデオ。あとから届く感情の映画。"),
+    F("ドライブ・マイ・カー", "濱口竜介", 2021, "言えなかった悲しみを、車の中で少しずつ言葉にしていく。"),
+    F("マンチェスター・バイ・ザ・シー", "ケネス・ロナーガン", 2016, "乗り越えられない悲しみを、乗り越えないまま生きる話。"),
+    N("西の魔女が死んだ", "梨木香歩", 1994, "学校に行けなくなった少女と祖母の、森の中のひと夏。")
+  ],
+  angry: [
+    F("スリー・ビルボード", "マーティン・マクドナー", 2017, "怒りの行き先を、最後まで見届ける映画。"),
+    F("マッドマックス 怒りのデス・ロード", "ジョージ・ミラー", 2015, "2時間ずっとアクセル全開。熱を外に出しきれる。"),
+    F("ロッキー", "ジョン・G・アヴィルドセン", 1976, "勝つためではなく、最後まで立っているために戦う。"),
+    N("蹴りたい背中", "綿矢りさ", 2003, "うまく言えない苛立ちを、そのままの形で書いた小説。"),
+    F("セッション", "デイミアン・チャゼル", 2014, "理不尽への怒りが、最後にドラムの音になる。")
+  ],
+  overthink: [
+    F("エブリシング・エブリウェア・オール・アット・ワンス", "ダニエルズ", 2022, "無数の可能性に迷った末に、目の前の人を選ぶ話。"),
+    F("フランシス・ハ", "ノア・バームバック", 2012, "思うように進まない27歳の、軽やかな足取り。"),
+    F("わたしは最悪。", "ヨアキム・トリアー", 2021, "決められないまま揺れる日々を、そのまま肯定する。"),
+    N("コンビニ人間", "村田沙耶香", 2016, "「普通」とは何かを、まっすぐな目で問い直す。"),
+    N("世界の終りとハードボイルド・ワンダーランド", "村上春樹", 1985, "頭の中の二つの世界を行き来する、長い考えごとの物語。")
+  ],
+  sleepless: [
+    F("ロスト・イン・トランスレーション", "ソフィア・コッポラ", 2003, "眠れない東京の夜に出会った二人。"),
+    F("恋する惑星", "ウォン・カーウァイ", 1994, "夜の香港と、何度もかかる「夢のカリフォルニア」。"),
+    F("ナイト・オン・ザ・プラネット", "ジム・ジャームッシュ", 1991, "同じ夜、世界の五つの街のタクシーで起きること。"),
+    N("アフターダーク", "村上春樹", 2004, "深夜から夜明けまでの、ひと晩だけの物語。"),
+    F("夜明けのすべて", "三宅唱", 2024, "体と心の不調を抱えた二人が、夜明けを待つように支え合う。")
+  ],
+  empty: [
+    F("PERFECT DAYS", "ヴィム・ヴェンダース", 2023, "何かを成し遂げなくても、一日はちゃんと美しい。"),
+    F("ストレイト・ストーリー", "デヴィッド・リンチ", 1999, "芝刈り機で兄に会いに行く、とてもゆっくりの旅。"),
+    F("ゴースト・ワールド", "テリー・ツワイゴフ", 2001, "どこにも馴染めない夏を、皮肉と一緒に過ごす。"),
+    N("ライ麦畑でつかまえて", "J・D・サリンジャー", 1951, "何もかもが嘘っぽく見える数日間の、正直な声。"),
+    N("羊と鋼の森", "宮下奈都", 2015, "やりたいことのなかった青年が、ピアノの音に出会う。")
+  ],
+  joy: [
+    F("アメリ", "ジャン＝ピエール・ジュネ", 2001, "小さないたずらで、まわりの人を少しだけ幸せにする。"),
+    F("シング・ストリート 未来へのうた", "ジョン・カーニー", 2016, "バンドを組めば、世界が変わる気がした頃のこと。"),
+    F("スクール・オブ・ロック", "リチャード・リンクレイター", 2003, "音楽を鳴らす楽しさが、まっすぐ伝わってくる。"),
+    F("パディントン2", "ポール・キング", 2017, "親切がめぐりめぐって返ってくる、明るい一本。"),
+    N("夜は短し歩けよ乙女", "森見登美彦", 2006, "京都の夜をどこまでも歩いていく、にぎやかな恋の話。")
+  ],
+  gentle: [
+    F("となりのトトロ", "宮崎駿", 1988, "雨のバス停で待つ時間まで、やさしく描かれている。"),
+    F("リンダ リンダ リンダ", "山下敦弘", 2005, "文化祭までの数日、ブルーハーツを練習する高校生たち。"),
+    F("パターソン", "ジム・ジャームッシュ", 2016, "同じ道、同じバー、少しずつ違う詩。"),
+    N("ツバキ文具店", "小川糸", 2016, "手紙を書くように、自分の気持ちを整えていく。"),
+    N("博士の愛した数式", "小川洋子", 2003, "数字の美しさと、人を大切にするしぐさ。")
+  ]
+};
+const REC_LEAD = {
+  anxious: "先のことが気になるときに。", tired: "何もしなくていい時間に。", sad: "さみしさと一緒にいられる作品を。",
+  angry: "その熱を、どこかに流せる作品を。", overthink: "考えがめぐるときに。", sleepless: "眠れない夜に。",
+  empty: "何も感じない日に。", joy: "いい気分のまま、もう少し。", gentle: "いまの気持ちのそばに。"
+};
+let recCat = "gentle", recShown = [];
+function renderRecs(cat) {
+  recCat = RECS[cat] ? cat : "gentle";
+  const pool = RECS[recCat], fresh = pool.filter(r => !recShown.includes(r.t));
+  const from = fresh.length >= 3 ? fresh : pool;
+  const picks = [...from].sort(() => Math.random() - 0.5).slice(0, 3);
+  recShown = picks.map(r => r.t);
+  setJa($("recsLead"), `${REC_LEAD[recCat]}いまの言葉に合いそうな映画と小説を、ランダムに選びました。`);
+  $("recsList").replaceChildren(...picks.map(r => {
+    const li = document.createElement("li");
+    const kind = document.createElement("span"); kind.className = "kind"; kind.textContent = r.k;
+    const y = document.createElement("span"); y.textContent = r.y; kind.append(y);
+    const t = document.createElement("b"); t.textContent = `『${r.t}』`;
+    const by = document.createElement("span"); by.className = "by"; by.textContent = r.k === "Film" ? `監督 ${r.by}` : r.by;
+    const why = document.createElement("p"); why.className = "why ja"; setJa(why, r.why);
+    li.append(kind, t, by, why);
+    return li;
+  }));
+  $("recs").hidden = false;
+}
+$("recsMore").addEventListener("click", () => renderRecs(recCat));
+
 function setStatus(text, live) { els.status.textContent = text; els.status.classList.toggle("live", !!live); }
 function onAudioStuck() { setStatus("画面をタップすると音が戻ります", true); }
 
@@ -2365,6 +2530,7 @@ function present(mood, note) {
   setStatus(note, true);
   renderData();
   startReading(mood);
+  renderRecs(mood.cat);
 }
 
 function renderData() {
@@ -2479,6 +2645,18 @@ void hideCrisp;
 $("composer").addEventListener("submit", e => { e.preventDefault(); submitRelease(); });
 $("worry").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submitRelease(); } });
 $("worry").addEventListener("input", e => { if (e.target.value.trim()) e.target.classList.remove("need"); });
+// phones: lift the composer above the keyboard instead of leaving it underneath
+function revealComposer() {
+  const box = $("composer"), vv = window.visualViewport;
+  const vh = vv ? vv.height : innerHeight, vtop = vv ? vv.offsetTop : 0;
+  const r = box.getBoundingClientRect(), top = r.top - vtop;
+  const want = clamp(vh - r.height - 20, 12, Math.max(12, vh * 0.42));
+  if (top + r.height > vh - 12 || top < 8) posterEl.scrollBy({ top: top - want, behavior: "smooth" });
+}
+let revealTimer = 0;
+const revealSoon = delay => setTimeout(() => { if (document.activeElement === $("worry")) revealComposer(); }, delay);
+$("worry").addEventListener("focus", () => { revealSoon(80); revealSoon(450); });   // the keyboard takes a moment to rise
+if (window.visualViewport) visualViewport.addEventListener("resize", () => { clearTimeout(revealTimer); revealTimer = revealSoon(60); });
 $("pick").addEventListener("change", () => { const input = $("pick"), f = input.files && input.files[0]; input.value = ""; if (f) stagePhoto(f); });
 figure.addEventListener("dragover", e => { e.preventDefault(); figure.classList.add("drag"); });
 figure.addEventListener("dragleave", () => figure.classList.remove("drag"));
@@ -2521,8 +2699,9 @@ document.addEventListener("click", keepAwake, { once: true });
 
 /* ---------- play: touch the empty parts of the poster ---------- */
 const posterEl = $("poster");
-const INTERACTIVE = "button, a, input, textarea, select, label, .band, .crisis";
-let press = null, lastTap = 0;
+const INTERACTIVE = "button, a, input, textarea, select, label, .band, .crisis, .recs, .radio";
+let press = null, lastTap = null;
+const DOUBLE_MS = 400, DOUBLE_PX = 60;
 function ripple(x, y, kind) {
   const el = document.createElement("span");
   el.className = "ripple " + (kind || "");
@@ -2530,35 +2709,70 @@ function ripple(x, y, kind) {
   el.style.margin = "0"; el.style.left = `${x - el.offsetWidth / 2}px`; el.style.top = `${y - el.offsetHeight / 2}px`;
   setTimeout(() => el.remove(), 2800);
 }
+function tag(x, y, text, kind) {
+  const el = document.createElement("span");
+  el.className = "tag " + (kind || ""); el.textContent = text;
+  el.style.left = `${clamp(x, 60, innerWidth - 60)}px`; el.style.top = `${Math.max(40, y)}px`;
+  $("fxlayer").append(el);
+  setTimeout(() => el.remove(), 1200);
+}
+function tear(x, y) {
+  engine.glitch();
+  ripple(x, y, "glitch"); tag(x, y, "Glitch", "glitch");
+  const sl = document.createElement("div"); sl.className = "slices";
+  for (let k = 0; k < 7; k++) {
+    const i = document.createElement("i");
+    i.style.top = `${rnd(0, 96).toFixed(1)}%`; i.style.height = `${rnd(2, 14).toFixed(0)}px`;
+    i.style.setProperty("--dx", `${rnd(-28, 28).toFixed(0)}px`); i.style.animationDelay = `${(k * 35)}ms`;
+    sl.append(i);
+  }
+  $("fxlayer").append(sl); setTimeout(() => sl.remove(), 900);
+  for (const el of [posterEl, figure]) { const c = el === figure ? "jolt" : "tear"; el.classList.remove(c); void el.offsetWidth; el.classList.add(c); }
+  if (navigator.vibrate) try { navigator.vibrate([12, 30, 12]); } catch (err) {}
+}
+// sweeping the photo: crosshair, readout and colour follow the finger, with a fading trail
+let lastTrail = 0;
+function showSweep(xr, yr, x, y) {
+  const hz = 220 * Math.pow(2, xr * 6.2), echo = 0.25 + (1 - yr) * 0.75;
+  figure.classList.add("sweeping");
+  figure.style.setProperty("--sx", `${(xr * 100).toFixed(1)}%`); figure.style.setProperty("--sy", `${(yr * 100).toFixed(1)}%`);
+  figure.style.setProperty("--hue", `${((xr - 0.5) * 120).toFixed(0)}deg`); figure.style.setProperty("--smear", `${((1 - yr) * 2.5).toFixed(1)}px`);
+  const read = $("scopeRead");
+  read.textContent = `Filter ${hz < 1000 ? Math.round(hz) : (hz / 1000).toFixed(1) + "k"}Hz · Echo ${Math.round(echo * 100)}%`;
+  read.classList.toggle("flip", xr > 0.55);
+  const now = performance.now(); if (now - lastTrail > 45) { lastTrail = now; ripple(x, y, "trail"); }
+}
+function endSweep() { figure.classList.remove("sweeping"); }
 posterEl.addEventListener("pointerdown", e => {
   if (e.target.closest(INTERACTIVE) || state !== "playing" || !engine.scene) return;
   const onFig = !!e.target.closest(".figure");
   press = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), onFig, moved: false, held: false, swept: false };
-  press.timer = setTimeout(() => { if (press && !press.moved) { press.held = true; engine.hush(true); posterEl.classList.add("hush"); ripple(press.x, press.y, "hold"); setStatus("Hush — release to return", true); } }, 420);
+  press.timer = setTimeout(() => { if (press && !press.moved) { press.held = true; engine.hush(true); posterEl.classList.add("hush"); ripple(press.x, press.y, "hold"); tag(press.x, press.y, "Hush"); setStatus("Hush — release to return", true); } }, 420);
   if (onFig) { try { figure.setPointerCapture(e.pointerId); } catch (err) {} }
 });
 document.addEventListener("pointermove", e => {
   if (!press || e.pointerId !== press.id) return;
   if (!press.moved && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) { press.moved = true; clearTimeout(press.timer); }
   if (press.moved && press.onFig && !press.held) {
-    const r = figure.getBoundingClientRect();
-    engine.sweep(clamp((e.clientX - r.left) / r.width), clamp((e.clientY - r.top) / r.height)); press.swept = true;
+    const r = figure.getBoundingClientRect(), xr = clamp((e.clientX - r.left) / r.width), yr = clamp((e.clientY - r.top) / r.height);
+    engine.sweep(xr, yr); showSweep(xr, yr, e.clientX, e.clientY); press.swept = true;
   }
 });
 const endPress = e => {
   if (!press || e.pointerId !== press.id) return;
-  clearTimeout(press.timer);
+  clearTimeout(press.timer); endSweep();
   const dt = performance.now() - press.t, dx = e.clientX - press.x, dy = e.clientY - press.y;
   if (press.held) { engine.hush(false); posterEl.classList.remove("hush"); setStatus("Now playing", true); }
   else if (press.onFig && press.moved && dt < 320 && Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx) * 1.5) {
     engine.release(); const root = engine.transpose(dy < 0 ? 1 : -1);
-    if (root) { setStatus(`Key → ${root} ${MODE_LABEL[engine.scene.mood.mode]}`, true); els.vnum.dataset.sig = ""; renderData(); }
+    if (root) { setStatus(`Key → ${root} ${MODE_LABEL[engine.scene.mood.mode]}`, true); tag(e.clientX, e.clientY, `${dy < 0 ? "↑" : "↓"} Key ${root}`); els.vnum.dataset.sig = ""; renderData(); }
   }
   else if (press.swept) engine.release();
   else if (!press.moved && e.type === "pointerup") {
+    // a second tap close in time and place is a double tap, whatever the first one played
     const now = performance.now();
-    if (now - lastTap < 320) { engine.glitch(); ripple(press.x, press.y, "glitch"); figure.classList.remove("jolt"); void figure.offsetWidth; figure.classList.add("jolt"); lastTap = 0; }
-    else { lastTap = now; const r = posterEl.getBoundingClientRect(); engine.tapNote((press.x - r.left) / r.width, (press.y - r.top) / r.height); ripple(press.x, press.y, "note"); }
+    if (lastTap && now - lastTap.t < DOUBLE_MS && Math.hypot(press.x - lastTap.x, press.y - lastTap.y) < DOUBLE_PX) { tear(press.x, press.y); lastTap = null; }
+    else { lastTap = { t: now, x: press.x, y: press.y }; const r = posterEl.getBoundingClientRect(); engine.tapNote((press.x - r.left) / r.width, (press.y - r.top) / r.height); ripple(press.x, press.y, "note"); }
   }
   press = null;
 };
