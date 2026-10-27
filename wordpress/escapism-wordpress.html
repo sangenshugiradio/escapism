@@ -1,0 +1,2557 @@
+<!-- ESCAPISM 現現現 — paste into a WordPress "Custom HTML" block -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Cormorant+Garamond:wght@400;500&family=IBM+Plex+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: an art poster. Header strip with the sound switch, an image frame (empty until you give it a view), a reading band that never stops, a centred plate, and the composer as the footer strip. */
+#escapism {
+  --paper: #ecebe6;
+  --paper-2: #e2e1db;
+  --ink: #151515;
+  --ink-2: #5f5e59;
+  --rule: rgba(21, 21, 21, 0.2);
+  --accent: #e5462a;
+  --type-blue: #2337d6;
+  --strip: rgba(236, 235, 230, 0.9);
+  --bloom-core: rgba(255, 248, 232, 0.95);
+  --bloom-halo: rgba(255, 220, 178, 0.55);
+  --glow-core: rgba(255, 168, 86, 1);
+  --glow-halo: rgba(238, 104, 56, 0.55);
+  --surround: #0b0b0b;
+  --field-k: 1;
+  --grotesk: "Archivo", "Zen Kaku Gothic New", "Helvetica Neue", Arial, sans-serif;
+  --jp: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  --serif: "Cormorant Garamond", "Shippori Mincho", "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+#escapism {
+    --paper: #131414; --paper-2: #1b1c1c; --ink: #e8e7e2; --ink-2: #9a9994; --rule: rgba(232, 231, 226, 0.2);
+    --accent: #ff5b3d; --type-blue: #9fb0ff; --strip: rgba(27, 28, 28, 0.88); --bloom-core: rgba(255, 240, 214, 0.55); --bloom-halo: rgba(255, 196, 140, 0.25); --glow-core: rgba(255, 220, 170, 0.92); --glow-halo: rgba(255, 150, 90, 0.3);
+    --surround: #000; --field-k: 0.62; color-scheme: dark;
+  }
+}
+#escapism [hidden] { display: none !important; }
+#escapism .poster textarea, #escapism .poster .num { -webkit-user-select: text; user-select: text; }
+#escapism { background: var(--surround); color: var(--ink); font-family: var(--jp); font-size: 14px; line-height: 1.6; overflow: hidden; }
+#escapism .ja { word-break: keep-all; overflow-wrap: anywhere; line-break: strict; }
+@supports (word-break: auto-phrase) {
+#escapism .ja { word-break: auto-phrase; }
+}
+#escapism .poster {
+  position: relative; box-sizing: border-box;
+  height: 100%; max-width: 560px; margin: 0 auto;
+  background: var(--paper);
+  display: grid; grid-template-rows: auto minmax(clamp(250px, 46vh, 460px), 1fr) auto auto auto auto;
+  grid-template-columns: minmax(0, 1fr);
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 10px 10px;
+  overflow-x: hidden; overflow-y: auto;
+}
+#escapism .poster::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay; opacity: 0.3;
+}
+@media (min-width: 700px) {
+#escapism .poster { height: calc(100% - 48px); margin-block: 24px; box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55); }
+}
+/* header strip with the sound switch */
+#escapism .top { display: grid; gap: 10px; padding-bottom: 12px; font: 9.5px/1.3 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+#escapism .brandrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+#escapism .brand { margin: 0; display: flex; align-items: baseline; gap: 10px; font: 800 20px/1 var(--grotesk); font-stretch: 118%; letter-spacing: 0.06em; }
+#escapism .brand .gens { display: inline-flex; gap: 1px; }
+#escapism .brand .gen { display: inline-block; font: 700 22px/1 var(--jp); letter-spacing: 0; filter: url(#esc-waver); animation: waver 6.5s ease-in-out infinite; transform-origin: 50% 70%; }
+#escapism .brand .gen:nth-child(2) { animation-delay: -2.1s; animation-duration: 7.3s; opacity: 0.8; }
+#escapism .brand .gen:nth-child(3) { animation-delay: -4.4s; animation-duration: 5.9s; opacity: 0.6; }
+@keyframes waver { 0%, 100% { transform: skewX(0deg) translateY(0); opacity: 1; } 30% { transform: skewX(-5deg) translateY(-1px) scaleY(1.04); opacity: 0.7; } 55% { transform: skewX(3deg) translateY(0.5px); opacity: 0.9; } 80% { transform: skewX(-2deg) scaleX(1.05); opacity: 0.6; } }
+#escapism .top .mode { justify-self: start; width: min(100%, 300px); }
+#escapism .linkbtn { background: none; border: 0; color: var(--ink); font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; padding: 4px 0; }
+#escapism .mode { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--ink); }
+#escapism .mode button { display: grid; justify-items: center; gap: 1px; padding: 5px 12px 4px; background: transparent; color: var(--ink); border: 0; cursor: pointer; }
+#escapism .mode button b { font: 700 10.5px/1 var(--grotesk); letter-spacing: 0.14em; }
+#escapism .mode button span { font: 500 9px/1.2 var(--jp); letter-spacing: 0.06em; text-transform: none; opacity: 0.75; }
+#escapism .mode button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+#escapism button:focus-visible, #escapism textarea:focus-visible, #escapism input:focus-visible, #escapism select:focus-visible, #escapism label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* image frame */
+#escapism .figure { position: relative; min-height: 0; margin: 0; overflow: hidden; background: var(--paper-2); touch-action: none; }
+#escapism .crisp { display: none !important; position: absolute; left: var(--cx, 30%); top: var(--cy, 20%); width: var(--cw, 40%); height: auto; max-width: 100%; display: block; pointer-events: none; }
+#escapism #esc-field { transition: opacity 1.2s ease; }
+#escapism .worryline { position: absolute; left: 10px; right: 10px; top: 70%; padding: 5px 8px; box-sizing: border-box; white-space: nowrap; overflow: hidden; pointer-events: none; color: var(--type-blue); font: 500 14px/1.5 var(--jp); background-color: var(--strip); transition: background-color 1.8s ease 1.2s; }
+#escapism .worryline span { display: inline-block; }
+#escapism .worryline i { display: inline-block; font-style: normal; transition: opacity 1.6s ease, filter 1.6s ease, transform 2.4s ease; transition-delay: calc(var(--i, 0) * 55ms); }
+#escapism .worryline.vanish { background-color: transparent; }
+#escapism .worryline.vanish i { opacity: 0; filter: blur(6px); transform: translateY(-12px) scale(1.15); }
+#escapism .worryline.marquee span { animation: marquee var(--dur, 20s) linear infinite; }
+@keyframes marquee { from { transform: translateX(var(--from, 300px)); } to { transform: translateX(var(--to, -600px)); } }
+#escapism .pcap { position: absolute; font: 9px/1.3 var(--mono); letter-spacing: 0.08em; color: var(--ink); pointer-events: none; white-space: nowrap; }
+#escapism .figure.need { animation: need 0.9s ease 2; }
+@keyframes need { 50% { outline: 2px solid var(--accent); outline-offset: -6px; } }
+#escapism .poster.hush #esc-field { opacity: 0.4; }
+#escapism .figure.jolt { animation: jolt 0.45s steps(6); }
+@keyframes jolt { 20% { transform: translate(-6px, 2px); filter: hue-rotate(40deg) saturate(2); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-3px, 0); filter: invert(0.15); } 80% { transform: translate(2px, 2px); } }
+#escapism .ripple { position: absolute; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, var(--glow-core), var(--glow-halo) 45%, transparent 100%); filter: blur(3px); animation: ripple 1.4s ease-out forwards; }
+#escapism .ripple.hold { animation-duration: 2.6s; }
+#escapism .ripple.glitch { background: radial-gradient(closest-side, var(--accent), transparent); animation-duration: 0.6s; }
+@keyframes ripple { from { transform: scale(0.2); opacity: 0.9; } to { transform: scale(1.5); opacity: 0; } }
+#escapism #esc-field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#escapism .figure.empty #esc-field, #escapism .figure.empty .vnum, #escapism .figure.empty .figcap, #escapism .figure.empty .change { visibility: hidden; }
+#escapism .drop { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; cursor: pointer; text-align: center; color: var(--ink); -webkit-tap-highlight-color: transparent; }
+#escapism .figure:not(.empty) .drop { display: none; }
+#escapism .drop svg { width: 34px; height: 34px; stroke: currentColor; fill: none; stroke-width: 1; }
+#escapism .drop .l1 { font: 500 14px/1.6 var(--jp); letter-spacing: 0.08em; font-feature-settings: "palt"; }
+#escapism .drop .l2 { font: 9px/1.4 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
+#escapism .figure.empty::before, #escapism .figure.empty::after { content: ""; position: absolute; width: 14px; height: 14px; border: 0 solid var(--ink); }
+#escapism .figure.empty::before { left: 10px; top: 10px; border-left-width: 1px; border-top-width: 1px; }
+#escapism .figure.empty::after { right: 10px; bottom: 10px; border-right-width: 1px; border-bottom-width: 1px; }
+#escapism .figure.drag { outline: 2px dashed var(--accent); outline-offset: -8px; }
+#escapism .change {
+  position: absolute; right: 10px; top: 10px; z-index: 2; cursor: pointer;
+  display: inline-flex; gap: 6px; align-items: center; padding: 6px 9px;
+  background: rgba(10, 10, 10, 0.45); color: #fff; font: 500 11px/1 var(--jp); letter-spacing: 0.06em;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-tap-highlight-color: transparent;
+}
+#escapism .change b { font: 400 14px/1 var(--grotesk); }
+#escapism .figcap, #escapism .vnum { position: absolute; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+#escapism .figcap { left: 10px; top: 9px; font: 9px/1.4 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+#escapism .vnum { right: 10px; bottom: 10px; display: flex; gap: 14px; align-items: flex-end; }
+#escapism .vn { display: grid; justify-items: center; gap: 4px; }
+#escapism .vn b { font: 700 15px/1.04 var(--grotesk); white-space: pre-line; text-align: center; font-variant-numeric: tabular-nums; }
+#escapism .vn i { font: 7px/1 var(--mono); font-style: normal; letter-spacing: 0.14em; text-transform: uppercase; }
+/* reading band */
+#escapism .bandwrap { margin-top: 10px; }
+#escapism .band { position: relative; border-block: 1px solid var(--ink); overflow: hidden; height: 46px; cursor: pointer; }
+#escapism .band .track { position: absolute; left: 0; top: 0; height: 100%; display: flex; align-items: center; white-space: nowrap; will-change: transform; font: 500 19px/1 var(--jp); letter-spacing: 0.06em; font-feature-settings: "palt"; }
+#escapism .bandcap { display: flex; justify-content: space-between; gap: 10px; padding-top: 4px; font: 8.5px/1.3 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+#escapism .bandwrap.static .band { height: auto; max-height: 34vh; overflow-y: auto; cursor: default; }
+#escapism .bandwrap.static .track { position: static; white-space: normal; display: block; padding: 10px 0; font-size: 15px; line-height: 1.9; }
+/* plate */
+#escapism .plate { position: relative; display: grid; justify-items: center; text-align: center; gap: 6px; padding-block: 12px 10px; }
+#escapism .plus { position: absolute; font: 300 13px/1 var(--grotesk); color: var(--ink); pointer-events: none; }
+#escapism .breath { display: grid; justify-items: center; gap: 2px; }
+#escapism .glow { position: relative; width: 90px; height: 62px; }
+#escapism .glow i { position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: radial-gradient(closest-side, var(--glow-core), var(--glow-halo) 50%, transparent 100%); filter: blur(4px); transform: scale(0.7); opacity: 0.55; will-change: transform, opacity; }
+#escapism .breath .cue { font: 500 8.5px/1 var(--grotesk); letter-spacing: 0.4em; text-transform: uppercase; color: var(--ink-2); padding-left: 0.4em; }
+#escapism h2#esc-title { font: 800 clamp(22px, 6.6vw, 31px)/1.08 var(--grotesk); text-transform: uppercase; letter-spacing: -0.005em; margin: 4px 0 0; text-wrap: balance; max-width: 100%; overflow-wrap: anywhere; }
+#escapism h2#esc-title.ja { font: 700 clamp(21px, 5.8vw, 27px)/1.45 var(--jp); text-transform: none; letter-spacing: 0.08em; font-feature-settings: "palt"; }
+#escapism .sub { font: 500 9.5px/1.5 var(--grotesk); letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-2); }
+#escapism .reflection { font-size: 14px; line-height: 1.95; letter-spacing: 0.05em; max-width: 24em; margin: 2px 0 0; text-wrap: pretty; font-feature-settings: "palt"; }
+#escapism .actions { display: flex; gap: 6px 18px; flex-wrap: wrap; justify-content: center; }
+#escapism .actions button { background: none; border: 0; border-bottom: 1px solid var(--ink); color: var(--ink); padding: 3px 0; font: 500 12px/1.4 var(--jp); letter-spacing: 0.06em; cursor: pointer; display: inline-flex; gap: 8px; align-items: baseline; }
+#escapism .actions button small { font: 9px var(--mono); letter-spacing: 0.14em; color: var(--ink-2); text-transform: uppercase; }
+#escapism .actions button:disabled { opacity: 0.6; cursor: default; }
+#escapism .liner { font: 8.5px/1.6 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-2); max-width: 52ch; margin: 2px 0 0; font-variant-numeric: tabular-nums; }
+#escapism .badges { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 2px; }
+#escapism .badge { border: 1px solid var(--ink); font: 600 8px/1 var(--mono); padding: 3px 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+#escapism .badges svg { height: 12px; width: auto; display: block; }
+#escapism .badges svg rect { fill: var(--ink); }
+#escapism .examples { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; max-width: 34em; margin-top: 2px; }
+#escapism .examples button { background: none; border: 0; color: var(--ink); font: 12.5px/1.8 var(--jp); letter-spacing: 0.04em; cursor: pointer; padding: 0; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 5px; }
+#escapism .status { font: 9.5px/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); min-height: 1.4em; }
+#escapism .status.live::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--accent); margin-right: 8px; vertical-align: 1px; animation: blink 1.4s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+#escapism .crisis { border: 1px solid var(--accent); padding: 10px 12px; text-align: left; font-size: 12.5px; line-height: 1.8; max-width: 30em; margin-top: 4px; }
+#escapism .crisis ul { margin: 4px 0 0; padding-left: 1.1em; }
+#escapism .crisis .num { font-family: var(--mono); user-select: all; }
+#escapism #esc-scatter { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+#escapism #esc-scatter .w { position: absolute; white-space: nowrap; opacity: 0; color: #fff; mix-blend-mode: difference; transition: opacity 1.2s ease, transform 1.2s ease; }
+#escapism #esc-scatter .w.on { opacity: 0.92; }
+#escapism #esc-scatter .w.gone { opacity: 0; transition: opacity 24s ease-in, transform 26s linear; }
+#escapism #esc-scatter .serif { font: 400 10px/1 var(--serif); letter-spacing: 0.5em; text-transform: uppercase; }
+#escapism #esc-scatter .gro { font: 500 15px/1 var(--grotesk); }
+/* footer: composer */
+#escapism .compose { padding-top: 10px; display: grid; gap: 8px; position: relative; }
+#escapism .composeRow { display: flex; gap: 10px; align-items: stretch; border-bottom: 1px solid var(--ink); padding-bottom: 8px; }
+#escapism .composeRow textarea { flex: 1 1 auto; min-width: 0; }
+#escapism .composeRow textarea.need::placeholder { color: var(--accent); opacity: 1; }
+#escapism .release { flex: none; align-self: stretch; min-width: 84px; display: grid; place-items: center; gap: 2px; padding: 8px 14px; border: 0; background: var(--ink); color: var(--paper); cursor: pointer; position: relative; overflow: hidden; }
+#escapism .release b { font: 700 15px/1 var(--jp); letter-spacing: 0.14em; padding-left: 0.14em; }
+#escapism .release small { font: 8px/1 var(--mono); letter-spacing: 0.18em; opacity: 0.7; }
+#escapism .release::before { content: ""; position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; background: radial-gradient(closest-side, var(--glow-core), transparent); opacity: 0.18; filter: blur(6px); pointer-events: none; }
+#escapism .compose .cnote { margin: 0; font: 10.5px/1.6 var(--jp); color: var(--ink-2); letter-spacing: 0.03em; }
+#escapism .bloom { position: absolute; z-index: 8; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, var(--bloom-core), var(--bloom-halo) 55%, transparent 100%); animation: bloom 2.2s cubic-bezier(.2,.6,.2,1) forwards; }
+@keyframes bloom { 0% { transform: scale(0.2); opacity: 0; } 15% { opacity: 0.95; } 70% { opacity: 0.8; } 100% { transform: scale(26); opacity: 0; } }
+#escapism .dock { border-top: 1px solid var(--ink); padding-top: 8px; margin-top: 4px; display: grid; gap: 8px; position: relative; }
+#escapism .compose textarea { width: 100%; box-sizing: border-box; resize: none; border: 0; background: transparent; color: var(--ink); font: 16px/1.6 var(--jp); letter-spacing: 0.03em; padding: 2px 0; min-height: 2.4em; max-height: 7em; }
+#escapism .compose textarea::placeholder { color: var(--ink-2); opacity: 0.75; }
+#escapism .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+#escapism .row .grow { flex: 1 1 auto; }
+#escapism .tool { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--rule); padding: 6px 9px; font: 12px/1.2 var(--jp); cursor: pointer; color: var(--ink); background: transparent; }
+#escapism .tool svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+#escapism .hint { font: 9px/1.2 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }
+#escapism .go { background: var(--ink); color: var(--paper); border: 0; padding: 8px 12px; font: 700 12px/1 var(--jp); letter-spacing: 0.1em; cursor: pointer; }
+#escapism .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#escapism .transport { display: flex; gap: 10px; align-items: center; font: 9.5px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }
+#escapism .transport input[type="range"] { flex: 1 1 80px; min-width: 0; accent-color: var(--ink); }
+#escapism .transport select { background: var(--paper); color: var(--ink); border: 1px solid var(--rule); font: 11px var(--jp); padding: 4px 6px; border-radius: 0; }
+#escapism .transport .tool { padding: 5px 8px; }
+#escapism .note { font-size: 10.5px; color: var(--ink-2); margin: 0; line-height: 1.6; }
+#escapism .sheet { position: fixed; inset: 0; z-index: 20; background: rgba(0, 0, 0, 0.55); display: grid; place-items: end center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+#escapism .sheet article { width: 100%; max-width: 560px; max-height: 86%; overflow-y: auto; box-sizing: border-box; background: var(--paper); color: var(--ink); padding: 20px 20px calc(28px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ink); }
+#escapism .sheet h3 { font: 800 22px/1.1 var(--grotesk); text-transform: uppercase; margin: 0; }
+#escapism .sheet h4 { font: 500 9.5px/1.4 var(--grotesk); letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-2); margin: 20px 0 6px; padding-top: 10px; border-top: 1px solid var(--rule); }
+#escapism .sheet p, #escapism .sheet li { font-size: 13px; line-height: 1.85; letter-spacing: 0.03em; max-width: 62ch; }
+#escapism .sheet ul { padding-left: 1.1em; margin: 0; display: grid; gap: 6px; }
+#escapism .sheet a { color: var(--ink); }
+#escapism .sheet .src { font: 10px/1.5 var(--mono); color: var(--ink-2); list-style: none; margin-left: -1.1em; letter-spacing: 0; }
+@media (prefers-reduced-motion: reduce) {
+#escapism .brand .gen, #escapism .worryline.marquee span { animation: none; }
+#escapism .worryline i { transform: none !important; filter: none !important; }
+#escapism .status.live::before { animation: none; }
+#escapism .ripple { animation-duration: 0.6s; }
+#escapism .figure.jolt { animation: none; }
+}
+
+#escapism { position: relative; isolation: isolate; padding: 0; overflow: hidden; text-align: left; }
+#escapism *, #escapism *::before, #escapism *::after { box-sizing: border-box; }
+#escapism :where(h1, h2, p, ul, li, figure, form) { margin: 0; padding: 0; border: 0; background: none; color: inherit; font-size: inherit; line-height: inherit; text-transform: none; }
+#escapism :where(button, textarea, select, input, label) { padding: 0; border: 0; background: none; font: inherit; color: inherit; letter-spacing: inherit; text-transform: none; text-shadow: none; box-shadow: none; border-radius: 0; margin: 0; min-height: 0; min-width: 0; width: auto; max-width: none; }
+#escapism .poster { height: min(100svh, 900px); min-height: 680px; }
+@media (min-width: 700px) { #escapism .poster { height: min(calc(100svh - 48px), 900px); margin: 24px auto; } }
+#escapism .sheet { z-index: 100000; }
+#escapism .composeRow textarea { width: auto; }
+#escapism .sheet ul { padding-left: 1.1em; }
+#escapism .crisis ul { padding-left: 1.1em; }
+
+</style>
+<div id="escapism" lang="ja">
+<div class="poster" id="esc-poster" lang="ja">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="esc-waver" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.09" numOctaves="2" seed="4" result="n">
+        <animate attributeName="baseFrequency" dur="8s" values="0.02 0.09;0.04 0.14;0.02 0.09" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" dur="3.7s" values="2;7;3;6;2" repeatCount="indefinite"/>
+      </feDisplacementMap>
+    </filter>
+  </svg>
+  <header class="top">
+    <div class="brandrow">
+      <h1 class="brand">ESCAPISM <span class="gens" aria-hidden="true"><span class="gen">現</span><span class="gen">現</span><span class="gen">現</span></span></h1>
+      <button class="linkbtn" id="esc-aboutBtn" type="button">Index +</button>
+    </div>
+    <div class="mode" role="group" aria-label="音のタイプ">
+      <button type="button" id="esc-modeAmbient" aria-pressed="true"><b>AMBIENT</b><span>ビートなし</span></button>
+      <button type="button" id="esc-modeBeat" aria-pressed="false"><b>BEAT</b><span>ビートあり</span></button>
+    </div>
+  </header>
+
+  <figure class="figure empty" id="esc-figure">
+    <canvas id="esc-field" aria-hidden="true"></canvas>
+    <canvas class="crisp" id="esc-crisp" hidden aria-hidden="true"></canvas>
+    <div class="figcap" id="esc-figcap"></div>
+    <div class="vnum" id="esc-vnum" aria-hidden="true"></div>
+    <div class="pcap" id="esc-pcap" aria-hidden="true"></div>
+    <div class="worryline" id="esc-worryline" hidden><span></span></div>
+    <label class="drop" for="esc-pick">
+      <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="12"/><path d="M17 8v18M8 17h18"/></svg>
+      <span class="l1 ja">目の前の景色を、ここに</span>
+      <span class="l2">Tap to add a photo · or drop it here</span>
+    </label>
+    <label class="change" for="esc-pick"><b>+</b>景色を変える</label>
+  </figure>
+
+  <section class="compose">
+    <form id="esc-composer" class="composeRow">
+      <label for="esc-worry" class="sr">今の気持ち</label>
+      <textarea id="esc-worry" rows="2" maxlength="600" placeholder="今の気持ち、頭から離れないこと"></textarea>
+      <button class="release" id="esc-send" type="submit"><b>手放す</b><small>RELEASE</small></button>
+    </form>
+    <input id="esc-pick" class="sr" type="file" accept="image/*">
+    <p class="cnote ja" id="esc-cnote">写真を入れて、今の気持ちを書いたら「手放す」。</p>
+  </section>
+
+  <div class="bandwrap" id="esc-bandwrap" hidden>
+    <div class="band" id="esc-band" aria-live="off"><div class="track" id="esc-track"></div></div>
+    <div class="bandcap"><span id="esc-bandState">Reading · tap to pause</span><span id="esc-bandTime"></span></div>
+  </div>
+
+  <section class="plate" id="esc-plate" aria-live="polite">
+    <span class="plus" style="left:16%;top:18px" aria-hidden="true">+</span>
+    <span class="plus" style="right:22%;top:44px" aria-hidden="true">+</span>
+    <div class="breath" aria-hidden="true">
+      <div class="glow"><i id="esc-glow"></i></div>
+      <span class="cue" id="esc-cue">Still</span>
+    </div>
+    <h2 id="esc-title">Escapism</h2>
+    <div class="sub" id="esc-sub">Ambient for right now</div>
+    <p class="reflection ja" id="esc-reflection"></p>
+    <div class="actions" id="esc-actions" hidden>
+      <button type="button" id="esc-videoBtn" hidden>動画で保存 <small id="esc-videoState">15s · 16:9 · sound</small></button>
+    </div>
+    <div class="crisis ja" id="esc-crisis" hidden>
+      ひとりで抱えなくて大丈夫です。話を聞いてくれる窓口があります。
+      <ul>
+        <li>よりそいホットライン <span class="num">0120-279-338</span>（24時間）</li>
+        <li>まもろうよこころ（厚生労働省）<span class="num">0570-064-556</span></li>
+      </ul>
+    </div>
+    <div class="examples" id="esc-examples" aria-label="例"></div>
+    <p class="liner" id="esc-liner">Text or image → genre · ensemble · form · key · field · breath — drone · dark ambient · kosmische · kankyō ongaku · fourth world · microsound · tape loops · noise — no two moments repeat</p>
+    <div class="badges" id="esc-badges"></div>
+    <div class="status" id="esc-status" role="status"></div>
+  </section>
+
+  <section class="dock">
+    <div class="transport" id="esc-transport" hidden>
+      <button class="tool" id="esc-playBtn" type="button" aria-label="一時停止">
+        <svg viewBox="0 0 24 24" id="esc-playIcon"><path d="M9 6v12M15 6v12"/></svg>
+      </button>
+      <label for="esc-vol">Vol</label>
+      <input id="esc-vol" type="range" min="0" max="1" step="0.01" value="0.8">
+      <label for="esc-timer" class="sr">スリープタイマー</label>
+      <select id="esc-timer">
+        <option value="0">タイマーなし</option>
+        <option value="15">15分で消える</option>
+        <option value="30">30分で消える</option>
+        <option value="60">60分で消える</option>
+      </select>
+    </div>
+    <p class="note ja" id="esc-playHint" hidden>空いているところをタップすると音が鳴ります。ダブルタップでグリッチ、長押しで音が引き、写真をなぞるとフィルターとエコー、上下にはじくと転調します。</p>
+    <p class="note ja" id="esc-privacy">書いた言葉と写真は、この端末の中だけで使われます。どこにも送られず、保存もされません。</p>
+  </section>
+
+  <div id="esc-scatter" aria-hidden="true"></div>
+</div>
+
+<div class="sheet" id="esc-sheet" hidden lang="ja">
+  <article role="dialog" aria-modal="true" aria-labelledby="sheetTitle" class="ja">
+    <div class="row"><h3 id="esc-sheetTitle" class="grow">Index</h3><button class="linkbtn" id="esc-closeSheet" type="button" style="font:9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase">Close ×</button></div>
+    <p>ESCAPISM（現現現）は、今の気持ちと目の前の景色から、その瞬間だけの音楽を生むアンビエントの装置です。音はすべてブラウザの中でリアルタイムに合成しています。言葉を手放すたびに、ジャンル・編成・構成・調が新しく選ばれ、前の曲から数秒かけて移り変わります。</p>
+
+    <h4>Genres</h4>
+    <ul>
+      <li>Kankyō ongaku（吉村弘、芦川聡、高田みどり）／Drone（Éliane Radigue、La Monte Young）／Dark ambient（Lustmord、Thomas Köner）／Melodic・neoclassical（Max Richter、Ólafur Arnalds）／Kosmische・Berlin School（Tangerine Dream、Klaus Schulze）／Tape loop（William Basinski）／Noise ambient（Tim Hecker、Fennesz）／Microsound・lowercase（Taylor Deupree、Steve Roden）／Fourth World（Jon Hassell）／Generative（Brian Eno）の10系統から、言葉や景色に合うものを選びます。</li>
+      <li>ジャンルごとに専用の層があります。倍音が移ろうドローン、低いうねりと金属の擦れ、アルペジエーター、旋律の生成、崩れていくテープループ、ノイズの壁、微細なクリック、ハンドパーカッションと息の多い笛などです。</li>
+      <li class="src">— <a href="https://en.wikipedia.org/wiki/Ambient_music" target="_blank" rel="noopener">Ambient music</a> · <a href="https://en.wikipedia.org/wiki/Dark_ambient" target="_blank" rel="noopener">Dark ambient</a> · <a href="https://en.wikipedia.org/wiki/Kosmische_Musik" target="_blank" rel="noopener">Kosmische Musik</a> · <a href="https://en.wikipedia.org/wiki/Kanky%C5%8D_Ongaku" target="_blank" rel="noopener">Kankyō Ongaku</a></li>
+    </ul>
+
+    <h4>Form</h4>
+    <ul>
+      <li>曲には構成があります。アーチ（少しずつ増えて、頂点を越えて引いていく）、波（厚い／薄いをくり返す）、ビルド（重ねて、抜いて、戻す）、モノリス（ほとんど動かない）、崩壊（だんだん減っていく）、まばら（ほぼ沈黙と小さな出来事）。区切りごとに楽器が出入りし、ひと巡りすると新しい構成で続きます。</li>
+      <li>その上で、最初は「いまの状態」に寄り添う音で始まり、約4分かけて温かく広い音へ移ります。音楽療法の iso原理（Altshuler, 1945）にならった構成です。効果の実証研究はまだ限られています。</li>
+      <li class="src">— <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8656869/" target="_blank" rel="noopener">The Iso Principle in a Controlled Experimental Study (2021)</a></li>
+    </ul>
+
+    <h4>Ensembles</h4>
+    <ul>
+      <li>Glass（FMベル）、Felt（フェルトピアノ）、Choir（フォルマント合成の声）、Strings（弦とチェロ）、Rhodes（エレピとオルガン）、Mallet（マリンバ系）、Guitar（撥弦の物理モデル）、Sine（純音とうなり）、Haze（共鳴ノイズ）。直前と同じ編成・ジャンルは選びません。</li>
+      <li>主旋律は互いに割り切れない周期（17.9〜37.1秒）でくり返すループです。Brian Enoが『Music for Airports』で使った考え方です。</li>
+      <li class="src">— <a href="https://reverbmachine.com/blog/deconstructing-brian-eno-music-for-airports/" target="_blank" rel="noopener">Reverb Machine: How Brian Eno Created Ambient 1</a></li>
+    </ul>
+
+    <h4>Beat</h4>
+    <ul>
+      <li>上の AMBIENT / BEAT は、写真にも言葉にも効きます。再生中に切り替えると、いまの曲がそのままビートあり／なしに変わります。DUB、MINIMAL、GLITCH の3スタイルです。</li>
+    </ul>
+
+    <h4>Play</h4>
+    <ul>
+      <li>ボタンのない場所に触れると、曲に参加できます。タップ：触れた位置の高さで、いまの楽器が1音鳴ります（左右で音程、上下で音域）。ダブルタップ：グリッチとスタッターが一瞬はじけます。長押し：指を離すまで、持続音以外がほとんど消えて静かになります。写真をなぞる：左右でフィルター、上下でダブ風のエコーの深さが変わります。写真を上下にはじく：4度上／下へ転調します。</li>
+    </ul>
+
+    <h4>Breath, numbers, reading</h4>
+    <ul>
+      <li>題名の上の灯りは、毎分5〜6回の呼吸のペースでふくらみ、しぼみます。心拍と呼吸が同調しやすい「共鳴周波数呼吸」の目安（約0.1Hz）です。</li>
+      <li class="src">— <a href="https://pubmed.ncbi.nlm.nih.gov/28890890/" target="_blank" rel="noopener">Steffen et al. (2017) Resonance Frequency Breathing, HRV, BP and Mood</a></li>
+      <li>写真の右下の縦の数字は、曲が生まれた日付と時刻、テンポ（または呼吸数）、根音の周波数です。</li>
+      <li>写真の下の帯には、その人に向けた2〜3分の文章が右端から流れ、読み終えると冒頭に戻ります。帯に触れると止まります。</li>
+    </ul>
+
+    <h4>Video</h4>
+    <ul>
+      <li>「動画で保存」は、いまの曲を15秒ぶん、画面より速く書き出して mp4 にします（録画の待ち時間はありません）。iPhoneでは共有シートが開くので、「ビデオを保存」を選ぶと写真アプリに入ります。パソコンではそのままダウンロードされます。</li>
+    </ul>
+
+    <h4>Interpretation</h4>
+    <ul>
+      <li>写真の色と明るさ、書いた言葉のキーワードから、端末の中でジャンル・編成・調・環境音・曲名・流れる文章を組み立てます。ログインは要りません。言葉も写真も、どこにも送られません。</li>
+      <li>ESCAPISMは医療や治療ではありません。つらさが続くときは、身近な人や専門の窓口に相談してください。</li>
+    </ul>
+  </article>
+</div>
+</div>
+<script>
+(() => {
+"use strict";
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rnd = (a, b) => a + Math.random() * (b - a);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const smooth = t => t * t * (3 - 2 * t);
+const pad2 = n => String(n).padStart(2, "0");
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const hasJa = s => /[぀-ヿ㐀-鿿]/.test(s);
+const tick0 = () => new Promise(r => setTimeout(r, 0));
+// design tokens live on the page root (or on #escapism when embedded in another site)
+const cssRoot = () => document.getElementById("escapism") || document.documentElement;
+
+/* ---------- Japanese phrase segmentation ---------- */
+const SEG = typeof Intl !== "undefined" && Intl.Segmenter ? new Intl.Segmenter("ja", { granularity: "word" }) : null;
+const AUX = /^(ます|ませ|です|でし|ない|なく|なかっ|なけれ|た|だ|て|で|ば|う|よう|ください|くださ|いる|いた|いて|いっ|いま|ある|あっ|あり|れる|れて|られ|せる|させ|たい|ね|よ|な|か|の|ん|し|け|ちゃ|じゃ|ず|ぬ|さ|もの|こと|まま|ほど|だけ|など|から|まで|より|けど|ので|のに|ても|でも)$/;
+function phrases(text) {
+  if (!SEG) return [text];
+  const out = []; let cur = "";
+  for (const { segment: s } of SEG.segment(text)) {
+    if (!cur) { cur = s; continue; }
+    const last = cur.slice(-1);
+    if (/^[、。，．！？!?・…」』）)\s]+$/.test(s)) { cur += s; continue; }
+    if (/^[ぁ-ゟー]+$/.test(s)) {
+      if (/[をにがはでともへやか、。]/.test(last) && s.length >= 2 && !AUX.test(s)) { out.push(cur); cur = s; } else cur += s;
+      continue;
+    }
+    if (/[ぁ-ゟ、。！？!?」』）)\s]/.test(last) || /^[「『（(]/.test(s)) { out.push(cur); cur = s; continue; }
+    cur += s;
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+function setJa(el, text) { el.replaceChildren(); phrases(text).forEach((p, i) => { if (i) el.append(document.createElement("wbr")); el.append(p); }); }
+
+/* ---------- musical vocabulary ---------- */
+const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const FLATS = { Db: "C#", Eb: "D#", Gb: "F#", Ab: "G#", Bb: "A#" };
+const JI = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 5/3, 9/5, 15/8];
+const MODES = {
+  lydian: [0, 2, 4, 6, 7, 9, 11], ionian: [0, 2, 4, 5, 7, 9, 11], mixolydian: [0, 2, 4, 5, 7, 9, 10],
+  dorian: [0, 2, 3, 5, 7, 9, 10], aeolian: [0, 2, 3, 5, 7, 8, 10], phrygian: [0, 1, 3, 5, 7, 8, 10],
+  pent_major: [0, 2, 4, 7, 9], pent_minor: [0, 3, 5, 7, 10], yo: [0, 2, 5, 7, 9], in: [0, 1, 5, 7, 8]
+};
+const MODE_LABEL = { lydian: "Lydian", ionian: "Ionian", mixolydian: "Mixolydian", dorian: "Dorian", aeolian: "Aeolian", phrygian: "Phrygian", pent_major: "Major pent.", pent_minor: "Minor pent.", yo: "Yo", in: "In" };
+const TEXTURES = ["none", "rain", "wind", "ocean", "stream", "forest", "night", "city", "fire"];
+const TEX_LABEL = { none: "—", rain: "Rain", wind: "Wind", ocean: "Waves", stream: "Stream", forest: "Forest & birds", night: "Night insects", city: "Distant city", fire: "Fire" };
+const STYLES = ["dub", "minimal", "glitch"];
+const ENSEMBLES = {
+  glass:   { label: "Glass — FM bells", pad: "saw", lead: "fm", voicing: "open", reg: 0, grain: "sine" },
+  felt:    { label: "Felt piano", pad: "sine", lead: "felt", voicing: "triad", reg: 0, grain: "triangle" },
+  choir:   { label: "Choir — formant voices", pad: "choir", lead: "voice", voicing: "open", reg: 0, grain: "sine" },
+  strings: { label: "Strings & cello", pad: "bowed", lead: "swell", voicing: "open", reg: -12, grain: "sawtooth" },
+  rhodes:  { label: "Rhodes & organ", pad: "organ", lead: "rhodes", voicing: "quartal", reg: 0, grain: "triangle" },
+  mallet:  { label: "Mallets", pad: "sine", lead: "mallet", voicing: "quartal", reg: 12, grain: "sine" },
+  guitar:  { label: "Plucked guitar", pad: "noise", lead: "pluck", voicing: "open", reg: 0, grain: "triangle" },
+  sine:    { label: "Pure sine tones", pad: "sine", lead: "sine", voicing: "cluster", reg: 0, grain: "sine" },
+  haze:    { label: "Haze — resonant noise", pad: "noise", lead: "none", voicing: "cluster", reg: -12, grain: "sawtooth" }
+};
+const ENS_KEYS = Object.keys(ENSEMBLES);
+// genre = which extra layers play, how the piece is built over time, and how busy it is
+const GENRES = {
+  kankyo:    { label: "Kankyō ongaku", layers: ["melody"], form: "arch", ev: 0.9, bpm: 108, style: "minimal" },
+  drone:     { label: "Drone", layers: ["drone"], form: "monolith", ev: 0.35, bpm: 100, style: "dub" },
+  dark:      { label: "Dark ambient", layers: ["drone", "rumble", "metal"], form: "waves", ev: 0.5, reg: -12, bpm: 96, style: "dub" },
+  melodic:   { label: "Melodic / neoclassical", layers: ["melody"], form: "arch", ev: 0.7, bpm: 112, style: "minimal" },
+  kosmische: { label: "Kosmische / Berlin School", layers: ["arp"], form: "build", ev: 1.1, bpm: 112, style: "minimal" },
+  tape:      { label: "Tape loop", layers: ["tapeloop"], form: "decay", ev: 0.55, bpm: 104, style: "dub" },
+  noise:     { label: "Noise ambient", layers: ["noisewall", "drone"], form: "waves", ev: 0.6, bpm: 120, style: "glitch" },
+  micro:     { label: "Microsound / lowercase", layers: ["micro"], form: "sparse", ev: 0.45, bpm: 118, style: "glitch" },
+  fourth:    { label: "Fourth World", layers: ["hand", "flute"], form: "arch", ev: 0.9, bpm: 100, style: "minimal" },
+  generative:{ label: "Generative (after Eno)", layers: [], form: "waves", ev: 1, bpm: 112, style: "dub" }
+};
+const GENRE_KEYS = Object.keys(GENRES);
+const VOWELS = [[[800, 1], [1150, 0.5], [2900, 0.15]], [[450, 1], [800, 0.45], [2830, 0.1]], [[325, 1], [700, 0.3], [2530, 0.08]], [[400, 1], [1700, 0.3], [2600, 0.15]]];
+const PAD_GAIN = { saw: 1, sine: 1.1, choir: 1.4, bowed: 0.75, organ: 0.7, noise: 1 };
+const LEAD_GAIN = { fm: 1, felt: 1.2, rhodes: 1, mallet: 1.1, pluck: 1.3, voice: 1.1, swell: 0.9, sine: 0.8, none: 0, flute: 1 };
+const KEYS = ["brightness", "density", "warmth", "space", "motion", "tape", "grain", "bells", "pad", "sub", "texture_level", "beat"];
+const LOOP_PERIODS = [17.9, 19.7, 23.5, 25.875, 29.9375, 31.3, 37.1];
+const ARC_SECONDS = 240;
+
+/* forms: sections with gates for each part of the music (0 = out, 1 = full) */
+const S = (name, len, g) => ({ name, len, g: { pad: 1, lead: 1, grain: 1, tex: 1, layer: 1, beat: 1, sub: 1, ...g } });
+const FORMS = {
+  arch: () => [S("intro", rnd(28, 40), { lead: 0, grain: 0.3, layer: 0, beat: 0, sub: 0.6, pad: 0.75 }), S("entry", rnd(35, 50), { lead: 0.6, grain: 0.5, layer: 0.5, beat: 0.6, sub: 0.8 }),
+    S("peak", rnd(50, 70), {}), S("thin", rnd(35, 50), { lead: 0.5, grain: 0.7, layer: 0.3, beat: 0.4, tex: 0.8 }), S("still", rnd(45, 65), { lead: 0.25, grain: 0.3, layer: 0, beat: 0, sub: 0.5, pad: 0.8 })],
+  waves: () => [0, 1, 2].flatMap(() => [S("swell", rnd(35, 50), {}), S("ebb", rnd(28, 40), { lead: 0.3, grain: 0.4, layer: 0.25, beat: 0.3, sub: 0.7 })]),
+  build: () => [S("ground", rnd(25, 35), { lead: 0, grain: 0.2, layer: 0.4, beat: 0, sub: 0.5, pad: 0.8 }), S("motion", rnd(30, 40), { lead: 0.4, layer: 0.7, beat: 0.5 }),
+    S("rise", rnd(35, 45), { lead: 0.7, beat: 0.8 }), S("peak", rnd(50, 65), {}), S("break", rnd(20, 28), { lead: 0.4, beat: 0, grain: 0.8, sub: 0.4 }), S("return", rnd(40, 55), {}),
+    S("fade", rnd(35, 45), { lead: 0.3, layer: 0.4, beat: 0.3, pad: 0.8 })],
+  monolith: () => [S("mass", rnd(100, 140), { lead: 0.15, grain: 0.3, tex: 0.8, beat: 0.5 }), S("shift", rnd(70, 90), { pad: 0.8, lead: 0.5, grain: 0.6, layer: 0.7 }), S("mass", rnd(100, 130), { lead: 0, grain: 0.2, beat: 0.5 })],
+  decay: () => [S("whole", rnd(45, 60), {}), S("wear", rnd(45, 60), { lead: 0.8, grain: 0.8, layer: 0.9, beat: 0.8 }), S("erosion", rnd(45, 60), { lead: 0.5, grain: 0.6, layer: 0.75, beat: 0.6, pad: 0.9 }),
+    S("remains", rnd(45, 60), { lead: 0.3, grain: 0.4, layer: 0.55, beat: 0.4 }), S("dust", rnd(50, 70), { lead: 0.15, grain: 0.2, layer: 0.35, beat: 0.2, sub: 0.6 })],
+  sparse: () => [0, 1, 2].flatMap(() => [S("event", rnd(35, 45), { pad: 0.6, lead: 0.5, grain: 0.2, layer: 0.8, beat: 0.5, sub: 0.4 }), S("hush", rnd(25, 35), { pad: 0.4, lead: 0.15, grain: 0.1, layer: 0.4, beat: 0.25, sub: 0.3 })])
+};
+
+const P = o => Object.fromEntries(KEYS.map(k => [k, clamp(Number(o[k] ?? (k === "beat" ? 0 : 0.4)))]));
+const LISTEN_PARAMS = { brightness: .35, density: .15, warmth: .7, space: .7, motion: .3, tape: .3, grain: .15, bells: 0, pad: .8, sub: .4, texture_level: 0, beat: 0 };
+const listenMood = () => ({
+  listen: true, title: "", reflection: "", scene: "", root: "D", mode: "lydian", texture: "none", breath: 6, ensemble: "sine", genre: "drone",
+  bpm: 0, beat_style: "dub", start: P(LISTEN_PARAMS), settle: P(LISTEN_PARAMS), palette: ["#bdbcb6", "#a3a29c", "#cfcdc6"], lineage: ""
+});
+
+const PRESETS = {
+  anxious: { re: /不安|心配|怖|こわ|緊張|焦|あせ|ドキドキ|締め?切|〆切|プレゼン|面接|試験|テスト|将来|間に合/,
+    label: "before the deadline", titles: ["ゆっくり歩く雨の改札", "そっと置いた時計", "Slow Rain, Soft Steps"], reflections: ["その先のことは、いまは音にあずけておきましょう。", "明日の自分に任せていいことも、たくさんあります。"],
+    root: "E", mode: "dorian", texture: "rain", breath: 5.5, bpm: 116, style: "dub", ens: ["choir", "glass"], genres: ["generative", "kosmische"], palette: ["#8c97b8", "#5d6b8f", "#b59a8c"], lineage: "Stars of the Lid, Tangerine Dream",
+    start: { brightness: .45, density: .65, warmth: .45, space: .55, motion: .7, tape: .35, grain: .6, bells: .55, pad: .6, sub: .45, texture_level: .55 },
+    settle: { brightness: .32, density: .2, warmth: .8, space: .85, motion: .25, tape: .45, grain: .25, bells: .35, pad: .8, sub: .35, texture_level: .4 } },
+  tired: { re: /疲|つかれ|だる|しんど|限界|休み|眠い|ねむい|ぐったり|へとへと/,
+    label: "after a long day", titles: ["ぬくもりの残る毛布", "やわらかな灯りの部屋", "Warm Low Tide"], reflections: ["今日はもう、何もしなくていい時間です。", "がんばった体を、音にまかせてください。"],
+    root: "F", mode: "ionian", texture: "ocean", breath: 5, bpm: 108, style: "dub", ens: ["felt", "rhodes"], genres: ["kankyo", "tape"], palette: ["#b7a9c4", "#7d7fa3", "#c9a387"], lineage: "Harold Budd, William Basinski",
+    start: { brightness: .3, density: .3, warmth: .85, space: .7, motion: .3, tape: .5, grain: .25, bells: .4, pad: .85, sub: .5, texture_level: .5 },
+    settle: { brightness: .22, density: .12, warmth: .95, space: .9, motion: .15, tape: .55, grain: .15, bells: .25, pad: .9, sub: .4, texture_level: .45 } },
+  sad: { re: /悲|かなし|寂|さみし|さびし|泣|つら|辛|失恋|別れ|会いたい|ひとり|孤独|落ち込/,
+    label: "lonely hours", titles: ["やさしい雨の窓辺", "ひだまりを待つ駅", "Tender Platform"], reflections: ["その気持ちは、そのままここに置いていって大丈夫です。", "急いで元気にならなくていい。いまは音のそばに。"],
+    root: "A", mode: "aeolian", texture: "rain", breath: 5.5, bpm: 112, style: "minimal", ens: ["strings", "felt"], genres: ["melodic", "tape", "drone"], palette: ["#8e9ab5", "#6c7394", "#a69bb8"], lineage: "Max Richter, Grouper, Stars of the Lid",
+    start: { brightness: .25, density: .35, warmth: .7, space: .75, motion: .35, tape: .55, grain: .4, bells: .5, pad: .75, sub: .45, texture_level: .5 },
+    settle: { brightness: .35, density: .2, warmth: .9, space: .9, motion: .2, tape: .45, grain: .25, bells: .4, pad: .8, sub: .35, texture_level: .4 } },
+  angry: { re: /怒|イライラ|いらいら|ムカ|むか|腹立|許せ|うざ|最悪/,
+    label: "heat to let go", titles: ["ほどけていく遠雷", "しずかに冷える硝子", "Gentle Iron Rain"], reflections: ["その熱は、感じていいものです。少しだけ外に逃がしましょう。", "相手のことは、いったん音の外に置いておきましょう。"],
+    root: "C", mode: "phrygian", texture: "wind", breath: 5.5, bpm: 124, style: "glitch", ens: ["haze", "guitar"], genres: ["noise", "dark"], palette: ["#b48a86", "#7c6f88", "#d29a74"], lineage: "Tim Hecker, Fennesz, Lustmord",
+    start: { brightness: .5, density: .7, warmth: .35, space: .5, motion: .8, tape: .7, grain: .75, bells: .35, pad: .7, sub: .6, texture_level: .6 },
+    settle: { brightness: .3, density: .2, warmth: .75, space: .85, motion: .25, tape: .4, grain: .25, bells: .3, pad: .8, sub: .35, texture_level: .35 } },
+  overthink: { re: /考え|頭|ぐるぐる|モヤ|もや|整理|わから|迷|悩|決められ|どうすれば/,
+    label: "loops in the head", titles: ["ほどける結び目", "ゆっくり回る小さな星", "Soft Orbit"], reflections: ["答えは出さなくていいです。音を聴いているあいだは保留にしましょう。", "ぐるぐるは、音のループにあずけてしまいましょう。"],
+    root: "D", mode: "lydian", texture: "stream", breath: 6, bpm: 118, style: "glitch", ens: ["mallet", "sine"], genres: ["kosmische", "micro"], palette: ["#9fb3c9", "#6d8aa8", "#c2b8a3"], lineage: "Steve Reich, Klaus Schulze, Taylor Deupree",
+    start: { brightness: .55, density: .6, warmth: .5, space: .6, motion: .65, tape: .3, grain: .55, bells: .7, pad: .6, sub: .35, texture_level: .45 },
+    settle: { brightness: .45, density: .25, warmth: .7, space: .85, motion: .3, tape: .35, grain: .3, bells: .45, pad: .75, sub: .3, texture_level: .4 } },
+  sleepless: { re: /眠れ|寝れ|寝られ|不眠|夜中|深夜|朝が来/,
+    label: "3 a.m.", titles: ["そっと灯る夜の水面", "おだやかな午前三時", "Slow Nocturne"], reflections: ["眠ろうとしなくていいです。横になって、音だけ聴いていましょう。", "目を閉じるだけで、もう十分休めています。"],
+    root: "G", mode: "pent_minor", texture: "night", breath: 5, bpm: 100, style: "dub", ens: ["sine", "felt"], genres: ["drone", "kankyo"], palette: ["#5b6390", "#3a4068", "#7a6d95"], lineage: "Éliane Radigue, Hiroshi Yoshimura, Gas",
+    start: { brightness: .25, density: .3, warmth: .8, space: .8, motion: .25, tape: .45, grain: .25, bells: .4, pad: .75, sub: .45, texture_level: .45 },
+    settle: { brightness: .15, density: .1, warmth: .95, space: .95, motion: .12, tape: .5, grain: .12, bells: .2, pad: .85, sub: .35, texture_level: .4 } },
+  gentle: { re: /./,
+    label: "right now", titles: ["ひだまりの午後", "やわらかな風の通り道", "A Warm Cup, Slowly"], reflections: ["いまここにいるだけで、十分です。", "少しのあいだ、肩の荷物を床に置きましょう。"],
+    root: "D", mode: "pent_major", texture: "forest", breath: 6, bpm: 104, style: "minimal", ens: ["guitar", "rhodes", "mallet"], genres: ["kankyo", "fourth", "generative"], palette: ["#a8c0b4", "#7fa0a6", "#d6c39b"], lineage: "Hiroshi Yoshimura, Jon Hassell, Chihei Hatakeyama",
+    start: { brightness: .5, density: .4, warmth: .65, space: .65, motion: .45, tape: .3, grain: .35, bells: .6, pad: .65, sub: .35, texture_level: .45 },
+    settle: { brightness: .45, density: .22, warmth: .8, space: .85, motion: .25, tape: .35, grain: .25, bells: .45, pad: .75, sub: .3, texture_level: .4 } }
+};
+const CRISIS_RE = /死にたい|しにたい|消えたい|きえたい|自殺|自傷|リスカ|生きていたくない|生きてる意味/;
+const LONG_FALLBACK = "いま頭の中にあることは、消そうとしなくても大丈夫です。少しだけ脇に置いておきましょう。机の端に、そっと置くように。必要になったら、またいつでも手に取れます。考えてしまうのは、あなたがちゃんと向き合ってきた証拠です。でも、考え続けることと、答えに近づくことは、いつも同じではありません。音を聴いてみてください。遠くで鳴っている音と、近くで鳴っている音があります。どれかひとつを選んで、その音が消えていくところまで、耳で追いかけてみてください。消えたら、また次の音が来ます。急がなくて大丈夫です。肩に力が入っていたら、息を吐くときに少しだけ下ろしてみましょう。吸うときは何もしなくていい。吐くときに、ほどけるにまかせる。もしまた同じ考えが戻ってきても、それは失敗ではありません。考えは天気のようなもので、来ては去っていきます。戻ってきたら「また来たね」とだけ思って、もう一度、音のほうへ戻ればいい。何もしない時間は、空っぽの時間ではありません。土の下で根が伸びるように、見えないところで、あなたは回復しています。窓の外の光や、部屋の温度や、椅子に預けている体の重さを、ひとつずつ感じてみてください。この曲が終わるころに何も解決していなくても、ほんの少し呼吸が深くなっていたら、それで十分です。";
+
+/* ---------- noise and impulse responses ---------- */
+function makeNoise(ctx) {
+  const len = ctx.sampleRate * 6;
+  const mk = fill => { const b = ctx.createBuffer(2, len, ctx.sampleRate); for (let ch = 0; ch < 2; ch++) fill(b.getChannelData(ch)); return b; };
+  const white = mk(d => { for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; });
+  const pink = mk(d => {
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < d.length; i++) {
+      const w = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.969 * b2 + w * 0.153852;
+      b3 = 0.8665 * b3 + w * 0.3104856; b4 = 0.55 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.016898;
+      d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
+    }
+  });
+  const brown = mk(d => { let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; } });
+  return { white, pink, brown };
+}
+
+function makeIR(sampleRate, seconds) {
+  const sr = sampleRate, len = Math.floor(sr * seconds);
+  const off = new OfflineAudioContext(2, len, sr);
+  const buf = off.createBuffer(2, len, sr);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) { const t = i / sr; d[i] = (Math.random() * 2 - 1) * Math.exp(-t * 6.9 / seconds) * Math.min(1, t / 0.012); }
+    for (let k = 0; k < 9; k++) { const i = Math.floor(sr * rnd(0.008, 0.085)); d[i] += rnd(-0.6, 0.6) * (1 - i / (sr * 0.09)); }
+  }
+  const src = off.createBufferSource(); src.buffer = buf;
+  const lp = off.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.3;
+  lp.frequency.setValueAtTime(13000, 0); lp.frequency.exponentialRampToValueAtTime(700, seconds);
+  src.connect(lp); lp.connect(off.destination); src.start();
+  return off.startRendering();
+}
+
+/* ---------- engine: shared effects; each piece of music is its own Scene ---------- */
+class Engine {
+  constructor(offlineCtx) {
+    this.ctx = offlineCtx || null; this.offline = !!offlineCtx;
+    this.scene = null; this.volume = 0.8; this.irSeconds = 0; this.events = []; this.userPaused = false; this.ksCache = new Map(); this.broken = false;
+    if (this.offline) this.build();
+  }
+
+  ensure() {
+    if (this.offline) return;
+    if (this.ctx) {
+      const st = this.ctx.state;
+      if (st === "closed" || st === "interrupted" || this.broken) { this.rebuild(); return; }
+      if (st !== "running" && !this.userPaused) { this.ctx.resume().catch(() => {}); this.watch(); }
+      return;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AC({ latencyHint: "playback" });
+    this.build();
+    this.ctx.resume().catch(() => {});
+    this.watch();
+  }
+
+  // if the audio did not come back (a share sheet, another app, a phone call), start a fresh context on the next tap
+  watch() {
+    clearTimeout(this.wd);
+    this.wd = setTimeout(() => { if (this.ctx && this.ctx.state !== "running" && !this.userPaused) { this.broken = true; onAudioStuck(); } }, 800);
+  }
+
+  rebuild() {
+    const mood = this.scene && !this.scene.mood.listen ? this.scene.mood : null;
+    try { this.ctx.close().catch(() => {}); } catch (e) {}
+    clearInterval(this.timer); this.timer = null;
+    this.ctx = null; this.scene = null; this.irSeconds = 0; this.ksCache.clear(); this.levelBuf = null; this.broken = false;
+    this.ensure();
+    if (mood) this.load({ ...mood }, { keep: true });
+  }
+
+  build() {
+    const c = this.ctx, now = c.currentTime;
+    const G = v => { const g = c.createGain(); g.gain.value = v; return g; };
+    const F = (type, f, q = 0.7) => { const b = c.createBiquadFilter(); b.type = type; b.frequency.value = f; b.Q.value = q; return b; };
+    const O = (type, f) => { const o = c.createOscillator(); o.type = type; o.frequency.value = f; o.start(now); return o; };
+    this.G = G; this.F = F;
+    this.N = makeNoise(c);
+
+    this.master = G(0);
+    this.comp = c.createDynamicsCompressor();
+    this.comp.threshold.value = -18; this.comp.ratio.value = 3; this.comp.attack.value = 0.02; this.comp.release.value = 0.4; this.comp.knee.value = 10;
+    this.vol = G(this.offline ? 1 : this.volume);
+    this.analyser = c.createAnalyser(); this.analyser.fftSize = 512;
+    this.master.connect(this.comp); this.comp.connect(this.vol); this.vol.connect(c.destination); this.comp.connect(this.analyser);
+
+    this.music = G(1);
+    this.wow = c.createDelay(0.1); this.wow.delayTime.value = 0.014;
+    this.wowDepth = G(0); this.flDepth = G(0);
+    O("sine", 0.43).connect(this.wowDepth).connect(this.wow.delayTime);
+    O("sine", 5.7).connect(this.flDepth).connect(this.wow.delayTime);
+    this.drive = G(1);
+    const shaper = c.createWaveShaper(), curve = new Float32Array(2048);
+    for (let i = 0; i < curve.length; i++) { const x = i / 1023.5 - 1; curve[i] = Math.tanh(1.4 * x) / Math.tanh(1.4); }
+    shaper.curve = curve; shaper.oversample = "2x";
+    this.post = G(1);
+    this.tone = F("lowpass", 16000, 0.5);
+    this.dry = G(1);
+    this.music.connect(this.wow).connect(this.drive).connect(shaper).connect(this.post).connect(this.tone).connect(this.dry).connect(this.master);
+    this.hiss = G(0);
+    const hs = c.createBufferSource(); hs.buffer = this.N.pink; hs.loop = true; hs.start(now);
+    hs.connect(F("highpass", 2800)).connect(this.hiss).connect(this.master);
+
+    this.revSend = G(0.8);
+    const pre = c.createDelay(0.2); pre.delayTime.value = 0.035;
+    this.revHP = F("highpass", 140);
+    this.revOut = G(0.6);
+    this.tone.connect(this.revSend); this.revSend.connect(pre);
+    this.revA = { conv: c.createConvolver(), g: G(0) };
+    this.revB = { conv: c.createConvolver(), g: G(0) };
+    for (const r of [this.revA, this.revB]) { pre.connect(r.conv); r.conv.connect(r.g); r.g.connect(this.revHP); }
+    this.revHP.connect(this.revOut).connect(this.master);
+    this.revActive = this.revB;
+
+    this.echoSend = G(0.35);
+    this.dL = c.createDelay(2); this.dR = c.createDelay(2);
+    this.dL.delayTime.value = 0.61; this.dR.delayTime.value = 0.87;
+    this.fbL = G(0.42); this.fbR = G(0.42);
+    const lpL = F("lowpass", 2600), lpR = F("lowpass", 2200);
+    const pL = c.createStereoPanner(), pR = c.createStereoPanner(); pL.pan.value = -0.7; pR.pan.value = 0.7;
+    const echoOut = G(0.55);
+    this.echoSend.connect(this.dL);
+    this.dL.connect(lpL).connect(this.fbL).connect(this.dR);
+    this.dR.connect(lpR).connect(this.fbR).connect(this.dL);
+    this.dL.connect(pL).connect(echoOut); this.dR.connect(pR).connect(echoOut);
+    echoOut.connect(this.music);
+
+    const wave = amps => { const re = new Float32Array(amps.length + 1), im = new Float32Array(amps.length + 1); amps.forEach((a, i) => { im[i + 1] = a; }); return c.createPeriodicWave(re, im); };
+    this.padWave = wave(Array.from({ length: 32 }, (_, i) => (1 / Math.pow(i + 1, 1.35)) * ((i + 1) % 2 ? 1 : 0.6)));
+    this.organWave = wave([1, 0.6, 0.4, 0.25, 0, 0.15, 0, 0.1]);
+    this.HANN = new Float32Array(64).map((_, i) => 0.5 - 0.5 * Math.cos(2 * Math.PI * i / 63));
+    this.crushCurve = new Float32Array(1024).map((_, i) => Math.round((i / 511.5 - 1) * 4) / 4);
+    this.wallCurve = new Float32Array(1024).map((_, i) => Math.tanh(4 * (i / 511.5 - 1)));
+    this.lastMorph = -1;
+  }
+
+  ks(f) {
+    const key = Math.round(f * 4);
+    if (this.ksCache.has(key)) return this.ksCache.get(key);
+    const sr = this.ctx.sampleRate, len = Math.floor(sr * 3.5), N = Math.max(2, Math.round(sr / f));
+    const b = this.ctx.createBuffer(1, len, sr), d = b.getChannelData(0);
+    let prev = 0;
+    for (let i = 0; i < N; i++) { prev = prev * 0.45 + (Math.random() * 2 - 1) * 0.55; d[i] = prev; }
+    for (let i = N; i < len; i++) d[i] = 0.4985 * (d[i - N] + (i - N - 1 >= 0 ? d[i - N - 1] : 0));
+    for (let i = 0; i < 2000; i++) d[len - 1 - i] *= i / 2000;
+    if (this.ksCache.size > 48) this.ksCache.delete(this.ksCache.keys().next().value);
+    this.ksCache.set(key, b);
+    return b;
+  }
+
+  anticipate() {
+    this.ensure();
+    if (!this.scene) { this.load(listenMood()); return; }
+    const c = this.ctx, now = c.currentTime;
+    this.scene.hold(now);
+    const s = c.createBufferSource(); s.buffer = this.N.pink;
+    const bp = this.F("bandpass", 300, 1.4), g = this.G(0);
+    bp.frequency.setValueAtTime(300, now); bp.frequency.exponentialRampToValueAtTime(3500, now + 4);
+    g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.07, now + 3.2); g.gain.linearRampToValueAtTime(0, now + 5);
+    s.connect(bp).connect(g).connect(this.music); s.start(now, rnd(0, 3)); s.stop(now + 5.2);
+  }
+
+  load(mood, opts = {}) {
+    this.ensure();
+    const c = this.ctx, now = c.currentTime, prev = this.scene;
+    if (prev && !prev.mood.listen && !opts.keep) {
+      // a new piece must sound new: never repeat the key, the ensemble or the genre back to back
+      if (prev.mood.root === mood.root && prev.mood.mode === mood.mode) mood.root = NOTES[(NOTES.indexOf(mood.root) + 7) % 12];
+      if (prev.mood.ensemble === mood.ensemble) mood.ensemble = pick(ENS_KEYS.filter(k => k !== mood.ensemble));
+      if (prev.mood.genre === mood.genre) mood.genre = pick(GENRE_KEYS.filter(k => k !== mood.genre));
+    }
+    if (prev) prev.fadeOut(now, prev.mood.listen ? 2.5 : opts.keep ? 3 : 6);
+    this.scene = new Scene(this, mood);
+    this.scene.fadeIn(now, prev ? (opts.keep ? 2 : 3.5) : 2);
+    const from = opts.from || mood.start;
+    this.arc = [{ t: now, p: from }, { t: now + (opts.arc ?? ARC_SECONDS), p: mood.settle }];
+    this.p = { ...from };
+    this.roomReady = this.setRoom(4 + Math.max(mood.start.space, mood.settle.space) * 7);
+    this.setEcho(mood.start.beat > 0.02 ? mood.bpm : 0, mood.beat_style);
+    this.master.gain.setTargetAtTime(this.userPaused ? 0 : 0.9, now, 0.8);
+    this.apply(this.p, 0.6);
+    if (!this.timer && !this.offline) this.timer = setInterval(() => this.tick(), 100);
+  }
+
+  paramsAt(t) {
+    const a = this.arc;
+    if (t <= a[0].t) return { ...a[0].p };
+    if (t >= a[1].t) return { ...a[1].p };
+    const k = smooth((t - a[0].t) / (a[1].t - a[0].t));
+    return Object.fromEntries(KEYS.map(key => [key, lerp(a[0].p[key], a[1].p[key], k)]));
+  }
+
+  apply(p, tc = 1.2) {
+    const now = this.ctx.currentTime, set = (param, v) => param.setTargetAtTime(v, now, tc);
+    set(this.revOut.gain, 0.3 + p.space * 0.85);
+    set(this.dry.gain, 1 - p.space * 0.4);
+    if (!this.dragging) set(this.echoSend.gain, 0.2 + p.space * 0.35);
+    set(this.wowDepth.gain, p.tape * 0.0018);
+    set(this.flDepth.gain, p.tape * 0.00022);
+    set(this.drive.gain, 1 + p.tape * 2.2);
+    set(this.post.gain, 1 / (1 + p.tape * 1.1));
+    if (!this.dragging) set(this.tone.frequency, 17000 - p.tape * 9000 - p.warmth * 3500);
+    set(this.hiss.gain, p.tape * 0.009);
+    if (this.scene) this.scene.apply(p, tc);
+  }
+
+  tick(force) {
+    const c = this.ctx; if (!c || !this.scene || (!force && c.state !== "running")) return;
+    const now = c.currentTime, ahead = now + (document.hidden && !this.offline ? 2.0 : 0.5);
+    if (now - this.lastMorph >= 1) { this.lastMorph = now; this.p = this.paramsAt(now); this.apply(this.p); }
+    this.scene.tick(now, ahead, this.p);
+  }
+
+  setRoom(seconds) {
+    if (Math.abs(seconds - this.irSeconds) < 0.8) return Promise.resolve();
+    this.irSeconds = seconds;
+    const ver = this.irVer = (this.irVer || 0) + 1;
+    return makeIR(this.ctx.sampleRate, seconds).then(buf => {
+      if (ver !== this.irVer) return;
+      const now = this.ctx.currentTime, next = this.revActive === this.revA ? this.revB : this.revA;
+      next.conv.buffer = buf;
+      next.g.gain.setTargetAtTime(1, now, this.offline ? 0.01 : 1.5); this.revActive.g.gain.setTargetAtTime(0, now, 1.5);
+      this.revActive = next;
+    });
+  }
+
+  setEcho(bpm, style) {
+    const now = this.ctx.currentTime;
+    const [l, r, fb] = bpm ? [60 / bpm / 4 * 3, 60 / bpm / 4 * 6, style === "dub" ? 0.55 : 0.4] : [0.61, 0.87, 0.42];
+    this.dL.delayTime.setTargetAtTime(l, now, 0.4); this.dR.delayTime.setTargetAtTime(r, now, 0.4);
+    this.fbL.gain.setTargetAtTime(fb, now, 0.4); this.fbR.gain.setTargetAtTime(fb, now, 0.4);
+  }
+
+  mark(t) { if (this.offline) return; this.events.push(t); if (this.events.length > 48) this.events.shift(); }
+
+  breathValue() {
+    const s = this.scene; if (!s || !this.ctx) return null;
+    const ph = 2 * Math.PI * s.breathF * Math.max(0, this.ctx.currentTime - s.t0);
+    return { v: Math.sin(ph), rising: Math.cos(ph) > 0 };
+  }
+
+  level() {
+    if (!this.analyser) return 0;
+    const a = this.levelBuf || (this.levelBuf = new Float32Array(this.analyser.fftSize));
+    this.analyser.getFloatTimeDomainData(a);
+    let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * a[i];
+    return Math.sqrt(s / a.length);
+  }
+
+  info() {
+    const s = this.scene, p = this.p; if (!s || !p) return null;
+    const m = s.mood;
+    const loops = s.ens.lead === "none" ? [] : s.bellVoices.filter(v => v.idx < s.activeVoices(p)).map(v => v.base * (1.5 - p.density * 0.6));
+    const sec = s.section(this.ctx.currentTime);
+    return {
+      key: `${m.root} ${MODE_LABEL[m.mode]}`, ensemble: s.ens.label, genre: s.genre.label, form: `${s.genre.form} / ${sec.name}`,
+      loops: p.bells > 0.02 ? loops : [], room: this.irSeconds, tape: Math.round(p.tape * 100), field: TEX_LABEL[m.texture] || "—", breath: m.breath,
+      beat: p.beat > 0.02 ? `${m.beat_style} ${m.bpm} BPM` : "", bpm: p.beat > 0.02 ? m.bpm : 0,
+      hz: s.rootHz * 2, arc: Math.round(clamp((this.ctx.currentTime - this.arc[0].t) / ARC_SECONDS) * 100)
+    };
+  }
+
+  /* ----- touch play ----- */
+  fx() {
+    if (!this.fxBus) {
+      this.fxBus = this.G(0.9); this.fxBus.connect(this.music);
+      const e = this.G(0.6); this.fxBus.connect(e); e.connect(this.echoSend);
+      const v = this.G(0.5); this.fxBus.connect(v); v.connect(this.revSend);
+    }
+    return this.fxBus;
+  }
+  tapNote(xr, yr) {
+    const s = this.scene; if (!s || !s.alive) return;
+    const n = s.scale.length, deg = Math.floor(clamp(xr, 0, 0.999) * n * 2), oct = yr < 0.35 ? 12 : yr > 0.7 ? -12 : 0;
+    const inst = { none: "felt", swell: "swell" }[s.ens.lead] || s.ens.lead;
+    s.note(inst, s.freq(24 + s.reg + oct + s.degSemis(deg)), this.ctx.currentTime + 0.01, 0.95, (xr - 0.5) * 1.4, this.fx());
+  }
+  glitch() {
+    const s = this.scene; if (!s || !s.alive) return;
+    const t0 = this.ctx.currentTime + 0.01, st = s.stepDur || 0.125, dest = this.fx();
+    for (let k = 0; k < 12; k++) { const t = t0 + k * st / 2, r = Math.random(); if (r < 0.35) s.pip(t, dest); else if (r < 0.7) s.stutter(t, dest); else s.click(t, dest); }
+    const g = s.out.gain;
+    for (let k = 0; k < 8; k++) g.setValueAtTime(k % 2 ? 0.12 : 1, t0 + k * st / 2);
+    g.setValueAtTime(1, t0 + 4 * st);
+  }
+  hush(on) { const s = this.scene; if (!s) return; s.hushed = on; this.apply(this.p, on ? 0.25 : 1.4); }
+  sweep(xr, yr) {
+    const now = this.ctx.currentTime; this.dragging = true;
+    this.tone.frequency.setTargetAtTime(220 * Math.pow(2, xr * 6.2), now, 0.05);
+    const fb = 0.35 + (1 - yr) * 0.55;
+    this.fbL.gain.setTargetAtTime(fb, now, 0.1); this.fbR.gain.setTargetAtTime(fb, now, 0.1);
+    this.echoSend.gain.setTargetAtTime(0.25 + (1 - yr) * 0.75, now, 0.1);
+  }
+  release() {
+    if (!this.dragging) return;
+    this.dragging = false; this.apply(this.p, 0.8);
+    const m = this.scene && this.scene.mood; if (m) this.setEcho(m.start.beat > 0.02 ? m.bpm : 0, m.beat_style);
+  }
+  transpose(dir) {
+    const s = this.scene; if (!s || s.mood.listen) return null;
+    const m = { ...s.mood, start: { ...s.mood.start }, settle: { ...s.mood.settle } };
+    m.root = NOTES[(NOTES.indexOf(m.root) + (dir > 0 ? 5 : 7)) % 12];
+    this.load(m, { keep: true, from: { ...this.p } });
+    return m.root;
+  }
+
+  setVolume(v) { this.volume = v; if (this.vol && !this.offline) this.vol.gain.setTargetAtTime(v, this.ctx.currentTime, 0.25); }
+  fadeOut(sec) { if (this.ctx) this.master.gain.setTargetAtTime(0, this.ctx.currentTime, sec / 4); }
+}
+
+class Scene {
+  constructor(E, mood) {
+    this.E = E; this.mood = mood; const c = this.c = E.ctx, G = E.G, F = E.F;
+    this.t0 = c.currentTime;
+    this.ens = ENSEMBLES[mood.ensemble] || ENSEMBLES.glass;
+    this.genre = GENRES[mood.genre] || GENRES.generative;
+    this.reg = Math.max(-12, this.ens.reg + (this.genre.reg || 0));
+    this.scale = MODES[mood.mode];
+    this.rootHz = 440 * Math.pow(2, (36 + NOTES.indexOf(mood.root) - 69) / 12);
+    this.p = { ...mood.start };
+    this.persist = []; this.alive = true; this.padVoices = []; this.chordNotes = []; this.pending = [];
+    this.sections = []; this.extendForm(this.t0);
+
+    this.out = G(0); this.out.connect(E.music);
+    this.echoTap = G(0); this.echoTap.connect(E.echoSend);
+    this.verbTap = G(0); this.verbTap.connect(E.revSend);
+    this.texOut = G(0); this.texOut.connect(E.master);
+    this.beatOut = G(0); this.beatOut.connect(E.master);
+    this.faders = [this.out, this.echoTap, this.verbTap, this.texOut, this.beatOut];
+
+    this.duck = G(1); this.duck.connect(this.out);
+    this.padBus = G(0.8); this.padFilter = F("lowpass", 900, 0.6);
+    this.padBus.connect(this.padFilter).connect(this.duck);
+    this.padLfoGain = G(0); this.osc("sine", 0.047).connect(this.padLfoGain).connect(this.padFilter.frequency);
+    this.breathF = mood.breath / 60;
+    this.breathDepth = G(0.2); this.osc("sine", this.breathF).connect(this.breathDepth).connect(this.padBus.gain);
+
+    this.bellBus = G(0.5); this.bellBus.connect(this.out); this.bellBus.connect(this.echoTap);
+    const leadVerb = G(this.ens.lead === "pluck" || this.ens.lead === "sine" ? 0.7 : 0.25); this.bellBus.connect(leadVerb); leadVerb.connect(this.verbTap);
+    if (this.ens.lead === "rhodes") { this.autopan = G(0.6); this.osc("sine", 3.1).connect(this.autopan); }
+    this.layerBus = G(0); this.layerBus.connect(this.duck);
+    const le = G(0.45); this.layerBus.connect(le); le.connect(this.echoTap);
+    const lv = G(0.4); this.layerBus.connect(lv); lv.connect(this.verbTap);
+    this.grainBus = G(0.3); this.grainBus.connect(this.duck);
+    const gv = G(0.6); this.grainBus.connect(gv); gv.connect(this.verbTap);
+    this.subBus = G(0); this.subBus.connect(this.duck);
+    this.texLevel = G(0); this.texLevel.connect(this.texOut);
+    const tv = G(0.12); this.texOut.connect(tv); tv.connect(E.revSend);
+
+    this.beatBus = G(0); this.beatBus.connect(this.beatOut);
+    const style = this.style = mood.beat_style;
+    const bv = G(style === "dub" ? 0.45 : style === "glitch" ? 0.25 : 0.12); this.beatOut.connect(bv); bv.connect(E.revSend);
+    this.crusher = c.createWaveShaper(); this.crusher.curve = E.crushCurve;
+    const crushLvl = G(0.06); this.crusher.connect(crushLvl).connect(this.beatBus);
+    this.stepDur = mood.bpm ? 60 / mood.bpm / 4 : 0.125;
+    this.nextStep = this.t0 + 0.8; this.stepIdx = 0;
+
+    this.nextChord = this.t0; this.nextGrain = 0; this.grainBuf = null; this.grainVer = 0;
+    this.setupBells(); this.setupSub();
+    this.tex = this.makeTexture(mood.texture);
+    this.layerTicks = this.genre.layers.map(name => this["layer_" + name].call(this)).filter(Boolean);
+    this.apply(this.p, 0.05);
+  }
+
+  osc(type, f) { const o = this.c.createOscillator(); o.type = type; o.frequency.value = f; o.start(this.t0); this.persist.push(o); return o; }
+  loopSrc(buf) { const s = this.c.createBufferSource(); s.buffer = buf; s.loop = true; s.start(this.t0, rnd(0, buf.duration)); this.persist.push(s); return s; }
+  freq(s) { return this.rootHz * Math.pow(2, Math.floor(s / 12)) * JI[((s % 12) + 12) % 12]; }
+  degSemis(i) { const sc = this.scale, n = sc.length; return 12 * Math.floor(i / n) + sc[((i % n) + n) % n]; }
+  activeVoices(p) { return clamp(1 + Math.round(p.density * 5 * this.genre.ev), 1, 6); }
+
+  /* ----- form ----- */
+  extendForm(from) {
+    let t = from;
+    const beatOn = this.mood.start.beat > 0.02;
+    for (const s of FORMS[this.genre.form]()) {
+      if (beatOn && s.name !== "break") s.g.beat = Math.max(s.g.beat, 0.65);
+      this.sections.push({ ...s, t }); t += s.len;
+    }
+  }
+  section(now) {
+    while (now >= this.sections[this.sections.length - 1].t + this.sections[this.sections.length - 1].len) this.extendForm(this.sections[this.sections.length - 1].t + this.sections[this.sections.length - 1].len);
+    let i = this.sections.length - 1; while (i > 0 && this.sections[i].t > now) i--;
+    return { ...this.sections[i], i };
+  }
+  gate(now) {
+    const s = this.section(now), prev = s.i > 0 ? this.sections[s.i - 1].g : s.g;
+    const k = smooth(clamp((now - s.t) / 10));
+    return Object.fromEntries(Object.keys(s.g).map(key => [key, lerp(prev[key], s.g[key], k)]));
+  }
+
+  fadeIn(now, sec) { this.faders.forEach(f => { f.gain.cancelScheduledValues(now); f.gain.setValueAtTime(0, now); f.gain.setTargetAtTime(1, now, sec / 3); }); }
+  hold(now) {
+    this.out.gain.setTargetAtTime(0.4, now, 1.2); this.texOut.gain.setTargetAtTime(0.5, now, 1.5);
+    this.beatOut.gain.setTargetAtTime(0.3, now, 0.8);
+    this.padFilter.frequency.setTargetAtTime(this.padFilter.frequency.value * 0.5, now, 1.5);
+  }
+  fadeOut(now, sec) {
+    this.alive = false;
+    this.faders.forEach(f => { f.gain.cancelScheduledValues(now); f.gain.setValueAtTime(f.gain.value, now); f.gain.setTargetAtTime(0, now, sec / 4); });
+    setTimeout(() => this.dispose(), (sec + 4) * 1000);
+  }
+  dispose() {
+    const now = this.c.currentTime;
+    this.padVoices.forEach(v => v.release(now, 0.1));
+    this.persist.forEach(n => { try { n.stop(); } catch (e) {} });
+    this.faders.forEach(f => { try { f.disconnect(); } catch (e) {} });
+  }
+
+  apply(p, tc) {
+    const now = this.c.currentTime, set = (param, v) => param.setTargetAtTime(v, now, tc);
+    const g0 = this.g = this.gate(now), hz = this.hushed ? 0.04 : 1;
+    const g = { ...g0, lead: g0.lead * hz, layer: g0.layer * hz, grain: g0.grain * hz, beat: g0.beat * hz, tex: g0.tex * (this.hushed ? 0.3 : 1) };
+    this.p = p;
+    const pg = PAD_GAIN[this.ens.pad];
+    const cutoff = (220 + Math.pow(p.brightness, 2) * 4200) * (1 - 0.35 * p.warmth) * (this.ens.pad === "bowed" || this.ens.pad === "choir" ? 1.8 : 1);
+    set(this.padFilter.frequency, (this.ens.pad === "sine" || this.ens.pad === "noise" ? 9000 : cutoff) * (this.hushed ? 0.35 : 1));
+    set(this.padLfoGain.gain, cutoff * 0.4 * p.motion);
+    set(this.padBus.gain, p.pad * 0.85 * pg * g.pad);
+    set(this.breathDepth.gain, p.pad * 0.22 * pg * g.pad);
+    set(this.bellBus.gain, p.bells * 0.95 * LEAD_GAIN[this.ens.lead] * g.lead);
+    set(this.layerBus.gain, 0.9 * g.layer);
+    set(this.grainBus.gain, p.grain * 0.55 * (this.ens.lead === "none" ? 1.6 : 1) * g.grain);
+    set(this.subBus.gain, p.sub * 0.16 * g.sub);
+    set(this.texLevel.gain, p.texture_level * 0.6 * g.tex);
+    set(this.beatBus.gain, p.beat * 0.9 * g.beat);
+  }
+
+  tick(now, ahead, p) {
+    if (!this.alive) return;
+    this.p = p; const g = this.g || this.gate(now);
+    if (now >= this.nextChord) { this.changeChord(); this.nextChord = now + (16 + (1 - p.motion) * 26 + rnd(0, 8)) / Math.max(0.5, this.genre.ev); }
+    const rate = g.grain < 0.05 || p.grain < 0.03 ? 0 : (1.5 + p.grain * (2 + p.density * 14)) * (this.ens.lead === "none" ? 1.8 : 1) * this.genre.ev;
+    if (this.nextGrain < now) this.nextGrain = now + 0.05;
+    if (rate === 0) this.nextGrain = ahead;
+    while (this.nextGrain < ahead) { this.grain(this.nextGrain); this.nextGrain += rnd(0.5, 1.5) / rate; }
+    const active = this.activeVoices(p);
+    for (const v of this.bellVoices) {
+      while (v.next < ahead) {
+        if (p.bells > 0.02 && g.lead > 0.05 && v.idx < active && Math.random() > 0.3 * (1 - p.density)) this.lead(v, Math.max(v.next, now + 0.02));
+        v.next += v.base * (1.5 - p.density * 0.6);
+      }
+    }
+    this.tex.tick(now, ahead);
+    for (const lt of this.layerTicks) lt(now, ahead, p, g);
+    if (this.nextStep < now) { const lag = Math.ceil((now - this.nextStep) / this.stepDur); this.nextStep += lag * this.stepDur; this.stepIdx += lag; }
+    while (this.nextStep < ahead) {
+      if (p.beat > 0.02 && g.beat > 0.05) this.step(this.stepIdx % 16, this.nextStep, Math.floor(this.stepIdx / 16));
+      this.nextStep += this.stepDur; this.stepIdx++;
+    }
+  }
+
+  /* ----- harmony ----- */
+  changeChord() {
+    const now = this.c.currentTime, n = this.scale.length;
+    const cands = n === 7 ? [0, 0, 0, 3, 3, 5, 5, 1, 4] : [0, 0, 0, 2, 3, 1, 4];
+    let b = pick(cands);
+    if (b === this.lastBass && Math.random() < 0.7) b = pick(cands);
+    if (this.genre.form === "monolith" && this.chordNotes.length) b = 0;
+    this.lastBass = b;
+    const V = {
+      open:    n === 7 ? [[0, 4, 8, 9], [0, 4, 7, 8, 11], [0, 3, 4, 8], [0, 1, 4, 8, 9], [0, 4, 9, 13]] : [[0, 2, 4, 6], [0, 3, 5, 6], [0, 2, 5, 7], [0, 1, 3, 5, 7]],
+      triad:   n === 7 ? [[0, 2, 4, 7], [0, 4, 7, 9], [0, 2, 4, 9], [0, 4, 9, 11]] : [[0, 1, 2, 5], [0, 2, 3, 5]],
+      quartal: n === 7 ? [[0, 3, 6, 9], [0, 3, 6, 9, 12], [0, 3, 7, 10]] : [[0, 2, 4, 6], [0, 2, 4, 6, 8]],
+      cluster: n === 7 ? [[0, 1, 2, 7], [0, 1, 3, 4], [0, 1, 2, 8], [0, 7, 8, 9]] : [[0, 1, 2, 5], [0, 1, 5, 6]]
+    };
+    const reg = this.reg;
+    let notes = pick(V[this.ens.voicing]).map(d => 12 + reg + this.degSemis(b + d)).map(s => s > 40 + reg ? s - 12 : s);
+    notes = [...new Set(notes)].sort((x, y) => x - y);
+    const atk = this.padVoices.length ? rnd(6, 11) : 3;
+    this.padVoices.forEach(v => v.release(now, atk * 1.3));
+    this.padVoices = notes.map(s => this.padVoice(this.freq(s), now, atk, notes.length));
+    this.chordNotes = notes;
+    this.pending.push(this.renderGrainSource(notes));
+  }
+
+  padVoice(f, t, atk, count) {
+    const c = this.c, p = this.p, E = this.E, G = E.G, F = E.F, type = this.ens.pad;
+    const g = c.createGain(); g.gain.value = 0;
+    const pan = c.createStereoPanner(); pan.pan.value = rnd(-0.55, 0.55);
+    const amp = 0.13 / Math.sqrt(count), det = 3 + p.motion * 7;
+    const srcs = [];
+    const add = (wave, freq, detune, gain, dest = g) => {
+      const o = c.createOscillator();
+      if (wave === "pad") o.setPeriodicWave(E.padWave); else if (wave === "organ") o.setPeriodicWave(E.organWave); else o.type = wave;
+      o.frequency.value = freq; o.detune.value = detune;
+      o.connect(G(gain)).connect(dest); o.start(t); srcs.push(o); return o;
+    };
+    const vibrato = (rate, cents) => {
+      const v = c.createOscillator(); v.frequency.value = rate;
+      const vg = G(0); vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(cents, t + atk);
+      v.connect(vg); v.start(t); srcs.push(v); return vg;
+    };
+    switch (type) {
+      case "saw": add("pad", f, -det, 1); add("pad", f, det, 1); add("sine", f * 2, 0, 0.16); break;
+      case "sine": add("sine", f, -det * 0.6, 1); add("sine", f, det * 0.6, 1); add("sine", f * 2, 0, 0.12); add("sine", f * 3, 0, 0.04); break;
+      case "organ": {
+        add("organ", f, -2, 0.8); add("organ", f, 2, 0.6);
+        const tr = c.createOscillator(); tr.frequency.value = rnd(5, 6.2); tr.connect(G(amp * 0.18)).connect(g.gain); tr.start(t); srcs.push(tr);
+        break;
+      }
+      case "bowed": { const vg = vibrato(rnd(4.2, 5.2), 7); [-det * 1.4, 0, det * 1.4].forEach(d => vg.connect(add("pad", f, d, 0.8).detune)); break; }
+      case "choir": {
+        const mix = G(1), vg = vibrato(rnd(4.6, 5.6), 9);
+        [-det, det].forEach(d => vg.connect(add("pad", f, d, 1, mix).detune));
+        pick(VOWELS).forEach(([ff, gn]) => { const bp = F("bandpass", ff, 9); mix.connect(bp); bp.connect(G(gn * 3.2)).connect(g); });
+        break;
+      }
+      case "noise": {
+        const s = c.createBufferSource(); s.buffer = E.N.pink; s.loop = true; s.start(t, rnd(0, 5)); srcs.push(s);
+        [[1, 60, 26], [2, 45, 12]].forEach(([h, q, gn]) => { const bp = F("bandpass", f * h, q); s.connect(bp); bp.connect(G(gn)).connect(g); });
+        add("sine", f, 0, 0.25);
+        break;
+      }
+    }
+    const lfo = c.createOscillator(); lfo.frequency.value = rnd(0.04, 0.17);
+    const lg = c.createGain(); lg.gain.value = 0;
+    lfo.connect(lg).connect(g.gain); lfo.start(t); srcs.push(lfo);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(amp, t + atk);
+    lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(amp * 0.35 * p.motion, t + atk);
+    g.connect(pan).connect(this.padBus);
+    let done = false;
+    return {
+      release(rt, rel) {
+        if (done) return; done = true;
+        for (const prm of [g.gain, lg.gain]) { const v = prm.value; prm.cancelScheduledValues(rt); prm.setValueAtTime(v, rt); prm.linearRampToValueAtTime(0, rt + rel); }
+        srcs.forEach(o => { try { o.stop(rt + rel + 0.1); } catch (e) {} });
+        setTimeout(() => { try { g.disconnect(); pan.disconnect(); } catch (e) {} }, (rel + 1) * 1000);
+      }
+    };
+  }
+
+  setupBells() {
+    const now = this.t0, n = this.scale.length;
+    const degs = (n === 7 ? [0, 1, 2, 4, 5, 7, 8, 9, 11] : [0, 1, 2, 3, 4, 5, 6, 7]).sort(() => Math.random() - 0.5);
+    const periods = [...LOOP_PERIODS].sort(() => Math.random() - 0.5).slice(0, 6);
+    const warm = this.mood.start.warmth;
+    this.bellVoices = periods.map((base, idx) => ({
+      base, idx, s: 24 + this.reg + this.degSemis(degs[idx % degs.length]), pan: rnd(-0.7, 0.7),
+      ratio: Math.random() < warm ? 1 : pick([2, 3.5, 1.4142]), next: now + rnd(1, Math.min(6, base * 0.3))
+    }));
+  }
+
+  lead(v, t) { if (this.ens.lead !== "none") this.note(this.ens.lead, this.freq(v.s), t, rnd(0.55, 1), v.pan, this.bellBus, v.ratio); }
+
+  /* one note of any instrument; returns its length */
+  note(type, f, t, vel, panV, dest, ratio = 1) {
+    const c = this.c, p = this.p, E = this.E, G = E.G, F = E.F;
+    const pan = c.createStereoPanner(); pan.pan.value = panV; pan.connect(dest);
+    const out = c.createGain(); out.connect(pan);
+    const stopAll = [];
+    const O = (wave, freq, d) => { const o = c.createOscillator(); o.type = wave; o.frequency.value = freq; o.connect(d); o.start(t); stopAll.push(o); return o; };
+    const perc = (g, a, peak, dec) => { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); };
+    const shape = (g, a, peak, hold, rel) => { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.setValueAtTime(peak, t + a + hold); g.gain.linearRampToValueAtTime(0, t + a + hold + rel); };
+    let len = 4;
+    switch (type) {
+      case "fm": {
+        const mi = G(0), idx = f * (0.5 + p.brightness * 2.2);
+        mi.gain.setValueAtTime(idx, t); mi.gain.exponentialRampToValueAtTime(idx * 0.02 + 0.01, t + 1.6);
+        const car = O("sine", f, out); O("sine", f * ratio, mi); mi.connect(car.frequency);
+        len = 3.5 + p.space * 4; perc(out, 0.01 + (1 - p.brightness) * 0.05, vel * 0.17, len);
+        break;
+      }
+      case "rhodes": {
+        const mi = G(0), idx = f * (0.4 + p.brightness * 1.1);
+        mi.gain.setValueAtTime(idx, t); mi.gain.exponentialRampToValueAtTime(idx * 0.05 + 0.01, t + 0.6);
+        const car = O("sine", f, out); O("sine", f, mi); mi.connect(car.frequency);
+        const tine = G(0); O("sine", f * 4.02, tine); tine.connect(out); perc(tine, 0.002, 0.12, 0.3);
+        len = 4.5; perc(out, 0.005, vel * 0.18, len);
+        if (this.autopan) { this.autopan.connect(pan.pan); setTimeout(() => { try { this.autopan.disconnect(pan.pan); } catch (e) {} }, (t - c.currentTime + len + 1) * 1000); }
+        break;
+      }
+      case "felt": {
+        const lp = F("lowpass", 1400 + p.brightness * 1800, 0.5); lp.connect(out);
+        len = 3 + p.space * 2;
+        for (let n = 1; n <= 6; n++) { const g = G(0); O("sine", f * n * Math.sqrt(1 + 0.0004 * n * n), g); g.connect(lp); perc(g, 0.004, vel * 0.2 / Math.pow(n, 1.6), len / (1 + n * 0.6)); }
+        const hs = c.createBufferSource(); hs.buffer = E.N.white; const hg = G(0); hs.connect(F("lowpass", 900)).connect(hg).connect(out);
+        perc(hg, 0.001, 0.05, 0.012); hs.start(t, rnd(0, 5)); stopAll.push(hs);
+        break;
+      }
+      case "mallet": {
+        len = 1.8;
+        [[1, 1, 1.6], [3.93, 0.35, 0.4], [9.24, 0.12, 0.12]].forEach(([r, a, d]) => { const g = G(0); O("sine", f * r, g); g.connect(out); perc(g, 0.001, vel * 0.2 * a, d); });
+        break;
+      }
+      case "pluck": {
+        const s = c.createBufferSource(); const harm = Math.random() < 0.25;
+        s.buffer = E.ks(harm ? f * 2 : f); s.connect(F("lowpass", 2200 + p.brightness * 3000)).connect(out);
+        out.gain.value = vel * (harm ? 0.32 : 0.45); s.start(t); stopAll.push(s); len = 3.5;
+        break;
+      }
+      case "voice": {
+        const mix = G(1); const vib = c.createOscillator(); vib.frequency.value = 5; const vg = G(10); vib.connect(vg); vib.start(t); stopAll.push(vib);
+        [-6, 6].forEach(d => { const o = c.createOscillator(); o.setPeriodicWave(E.padWave); o.frequency.value = f; o.detune.value = d; vg.connect(o.detune); o.connect(mix); o.start(t); stopAll.push(o); });
+        pick([VOWELS[1], VOWELS[2]]).forEach(([ff, gn]) => { const bp = F("bandpass", ff, 10); mix.connect(bp); bp.connect(G(gn * 3)).connect(out); });
+        const hold = rnd(1, 2.5); shape(out, 0.9, vel * 0.09, hold, 3.5); len = 0.9 + hold + 3.6;
+        break;
+      }
+      case "swell": {
+        const lp = F("lowpass", 1600, 0.6); lp.connect(out);
+        const vib = c.createOscillator(); vib.frequency.value = 4.8; const vg = G(0); vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(9, t + 2); vib.connect(vg); vib.start(t); stopAll.push(vib);
+        [-5, 0, 5].forEach(d => { const o = c.createOscillator(); o.setPeriodicWave(E.padWave); o.frequency.value = f / 2; o.detune.value = d; vg.connect(o.detune); o.connect(lp); o.start(t); stopAll.push(o); });
+        const hold = rnd(1.5, 3); shape(out, 2.5, vel * 0.08, hold, 4.5); len = 2.5 + hold + 4.6;
+        break;
+      }
+      case "flute": {
+        const vib = c.createOscillator(); vib.frequency.value = 5.2; const vg = G(0); vg.gain.setValueAtTime(0, t); vg.gain.linearRampToValueAtTime(8, t + 0.8); vib.connect(vg); vib.start(t); stopAll.push(vib);
+        const o = O("sine", f, out); vg.connect(o.detune);
+        const o2 = G(0.12); O("sine", f * 2, o2); o2.connect(out);
+        const n = c.createBufferSource(); n.buffer = E.N.white; n.start(t, rnd(0, 5)); stopAll.push(n);
+        n.connect(F("bandpass", f, 12)).connect(G(0.9)).connect(out);
+        n.connect(F("highpass", 2500)).connect(G(0.02)).connect(out);
+        const hold = rnd(0.5, 2); shape(out, 0.25, vel * 0.08, hold, 1.4); len = hold + 1.8;
+        break;
+      }
+      case "sine": {
+        if (Math.random() < 0.25) {
+          O("sine", f * 4, out); const l = pick([0.04, 0.08]);
+          out.gain.setValueAtTime(0, t); out.gain.linearRampToValueAtTime(0.05, t + 0.002); out.gain.setValueAtTime(0.05, t + l); out.gain.linearRampToValueAtTime(0, t + l + 0.003); len = 0.2;
+        } else {
+          O("sine", f, out); if (Math.random() < 0.5) O("sine", f + rnd(1.2, 4), out);
+          const hold = rnd(2, 5); shape(out, 0.4, vel * 0.06, hold, 2.5); len = hold + 3;
+        }
+        break;
+      }
+    }
+    stopAll.forEach(o => o.stop(t + len + 0.2));
+    if (!this.E.offline) setTimeout(() => { try { pan.disconnect(); } catch (e) {} }, (t - c.currentTime + len + 1.5) * 1000);
+    this.E.mark(t);
+    return len;
+  }
+
+  /* ----- genre layers: each returns its tick(now, ahead, p, gate) ----- */
+  melodyLayer(inst, unitRange, restRange) {
+    let next = this.t0 + rnd(5, 12), deg = Math.floor(rnd(0, 4));
+    return (now, ahead, p, g) => {
+      while (next < ahead) {
+        if (g.layer < 0.05) { next += 4; continue; }
+        const n = Math.floor(rnd(3, 7)), unit = this.mood.bpm && p.beat > 0.02 ? 60 / this.mood.bpm * pick([1, 2]) : rnd(...unitRange);
+        let t = Math.max(next, now + 0.02);
+        for (let k = 0; k < n; k++) {
+          deg = clamp(deg + pick([-2, -1, -1, 1, 1, 2, 0, 3, -3]), -2, 9);
+          if (k === n - 1 && Math.random() < 0.6) deg = pick([0, 2, 4, 7]);
+          this.note(inst, this.freq(24 + this.reg + this.degSemis(deg)), t, rnd(0.6, 0.95), rnd(-0.3, 0.3), this.layerBus);
+          t += unit * pick([1, 1, 2, 1.5, 0.5, 2, 3]);
+        }
+        next = t + rnd(...restRange) * (1.4 - p.density);
+      }
+    };
+  }
+  layer_melody() {
+    const map = { none: "felt", sine: "felt", fm: "fm", voice: "voice", swell: "swell" };
+    return this.melodyLayer(map[this.ens.lead] || this.ens.lead, [0.55, 0.9], [3, 9]);
+  }
+  layer_flute() { return this.melodyLayer("flute", [0.9, 1.6], [4, 10]); }
+
+  layer_arp() {
+    const c = this.c, G = this.E.G, F = this.E.F;
+    const bpm = this.mood.bpm || pick([96, 104, 112]), step = 60 / bpm / pick([2, 4]);
+    const flt = F("lowpass", 1100, 7); flt.connect(G(1.2)).connect(this.layerBus);
+    this.osc("sine", rnd(0.02, 0.05)).connect(G(800)).connect(flt.frequency);
+    const shape = pick(["up", "updown", "down", "random"]);
+    let next = this.t0 + 1, i = 0;
+    return (now, ahead, p, g) => {
+      if (next < now) next = now;
+      while (next < ahead) {
+        if (g.layer > 0.05 && this.chordNotes.length) {
+          const ns = [...this.chordNotes, ...this.chordNotes.map(s => s + 12)], L = ns.length;
+          const k = shape === "up" ? i % L : shape === "down" ? L - 1 - (i % L) : shape === "updown" ? (Math.floor(i / (L - 1)) % 2 ? L - 1 - (i % (L - 1)) : i % (L - 1)) : Math.floor(Math.random() * L);
+          const f = this.freq(ns[k] + 12), t = next, acc = i % 4 === 0 ? 1 : 0.6;
+          const o = c.createOscillator(); o.setPeriodicWave(this.E.padWave); o.frequency.value = f;
+          const o2 = c.createOscillator(); o2.type = "square"; o2.frequency.value = f / 2;
+          const e = c.createGain(), d = 0.16 + p.space * 0.12;
+          e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(0.07 * acc, t + 0.003); e.gain.exponentialRampToValueAtTime(0.0001, t + d);
+          o.connect(e); o2.connect(G(0.25)).connect(e); e.connect(flt);
+          o.start(t); o2.start(t); o.stop(t + d + 0.05); o2.stop(t + d + 0.05);
+        }
+        next += step; i++;
+      }
+    };
+  }
+
+  layer_drone() {
+    const G = this.E.G, F = this.E.F, r = this.rootHz;
+    const mix = G(0.33);
+    [this.osc("sawtooth", r), this.osc("sawtooth", r * 1.5 * 1.002), this.osc("sawtooth", r * 2 * 0.998)].forEach(o => o.connect(mix));
+    const bps = [0, 1, 2].map(() => { const b = F("bandpass", r * pick([3, 4, 5, 6]), 18); mix.connect(b); b.connect(G(0.8)).connect(this.layerBus); return b; });
+    mix.connect(F("lowpass", 260)).connect(G(0.28)).connect(this.layerBus);
+    let next = 0;
+    return now => { if (now > next) { bps.forEach(b => b.frequency.setTargetAtTime(r * Math.floor(rnd(2, 16)), now, rnd(3, 7))); next = now + rnd(6, 12); } };
+  }
+
+  layer_rumble() {
+    const c = this.c, G = this.E.G, F = this.E.F;
+    const g = G(0.45); this.loopSrc(this.E.N.brown).connect(F("lowpass", 90)).connect(g).connect(this.layerBus);
+    let next = this.t0 + rnd(8, 20);
+    return (now, ahead) => {
+      if (now > next - 0.5) g.gain.setTargetAtTime(rnd(0.4, 1), now, 4);
+      while (next < ahead) {
+        const t = next, o = c.createOscillator(), e = c.createGain();
+        o.frequency.setValueAtTime(52, t); o.frequency.exponentialRampToValueAtTime(34, t + 3);
+        e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(0.35, t + 0.05); e.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
+        o.connect(e).connect(this.layerBus); o.start(t); o.stop(t + 4.6);
+        next += rnd(18, 40);
+      }
+    };
+  }
+
+  layer_metal() {
+    const G = this.E.G, F = this.E.F;
+    const src = this.loopSrc(this.E.N.white), env = G(0); env.connect(this.layerBus);
+    const bps = [1, 1.59, 2.14, 2.83].map(() => { const b = F("bandpass", 1000, 40); src.connect(b); b.connect(G(2.2)).connect(env); return b; });
+    let next = this.t0 + rnd(4, 10);
+    return now => {
+      if (now < next) return;
+      const base = rnd(500, 2200), up = rnd(3, 6), down = rnd(4, 8);
+      bps.forEach((b, i) => { b.frequency.setValueAtTime(base * [1, 1.59, 2.14, 2.83][i], now); b.frequency.linearRampToValueAtTime(base * [1, 1.59, 2.14, 2.83][i] * rnd(0.93, 1.07), now + up + down); });
+      env.gain.cancelScheduledValues(now); env.gain.setValueAtTime(env.gain.value, now); env.gain.linearRampToValueAtTime(rnd(0.25, 0.5), now + up); env.gain.linearRampToValueAtTime(0, now + up + down);
+      next = now + up + down + rnd(6, 18);
+    };
+  }
+
+  layer_noisewall() {
+    const G = this.E.G, F = this.E.F, c = this.c;
+    const ws = c.createWaveShaper(); ws.curve = this.E.wallCurve;
+    const lp = F("lowpass", 1200, 0.9), sw = G(0.1);
+    this.loopSrc(this.E.N.pink).connect(G(3)).connect(ws).connect(lp).connect(sw).connect(G(0.22)).connect(this.layerBus);
+    this.loopSrc(this.E.N.white).connect(F("highpass", 6000)).connect(G(0.02)).connect(this.layerBus);
+    let nextF = 0, nextS = 0;
+    return now => {
+      if (now > nextF) { lp.frequency.setTargetAtTime(rnd(400, 3500), now, rnd(2, 5)); nextF = now + rnd(4, 8); }
+      if (now > nextS) { sw.gain.setTargetAtTime(rnd(0.1, 0.6), now, rnd(6, 12)); nextS = now + rnd(20, 40); }
+    };
+  }
+
+  layer_tapeloop() {
+    const c = this.c, G = this.E.G, F = this.E.F;
+    const lp = F("lowpass", 5000, 0.5), drop = G(1); lp.connect(drop).connect(G(1.1)).connect(this.layerBus);
+    let started = false, next = 0;
+    return now => {
+      if (!started && this.chordNotes.length) {
+        started = true;
+        const sr = c.sampleRate, len = 5, off = new OfflineAudioContext(2, sr * len, sr);
+        const re = new Float32Array(17), im = new Float32Array(17); for (let n = 1; n <= 16; n++) im[n] = 1 / Math.pow(n, 1.4);
+        const w = off.createPeriodicWave(re, im), env = off.createGain();
+        env.gain.setValueAtTime(0, 0); env.gain.linearRampToValueAtTime(0.06, 0.6); env.gain.setValueAtTime(0.06, len - 0.8); env.gain.linearRampToValueAtTime(0, len); env.connect(off.destination);
+        this.chordNotes.forEach((s, i) => [-1, 1].forEach(ch => { const o = off.createOscillator(); o.setPeriodicWave(w); o.frequency.value = this.freq(s + 12) * (1 + ch * 0.002); const pn = off.createStereoPanner(); pn.pan.value = ch * 0.6; o.connect(pn); pn.connect(env); o.start(); }));
+        this.pending.push(off.startRendering().then(buf => {
+          if (!this.alive && !this.E.offline) return;
+          const s = c.createBufferSource(); s.buffer = buf; s.loop = true; s.playbackRate.value = rnd(0.985, 0.998);
+          s.connect(lp); s.start(c.currentTime); this.persist.push(s);
+          lp.frequency.setTargetAtTime(700, c.currentTime + 20, 120);
+        }));
+      }
+      // the loop wears out: dropouts become more frequent the longer it plays
+      if (started && now > next) {
+        const wear = clamp((now - this.t0) / 300);
+        if (Math.random() < 0.2 + wear * 0.6) { const d = rnd(0.08, 0.5); drop.gain.setTargetAtTime(rnd(0.05, 0.4), now, 0.02); drop.gain.setTargetAtTime(1, now + d, 0.05); }
+        next = now + rnd(1.5, 5) * (1.2 - wear);
+      }
+    };
+  }
+
+  layer_micro() {
+    const c = this.c, G = this.E.G;
+    let next = this.t0 + 1;
+    return (now, ahead, p, g) => {
+      if (next < now) next = now;
+      while (next < ahead) {
+        if (g.layer > 0.05) {
+          const t = next, r = Math.random(), pan = c.createStereoPanner(); pan.pan.value = pick([-0.9, -0.5, 0.5, 0.9]); pan.connect(this.layerBus);
+          if (r < 0.45) { const o = c.createOscillator(); o.frequency.value = rnd(3000, 12000); const e = G(0), l = rnd(0.005, 0.02); e.gain.setValueAtTime(0.04, t); e.gain.setValueAtTime(0, t + l); o.connect(e).connect(pan); o.start(t); o.stop(t + l + 0.01); }
+          else if (r < 0.8) { const s = c.createBufferSource(); s.buffer = this.E.N.white; const e = G(0); e.gain.setValueAtTime(0.12, t); e.gain.exponentialRampToValueAtTime(0.0001, t + 0.002); s.connect(e).connect(pan); s.start(t, rnd(0, 5)); s.stop(t + 0.01); }
+          else if (this.grainBuf) { const s = c.createBufferSource(); s.buffer = this.grainBuf; s.playbackRate.value = pick([2, 4]); const e = G(0), l = rnd(0.008, 0.03); e.gain.setValueAtTime(0.25, t); e.gain.linearRampToValueAtTime(0, t + l); s.connect(e).connect(pan); s.start(t, rnd(0.2, 3)); s.stop(t + l + 0.01); }
+        }
+        next += -Math.log(1 - Math.random()) / (0.8 + p.density * 2.2);
+      }
+    };
+  }
+
+  layer_hand() {
+    const c = this.c, G = this.E.G, F = this.E.F;
+    const bpm = this.mood.bpm || pick([88, 96, 104]), step = 60 / bpm / 2, L = pick([5, 7, 9, 12]);
+    const low = new Set([0, Math.floor(rnd(2, L))]), slap = new Set([Math.floor(rnd(1, L)), Math.floor(rnd(1, L))]);
+    let next = this.t0 + 2, i = 0;
+    return (now, ahead, p, g) => {
+      if (next < now) next = now;
+      while (next < ahead) {
+        const t = next, k = i % L;
+        if (g.layer > 0.05) {
+          if (low.has(k)) { const o = c.createOscillator(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(82, t + 0.08); const e = G(0); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(0.32, t + 0.004); e.gain.exponentialRampToValueAtTime(0.0001, t + 0.4); o.connect(e).connect(this.layerBus); o.start(t); o.stop(t + 0.45); }
+          if (slap.has(k) && Math.random() < 0.85) { const s = c.createBufferSource(); s.buffer = this.E.N.white; const e = G(0); e.gain.setValueAtTime(0.18, t); e.gain.exponentialRampToValueAtTime(0.0001, t + 0.06); s.connect(F("bandpass", 950, 2)).connect(e).connect(this.layerBus); s.start(t, rnd(0, 5)); s.stop(t + 0.08); }
+          if (Math.random() < 0.7) { const s = c.createBufferSource(); s.buffer = this.E.N.white; const e = G(0); e.gain.setValueAtTime(rnd(0.015, 0.04), t); e.gain.exponentialRampToValueAtTime(0.0001, t + 0.045); s.connect(F("highpass", 7000)).connect(e).connect(this.layerBus); s.start(t, rnd(0, 5)); s.stop(t + 0.06); }
+        }
+        next += step; i++;
+      }
+    };
+  }
+
+  renderGrainSource(notes) {
+    const c = this.c, sr = c.sampleRate, ver = ++this.grainVer, wave = this.ens.grain;
+    const off = new OfflineAudioContext(2, sr * 4, sr);
+    const lp = off.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = wave === "sawtooth" ? 1600 : 12000; lp.connect(off.destination);
+    notes.concat(notes.map(s => s + 12)).forEach((s, i) => {
+      const f = this.freq(s);
+      [-1, 1].forEach(ch => {
+        const o = off.createOscillator(); o.type = i % 2 ? wave : "sine"; o.frequency.value = f * (1 + ch * 0.0016);
+        const g = off.createGain(); g.gain.value = wave === "sawtooth" ? 0.05 : 0.07;
+        const pn = off.createStereoPanner(); pn.pan.value = ch * 0.8;
+        o.connect(g); g.connect(pn); pn.connect(lp); o.start();
+      });
+    });
+    return off.startRendering().then(b => { if (ver === this.grainVer) this.grainBuf = b; });
+  }
+
+  grain(t) {
+    if (!this.grainBuf) return;
+    const c = this.c, p = this.p;
+    const src = c.createBufferSource(); src.buffer = this.grainBuf;
+    const r = Math.random();
+    src.playbackRate.value = r < 0.55 ? 1 : r < 0.8 ? 2 : r < 0.92 ? 0.5 : 1.5;
+    const dur = rnd(0.08, 0.18) + (1 - p.density) * rnd(0.1, 0.45);
+    const g = c.createGain(); g.gain.value = 0;
+    g.gain.setValueCurveAtTime(this.E.HANN, t, dur);
+    const pan = c.createStereoPanner(); pan.pan.value = rnd(-0.9, 0.9);
+    src.connect(g).connect(pan).connect(this.grainBus);
+    src.start(t, rnd(0.1, this.grainBuf.duration - 1.2)); src.stop(t + dur + 0.02);
+  }
+
+  setupSub() {
+    const g = this.E.G(0.9);
+    const o1 = this.osc("sine", this.rootHz), o2 = this.osc("sine", this.rootHz * 1.5);
+    const g2 = this.E.G(0.25);
+    o1.connect(g); o2.connect(g2).connect(g); g.connect(this.subBus);
+  }
+
+  /* ----- beat: 16-step sequencer ----- */
+  step(i, t, bar) {
+    const st = this.style, sd = this.stepDur, p = this.p;
+    if (st === "minimal" && i % 2) t += sd * 0.14;
+    const kickPat = st === "glitch" ? [0, 7, 10] : [0, 4, 8, 12];
+    const drop = st === "glitch" ? bar % 8 === 7 : bar % 16 === 15 && i >= 8;
+    if (kickPat.includes(i) && !drop && !(st === "glitch" && i !== 0 && Math.random() < 0.25)) { this.kick(t); this.duckAt(t, p.beat * (this.g ? this.g.beat : 1)); }
+    if (st === "minimal") {
+      if (i % 4 === 2) this.hat(t, 0.7, i === 14 && bar % 2);
+      else if (Math.random() < 0.35 + p.density * 0.3) this.hat(t, rnd(0.15, 0.35), false);
+      if ((i === 4 || i === 12) && Math.random() < 0.85) this.rim(t);
+      if ((i === 2 || i === 10 || (i === 7 && Math.random() < 0.4)) && Math.random() < 0.85) this.bass(t, sd * 1.6);
+    } else if (st === "dub") {
+      if (i % 4 === 2) this.hat(t, 0.45, false);
+      if (i === 12 && Math.random() < 0.3) this.rim(t);
+      if (i % 4 === 2 && Math.random() < 0.8) this.bass(t, sd * 1.8);
+      if ([3, 6, 11].includes(i) && Math.random() < 0.3 + p.density * 0.3) this.stab(t);
+    } else {
+      if (i === 0 && !drop) this.bass(t, sd * 3);
+      if (i % 2 === 0 && Math.random() < 0.3) this.hat(t, rnd(0.2, 0.5), false);
+    }
+    const g = st === "glitch" ? 0.3 + p.density * 0.3 : st === "minimal" ? 0.05 + p.density * 0.06 : 0.03;
+    if (Math.random() < g) {
+      const r = Math.random();
+      if (r < 0.35) this.pip(t); else if (r < 0.6) this.click(t); else if (r < 0.85) this.stutter(t); else this.crush(t);
+    }
+  }
+
+  duckAt(t, amount) {
+    const d = this.duck.gain, depth = 0.55 * amount;
+    d.cancelScheduledValues(t); d.setValueAtTime(1 - depth, t + 0.004); d.setTargetAtTime(1, t + 0.03, this.stepDur * 1.1);
+  }
+
+  kick(t) {
+    const c = this.c, st = this.style, o = c.createOscillator();
+    o.frequency.setValueAtTime(st === "dub" ? 115 : 165, t); o.frequency.exponentialRampToValueAtTime(st === "dub" ? 44 : 48, t + 0.09);
+    const g = c.createGain(), dec = st === "dub" ? 0.6 : 0.42;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(st === "dub" ? 0.75 : 0.9, t + 0.003); g.gain.exponentialRampToValueAtTime(0.001, t + dec);
+    if (st === "dub") o.connect(this.E.F("lowpass", 260, 0.8)).connect(g); else o.connect(g);
+    g.connect(this.beatBus); o.start(t); o.stop(t + dec + 0.05);
+    if (st !== "dub") this.noiseHit(t, "highpass", 3200, 0.7, 0.08, 0.006);
+    this.E.mark(t);
+  }
+
+  noiseHit(t, type, f, q, amp, len, dest) {
+    const c = this.c, s = c.createBufferSource(); s.buffer = this.E.N.white;
+    const g = c.createGain(); g.gain.setValueAtTime(amp, t); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    const pan = c.createStereoPanner(); pan.pan.value = rnd(-0.5, 0.5);
+    s.connect(this.E.F(type, f, q)).connect(g).connect(pan).connect(dest || this.beatBus);
+    s.start(t, rnd(0, 5)); s.stop(t + len + 0.02);
+  }
+
+  hat(t, vel, open) {
+    const dark = this.style === "dub";
+    this.noiseHit(t, dark ? "bandpass" : "highpass", dark ? 6500 : 7800, dark ? 1.2 : 0.8, 0.09 * vel, open ? 0.2 : rnd(0.025, 0.06));
+  }
+
+  rim(t) {
+    const c = this.c, o = c.createOscillator(); o.frequency.value = 1650;
+    const g = c.createGain(); g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+    o.connect(g).connect(this.beatBus); o.start(t); o.stop(t + 0.05);
+    this.noiseHit(t, "bandpass", 2500, 5, 0.12, 0.018, this.style === "dub" ? this.echoTap : undefined);
+  }
+
+  bass(t, len) {
+    const c = this.c, f0 = this.freq(this.degSemis(this.lastBass || 0)), f = f0 > 98 ? f0 / 2 : f0;
+    const o = c.createOscillator(); o.frequency.value = f;
+    const o2 = c.createOscillator(); o2.type = "triangle"; o2.frequency.value = f * 2;
+    const g2 = c.createGain(); g2.gain.value = 0.18; o2.connect(g2);
+    const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.32, t + 0.006); g.gain.setTargetAtTime(0, t + len * 0.6, len * 0.25);
+    const lp = this.E.F("lowpass", this.style === "dub" ? 200 : 420, 0.9);
+    o.connect(lp); g2.connect(lp); lp.connect(g).connect(this.beatBus);
+    o.start(t); o2.start(t); o.stop(t + len + 0.4); o2.stop(t + len + 0.4);
+  }
+
+  stab(t) {
+    const c = this.c, E = this.E;
+    const lp = E.F("lowpass", 2400, 2.5);
+    lp.frequency.setValueAtTime(2400, t); lp.frequency.exponentialRampToValueAtTime(350, t + 0.22);
+    const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.06, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    lp.connect(g); g.connect(this.beatBus); g.connect(this.echoTap);
+    this.chordNotes.slice(0, 4).forEach(s => {
+      const o = c.createOscillator(); o.setPeriodicWave(E.padWave); o.frequency.value = this.freq(s + 12); o.detune.value = rnd(-6, 6);
+      o.connect(lp); o.start(t); o.stop(t + 0.35);
+    });
+  }
+
+  pip(t, dest) {
+    const c = this.c, o = c.createOscillator(); o.frequency.value = pick([880, 1760, 3520, 7040, 11000]) * pick([1, 1, 1.5]);
+    const len = pick([0.008, 0.016, 0.032]), g = c.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.05, t + 0.001); g.gain.setValueAtTime(0.05, t + len); g.gain.linearRampToValueAtTime(0, t + len + 0.001);
+    const pan = c.createStereoPanner(); pan.pan.value = pick([-0.8, 0, 0.8]);
+    o.connect(g).connect(pan).connect(dest || this.beatBus); o.start(t); o.stop(t + len + 0.01);
+  }
+
+  click(t, dest) { this.noiseHit(t, "highpass", 2000, 0.7, 0.25, 0.0015, dest); }
+
+  stutter(t, dest) {
+    if (!this.grainBuf) return;
+    const c = this.c, n = pick([3, 4, 6, 8]), iv = this.stepDur / pick([2, 4]), off = rnd(0.2, this.grainBuf.duration - 0.5), rate = pick([1, 2, 0.5]);
+    const pan = c.createStereoPanner(); pan.pan.value = rnd(-0.7, 0.7); pan.connect(dest || this.beatBus);
+    for (let k = 0; k < n; k++) {
+      const s = c.createBufferSource(); s.buffer = this.grainBuf; s.playbackRate.value = rate;
+      const g = c.createGain(), tt = t + k * iv, a = 0.5 * (1 - k / (n + 1));
+      g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(a, tt + 0.002); g.gain.setValueAtTime(a, tt + iv * 0.7); g.gain.linearRampToValueAtTime(0, tt + iv * 0.85);
+      s.connect(g).connect(pan); s.start(tt, off); s.stop(tt + iv);
+    }
+  }
+
+  crush(t) {
+    const c = this.c, o = c.createOscillator(); o.type = "square"; o.frequency.value = rnd(180, 900);
+    const g = c.createGain(), len = rnd(0.03, 0.09);
+    g.gain.setValueAtTime(0.7, t); g.gain.setValueAtTime(0, t + len);
+    o.connect(g).connect(this.crusher); o.start(t); o.stop(t + len + 0.01);
+  }
+
+  /* ----- synthesized field recordings ----- */
+  makeTexture(type) {
+    const c = this.c, N = this.E.N, G = this.E.G, F = this.E.F, out = this.texLevel;
+    const L = buf => this.loopSrc(buf);
+    const PAN = v => { const p = c.createStereoPanner(); p.pan.value = v; return p; };
+    const burst = (t, f, q, a, len, kind = "bandpass") => {
+      const s = c.createBufferSource(); s.buffer = N.white;
+      const g = c.createGain(); g.gain.setValueAtTime(a, t); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      s.connect(F(kind, f, q)).connect(g).connect(PAN(rnd(-0.9, 0.9))).connect(out);
+      s.start(t, rnd(0, 5)); s.stop(t + len + 0.02);
+    };
+    const tex = { tick() {} };
+    let next = 0;
+    switch (type) {
+      case "rain": {
+        L(N.pink).connect(F("highpass", 400)).connect(F("lowpass", 7500)).connect(G(0.45)).connect(out);
+        L(N.brown).connect(F("lowpass", 500)).connect(G(0.35)).connect(out);
+        tex.tick = (now, ahead) => { if (next < now) next = now; while (next < ahead) { burst(next, rnd(1800, 6500), rnd(2, 7), rnd(0.02, 0.12), rnd(0.008, 0.03)); next += rnd(0.02, 0.14); } };
+        break;
+      }
+      case "wind": case "forest": {
+        const lvl = type === "wind" ? 1 : 0.45;
+        const bp = F("bandpass", 500, 1.2), g = G(0.4 * lvl);
+        L(N.pink).connect(bp).connect(g).connect(out);
+        L(N.brown).connect(F("lowpass", 300)).connect(G(0.4 * lvl)).connect(out);
+        let nextBird = 0;
+        tex.tick = (now, ahead) => {
+          if (now > next) {
+            bp.frequency.setTargetAtTime(rnd(220, 1100), now, rnd(1.5, 4)); bp.Q.setTargetAtTime(rnd(0.6, 2.5), now, 3);
+            g.gain.setTargetAtTime(rnd(0.15, 0.7) * lvl, now, rnd(1.5, 4)); next = now + rnd(2, 5);
+          }
+          if (type !== "forest") return;
+          if (!nextBird) nextBird = now + rnd(1, 4);
+          while (nextBird < ahead) {
+            const calls = Math.floor(rnd(2, 6)), base = rnd(2200, 4200), pv = rnd(-0.8, 0.8);
+            for (let k = 0; k < calls; k++) {
+              const t = nextBird + k * rnd(0.09, 0.2), d = rnd(0.05, 0.14);
+              const o = c.createOscillator(); o.frequency.setValueAtTime(base * rnd(0.85, 1.1), t);
+              o.frequency.exponentialRampToValueAtTime(base * rnd(1.1, 1.5), t + d);
+              const bg = c.createGain(); bg.gain.setValueAtTime(0, t); bg.gain.linearRampToValueAtTime(0.045, t + 0.01); bg.gain.exponentialRampToValueAtTime(0.0001, t + d);
+              o.connect(bg).connect(PAN(pv)).connect(out); o.start(t); o.stop(t + d + 0.02);
+            }
+            nextBird += rnd(2.5, 9);
+          }
+        };
+        break;
+      }
+      case "ocean": {
+        const lp = F("lowpass", 600, 0.5), g = G(0.2);
+        L(N.brown).connect(lp); L(N.pink).connect(G(0.35)).connect(lp);
+        lp.connect(g).connect(out);
+        tex.tick = now => {
+          if (now <= next) return;
+          const per = rnd(7, 12);
+          g.gain.setTargetAtTime(rnd(0.6, 1), now, per * 0.18); g.gain.setTargetAtTime(0.12, now + per * 0.45, per * 0.22);
+          lp.frequency.setTargetAtTime(rnd(900, 1600), now, per * 0.18); lp.frequency.setTargetAtTime(380, now + per * 0.45, per * 0.25);
+          next = now + per;
+        };
+        break;
+      }
+      case "stream": {
+        L(N.pink).connect(F("highpass", 300)).connect(F("lowpass", 5000)).connect(G(0.12)).connect(out);
+        const bps = [0, 1, 2, 3].map(() => { const b = F("bandpass", rnd(700, 3000), 9); L(N.white).connect(b).connect(G(0.5)).connect(out); return b; });
+        tex.tick = now => bps.forEach(b => { if (Math.random() < 0.5) b.frequency.setTargetAtTime(rnd(600, 3400), now, rnd(0.02, 0.08)); });
+        break;
+      }
+      case "night": {
+        L(N.pink).connect(F("lowpass", 1200)).connect(G(0.05)).connect(out);
+        L(N.brown).connect(F("lowpass", 200)).connect(G(0.12)).connect(out);
+        const gates = [0, 1].map(i => {
+          const o = this.osc("sine", rnd(4200, 6000)), am = this.osc("square", rnd(20, 40));
+          const g = G(0.5), gate = G(0);
+          am.connect(G(0.5)).connect(g.gain); o.connect(g).connect(gate).connect(PAN(i ? 0.6 : -0.6)).connect(out);
+          return { gate, next: 0 };
+        });
+        tex.tick = now => gates.forEach(x => {
+          if (now > x.next) { const on = rnd(0.8, 2.5); x.gate.gain.setTargetAtTime(0.022, now, 0.05); x.gate.gain.setTargetAtTime(0, now + on, 0.08); x.next = now + on + rnd(0.5, 2.2); }
+        });
+        break;
+      }
+      case "city": {
+        L(N.brown).connect(F("lowpass", 220)).connect(G(0.6)).connect(out);
+        const bp = F("bandpass", 700, 0.6), g = G(0.1);
+        L(N.pink).connect(bp).connect(g).connect(out);
+        tex.tick = now => { if (now > next) { g.gain.setTargetAtTime(rnd(0.04, 0.22), now, rnd(2, 5)); bp.frequency.setTargetAtTime(rnd(400, 1100), now, 4); next = now + rnd(3, 8); } };
+        break;
+      }
+      case "fire": {
+        L(N.brown).connect(F("lowpass", 260)).connect(G(0.5)).connect(out);
+        tex.tick = (now, ahead) => {
+          if (next < now) next = now;
+          while (next < ahead) {
+            burst(next, rnd(1500, 5000), 0.7, rnd(0.05, 0.3), rnd(0.002, 0.009), "highpass");
+            if (Math.random() < 0.25) burst(next + rnd(0.01, 0.04), rnd(1500, 5000), 0.7, rnd(0.04, 0.2), 0.004, "highpass");
+            next += -Math.log(1 - Math.random()) / 5;
+          }
+        };
+        break;
+      }
+    }
+    return tex;
+  }
+}
+
+/* ---------- interpretation ---------- */
+const recentTitles = [];
+
+function applyBeat(m, beat) {
+  if (!beat) { m.start.beat = 0; m.settle.beat = 0; return m; }
+  const gd = GENRES[m.genre] || GENRES.generative;
+  if (m.start.beat < 0.4) m.start.beat = 0.75;
+  if (m.settle.beat < 0.3) m.settle.beat = 0.5;
+  if (!m.bpm) m.bpm = gd.bpm;
+  if (!STYLES.includes(m.beat_style)) m.beat_style = gd.style;
+  return m;
+}
+
+function buildPreset(pr, scene, beat) {
+  const genre = pick(pr.genres);
+  const m = {
+    title: pick(pr.titles), reflection: pick(pr.reflections), scene: scene || pr.label, ensemble: pick(pr.ens), genre,
+    root: pr.root, mode: pr.mode, texture: pr.texture, breath: pr.breath, palette: pr.palette, lineage: pr.lineage,
+    bpm: beat ? pr.bpm : 0, beat_style: pr.style, start: P(pr.start), settle: P(pr.settle), crisis: false
+  };
+  return applyBeat(m, beat);
+}
+
+function localText(text, beat) {
+  const order = ["sleepless", "anxious", "angry", "sad", "tired", "overthink", "gentle"];
+  return buildPreset(PRESETS[order.find(k => PRESETS[k].re.test(text))], null, beat);
+}
+
+const hexOf = rgb => "#" + rgb.map(v => Math.round(clamp(v, 0, 255)).toString(16).padStart(2, "0")).join("");
+
+function localPhoto(stats, beat) {
+  const { lum, sat, hue, bands } = stats;
+  let texture, mode, scene, base, style, ens, genre;
+  const blue = hue > 180 && hue < 260, green = hue > 70 && hue < 170, warm = hue < 50 || hue > 330;
+  if (lum < 0.2) { texture = "night"; mode = "pent_minor"; scene = "somewhere at night"; base = PRESETS.sleepless; style = "dub"; ens = "sine"; genre = pick(["drone", "dark"]); }
+  else if (blue && lum > 0.45) { texture = bands[2][2] > bands[2][1] ? "ocean" : "wind"; mode = "lydian"; scene = "an open sky"; base = PRESETS.gentle; style = "minimal"; ens = "glass"; genre = pick(["generative", "kosmische"]); }
+  else if (green) { texture = "forest"; mode = "pent_major"; scene = "a green place"; base = PRESETS.gentle; style = "minimal"; ens = "mallet"; genre = pick(["fourth", "kankyo"]); }
+  else if (warm && sat > 0.25) { texture = lum < 0.45 ? "fire" : "wind"; mode = "mixolydian"; scene = "warm light"; base = PRESETS.tired; style = "dub"; ens = "rhodes"; genre = pick(["melodic", "tape"]); }
+  else if (sat < 0.15) { texture = lum < 0.5 ? "rain" : "city"; mode = "dorian"; scene = "a quiet street"; base = PRESETS.overthink; style = "glitch"; ens = "guitar"; genre = pick(["micro", "noise"]); }
+  else { texture = "wind"; mode = "ionian"; scene = "the view right now"; base = PRESETS.gentle; style = "minimal"; ens = "felt"; genre = "kankyo"; }
+  const m = buildPreset(base, scene, beat);
+  Object.assign(m, { texture, mode, beat_style: style, ensemble: ens, genre });
+  applyBeat(m, beat);
+  m.start.brightness = m.settle.brightness = clamp(0.15 + lum * 0.7);
+  m.start.warmth = clamp(warm ? 0.8 : 0.5 + (1 - sat) * 0.2);
+  m.palette = bands.map(hexOf);
+  m.title = pick(["やわらかな景色のなかで", "ひだまりの窓から", "おだやかな午後の色", "Soft Light, Here"]);
+  m.reflection = pick(["見ている景色の中に、少しだけ溶けていきましょう。", "この景色を眺めているだけで、十分です。"]);
+  return m;
+}
+
+/* ---------- reading people without an AI: lexicon, photo kinds, titles, long text ---------- */
+Object.assign(PRESETS.anxious, { re: /不安|心配|怖|こわ|緊張|焦|あせ|ドキドキ|締め?切|〆切|プレゼン|面接|試験|テスト|将来|間に合|失敗|ミス|怒られ|評価|発表|本番|支払|就活|転職|間違/ });
+Object.assign(PRESETS.tired, { re: /疲|つかれ|だる|しんど|限界|休み|眠い|ねむい|ぐったり|へとへと|残業|忙し|働きすぎ|頭痛|肩こり|余裕がない|くたくた/ });
+Object.assign(PRESETS.sad, { re: /悲|かなし|寂|さみし|さびし|泣|つら|辛|失恋|別れ|会いたい|ひとり|孤独|落ち込|亡くし|振られ|恋しい|懐かし|傷つ/ });
+Object.assign(PRESETS.angry, { re: /怒|イライラ|いらいら|ムカ|むか|腹立|許せ|うざ|最悪|理不尽|納得いかない|ストレス|うるさ|ふざけ/ });
+Object.assign(PRESETS.overthink, { re: /考え|頭|ぐるぐる|モヤ|もや|整理|わから|迷|悩|決められ|どうすれば|選択|比べ|人間関係|気にな|SNS|返信|どうしよう/ });
+Object.assign(PRESETS.sleepless, { re: /眠れ|寝れ|寝られ|不眠|夜中|深夜|朝が来|夜更かし|目が冴え|寝付け/ });
+PRESETS.empty = { re: /虚し|むなし|空っぽ|からっぽ|何もしたくない|無気力|意味がない|どうでもいい|やる気が出ない|ぼーっと|ぼんやり/,
+  label: "an empty afternoon", titles: [], reflections: ["何もしたくない日は、心が静かに充電している日です。", "空っぽのところにも、ちゃんと風は通っています。", "意味を探さなくていい時間を、少しだけどうぞ。", "動けない日があっても、あなたの価値は変わりません。"],
+  root: "F#", mode: "aeolian", texture: "wind", breath: 5, bpm: 100, style: "dub", ens: ["haze", "strings", "sine"], genres: ["drone", "dark", "tape"], palette: ["#9a9aa6", "#6d6f80", "#b9b1a6"], lineage: "Thomas Köner, William Basinski, Éliane Radigue",
+  start: { brightness: .2, density: .25, warmth: .7, space: .85, motion: .2, tape: .55, grain: .35, bells: .3, pad: .85, sub: .55, texture_level: .45 },
+  settle: { brightness: .28, density: .15, warmth: .85, space: .9, motion: .15, tape: .5, grain: .25, bells: .3, pad: .85, sub: .4, texture_level: .4 } };
+PRESETS.joy = { re: /嬉し|うれし|楽し|幸せ|しあわせ|ありがとう|好き|ワクワク|わくわく|晴れ|旅|休日|散歩|美味し|おいし|良かった|よかった/,
+  label: "a small good day", titles: [], reflections: ["その明るさを、もう少しだけ体に広げてみましょう。", "うれしい気持ちは、ゆっくり味わうほど長く残ります。", "今日の小さな光を、音と一緒にしまっておきましょう。", "いい一日の余韻に、しばらく浸っていてください。"],
+  root: "A", mode: "lydian", texture: "forest", breath: 6, bpm: 116, style: "minimal", ens: ["mallet", "glass", "rhodes"], genres: ["fourth", "kankyo", "kosmische"], palette: ["#c4c9a8", "#8fb0b0", "#e0c290"], lineage: "Midori Takada, Hiroshi Yoshimura, Four Tet",
+  start: { brightness: .65, density: .5, warmth: .65, space: .6, motion: .55, tape: .25, grain: .4, bells: .7, pad: .6, sub: .3, texture_level: .45 },
+  settle: { brightness: .55, density: .3, warmth: .8, space: .8, motion: .3, tape: .3, grain: .3, bells: .55, pad: .7, sub: .3, texture_level: .4 } };
+PRESETS.anxious.reflections.push("うまくいくかどうかは、いまは音にあずけておきましょう。", "準備が足りない気がするのは、大事に思っている証拠です。");
+PRESETS.tired.reflections.push("今日のあなたは、もう十分に動きました。", "重たい体ごと、音の上に横たえてください。");
+PRESETS.sad.reflections.push("さみしさは、大切にしてきたものの形のまま残ります。", "泣けなくても、心はちゃんと感じています。");
+PRESETS.angry.reflections.push("その熱は、大事なものを守ろうとした熱です。", "まずは呼吸の速さだけ、少しゆるめてみましょう。");
+PRESETS.overthink.reflections.push("絡まった糸は、引っぱるより置いておくとほどけます。", "同じ問いを回る足を、少しだけ止めてみましょう。");
+PRESETS.sleepless.reflections.push("横になっているだけで、体は少しずつ休んでいます。", "夜の音を、遠い波の音のように聴いてみましょう。");
+PRESETS.gentle.reflections.push("ここまで来てくれて、ありがとうございます。", "いまのあなたのままで、ここにいてかまいません。");
+const CAT_ORDER = ["sleepless", "anxious", "angry", "sad", "empty", "tired", "overthink", "joy"];
+function classify(text) {
+  let best = "gentle", score = 0;
+  for (const k of CAT_ORDER) { const n = (text.match(new RegExp(PRESETS[k].re.source, "g")) || []).length; if (n > score) { score = n; best = k; } }
+  return best;
+}
+
+function photoKind({ lum, sat, hue, bands }) {
+  const blue = hue > 180 && hue < 260, green = hue > 70 && hue < 170, warm = hue < 50 || hue > 330;
+  if (lum < 0.2) return { kind: "night", texture: "night", mode: "pent_minor", genres: ["drone", "dark", "micro"], ens: "sine", scene: "somewhere at night" };
+  if (blue && lum > 0.45) return { kind: "sky", texture: bands[2][2] > bands[2][1] ? "ocean" : "wind", mode: "lydian", genres: ["generative", "kosmische"], ens: "glass", scene: "an open sky" };
+  if (green) return { kind: "green", texture: "forest", mode: "pent_major", genres: ["fourth", "kankyo"], ens: "mallet", scene: "a green place" };
+  if (warm && sat > 0.25) return { kind: "warm", texture: lum < 0.45 ? "fire" : "wind", mode: "mixolydian", genres: ["melodic", "tape"], ens: "rhodes", scene: "warm light" };
+  if (sat < 0.15) return { kind: "street", texture: lum < 0.5 ? "rain" : "city", mode: "dorian", genres: ["micro", "noise"], ens: "guitar", scene: "a quiet street" };
+  return { kind: "other", texture: "wind", mode: "ionian", genres: ["kankyo", "generative"], ens: "felt", scene: "the view right now" };
+}
+
+const NOUNS = {
+  night: ["夜の水面", "街の灯り", "夜更けの窓", "月の夜"], sky: ["午後の空", "空の青", "風の通り道", "雲の切れ間"],
+  green: ["木もれ日", "葉のあいだ", "緑の小道", "雨上がりの森"], warm: ["夕暮れ", "橙の窓辺", "西日の部屋", "灯りの残る道"],
+  street: ["雨の街角", "灰色の午後", "交差点の灯り", "駅までの道"], other: ["今日の景色", "窓辺の光", "帰り道", "午後の部屋"]
+};
+const TITLE_FORMS = [n => `やわらかな${n}`, n => `${n}に、そっと`, n => `おだやかな${n}`, n => `${n}のぬくもり`, n => `ゆっくりほどける${n}`, n => `やさしい${n}の音`, n => `ひだまりと${n}`, n => `${n}で、ひと休み`];
+function genTitle(kind) {
+  let t = "";
+  for (let i = 0; i < 12; i++) {
+    t = pick(TITLE_FORMS)(pick(NOUNS[kind] || NOUNS.other));
+    if (!recentTitles.some(r => r === t || r.slice(0, 3) === t.slice(0, 3))) break;
+  }
+  return t;
+}
+
+function localMood(text, stats, beat) {
+  const cat = classify(text), pr = PRESETS[cat], pk = photoKind(stats);
+  const m = buildPreset(pr, pk.scene, beat);
+  Object.assign(m, { texture: pk.texture, genre: pick([...pr.genres, ...pk.genres]), ensemble: pick([...pr.ens, pk.ens]), kind: pk.kind, cat });
+  if (Math.random() < 0.4) m.mode = pk.mode;
+  m.beat_style = (GENRES[m.genre] || GENRES.generative).style; m.bpm = beat ? (GENRES[m.genre] || GENRES.generative).bpm : 0;
+  applyBeat(m, beat);
+  m.start.brightness = clamp(m.start.brightness * 0.5 + (0.15 + stats.lum * 0.7) * 0.5);
+  m.settle.brightness = clamp(m.settle.brightness * 0.5 + (0.15 + stats.lum * 0.7) * 0.5);
+  m.palette = stats.bands.map(hexOf);
+  m.title = genTitle(pk.kind);
+  m.reflection = pick(pr.reflections);
+  if (CRISIS_RE.test(text)) m.crisis = true;
+  return m;
+}
+
+const LONG = {
+  open: {
+    anxious: ["先のことが、まだ形にならないまま胸の上に乗っているのですね。", "うまくいくかどうかを、何度も頭の中で確かめてしまう日があります。", "準備が足りない気がするのは、それだけ大事に思っているからです。"],
+    tired: ["今日のあなたは、もう十分に動きました。", "体の奥に、まだ一日の重さが残っているようです。", "疲れているときは、景色の色まで少し遠く見えます。"],
+    sad: ["さみしさは、誰かや何かを大切にしてきた形のまま残ります。", "胸の中に、言葉にならない空白がひとつありますね。", "泣きたいときに泣けなくても、心はちゃんと感じています。"],
+    angry: ["その熱は、あなたが大事にしているものを守ろうとした熱です。", "納得できない気持ちが、まだ体のどこかで脈を打っています。", "怒りは、境界線が踏まれたときに鳴る小さな警報です。"],
+    overthink: ["同じ問いが、同じ場所をぐるぐると回っていますね。", "答えを探す手が、少し疲れてきているようです。", "考えが絡まるのは、それだけ丁寧に向き合っているからです。"],
+    sleepless: ["夜が長く感じられるのは、静かすぎて心の音がよく聞こえるからです。", "眠れない時間も、体は横になるだけで少しずつ休んでいます。", "時計の針の音が、いつもより大きく聞こえる夜ですね。"],
+    empty: ["何もしたくない日は、心が静かに充電をしている日です。", "空っぽに感じるところにも、ちゃんと空気が通っています。", "意味を探す力が、今日は少しお休みしているだけです。"],
+    joy: ["その明るさを、もう少しだけ体の中に広げてみましょう。", "うれしい気持ちは、ゆっくり味わうほど長く残ります。", "今日の小さな光を、音と一緒にしまっておきましょう。"],
+    gentle: ["ここまで来てくれて、ありがとうございます。", "いまのあなたのままで、ここにいてかまいません。", "少しだけ、肩の荷物を床に下ろしてみましょう。"]
+  },
+  scene: {
+    night: ["写真の中の暗がりは、何も急かさない色をしています。", "遠くの灯りが、ひとつひとつ小さく呼吸しているようです。", "夜の空気は、昼よりも少しやわらかく音を運びます。"],
+    sky: ["写真の空は、どこまでも続いて、どこにも急いでいません。", "雲がゆっくり形を変えていくように、気持ちも形を変えていきます。", "ひらけた場所の光が、胸の奥まで届いてくるようです。"],
+    green: ["葉のあいだを抜ける光が、少しずつ揺れています。", "木々は何年もかけて、ゆっくり背を伸ばしてきました。", "緑の匂いを思い浮かべると、呼吸が少し深くなります。"],
+    warm: ["写真の中のあたたかい色が、手のひらにまで移ってくるようです。", "夕暮れの光は、一日の終わりをやさしく告げてくれます。", "橙色の光には、ほどけていく時間の匂いがあります。"],
+    street: ["灰色の街にも、雨粒や足音の小さな模様があります。", "行き交う人それぞれに、それぞれの一日があります。", "静かな通りの音を、遠くの海の音のように聴いてみてください。"],
+    other: ["写真に写った景色は、あなたがいま確かにここにいる証です。", "いつもの景色にも、まだ見ていない小さな光が隠れています。", "目の前のものの輪郭を、ひとつずつ目でなぞってみましょう。"]
+  },
+  body: ["息を吐くときに、肩を少しだけ下ろしてみましょう。", "吸うときは何もしなくていい。吐くときに、ほどけるにまかせます。", "足の裏が床に触れている感覚を、そっと確かめてみてください。", "手のひらの温度に、少しだけ意識を向けてみましょう。", "眉間にこもった力が、ゆるんでいくのを待ってみます。", "背中を椅子や布団にあずけて、重さを手放してみましょう。", "吐く息を、吸う息より少しだけ長くしてみてください。", "胸の上下が、波のように寄せては返しています。"],
+  sound: ["遠くで鳴っている音と、近くで鳴っている音があります。", "ひとつの音を選んで、消えていくところまで耳で追いかけてみてください。", "音と音のあいだにある、小さな静けさにも耳を澄ませてみましょう。", "鳴っては消える音は、どれも急いでいません。", "同じ音が、少しずつ違う響きで戻ってきます。", "音の粒が、部屋の空気にゆっくり溶けていきます。"],
+  weather: ["考えは天気のようなもので、来ては去っていきます。", "同じ考えが戻ってきたら、「また来たね」とだけ思えば十分です。", "答えは、いま出さなくても逃げていきません。", "何もしない時間は、空っぽの時間ではありません。", "土の下で根が伸びるように、見えないところで回復は進んでいます。", "明日のことは、明日のあなたに少しあずけてもいいのです。"],
+  close: ["この曲が終わるころ、ほんの少し呼吸が深くなっていたら、それで十分です。", "音が続くかぎり、ここは安心して休める場所です。", "急がずに、また最初の一文へ戻っていきましょう。"]
+};
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+function localLong(m) {
+  const cat = m.cat || "gentle", kind = m.kind || "other";
+  const parts = [
+    ...shuffle(LONG.open[cat] || LONG.open.gentle),
+    ...(m.userText && m.userText.length <= 24 ? [`「${m.userText}」と書いたその気持ちも、いまは音のそばに置いておきましょう。`] : []),
+    ...shuffle(LONG.scene[kind] || LONG.scene.other),
+    ...shuffle(LONG.body).slice(0, 6), ...shuffle(LONG.sound).slice(0, 4), ...shuffle(LONG.weather).slice(0, 5),
+    ...(m.crisis ? ["つらさが続くときは、信頼できる人や、よりそいホットライン（0120-279-338）に話してもいいのです。"] : []),
+    pick(LONG.close)
+  ];
+  return cleanLong(parts.join(""), m);
+}
+
+/* ---------- photo handling ---------- */
+function loadImage(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => res({ img, url });
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("decode")); };
+    img.src = url;
+  });
+}
+function imageStats(img) {
+  const cv = document.createElement("canvas"); cv.width = 48; cv.height = 48;
+  const x = cv.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0, 48, 48);
+  const d = x.getImageData(0, 0, 48, 48).data;
+  let S2 = 0, L = 0, hx = 0, hy = 0;
+  const bands = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), s = mx ? (mx - mn) / mx : 0;
+    S2 += s; L += (mx + mn) / 510;
+    if (mx !== mn) {
+      let h = mx === r ? (g - b) / (mx - mn) : mx === g ? 2 + (b - r) / (mx - mn) : 4 + (r - g) / (mx - mn);
+      h *= Math.PI / 3; hx += Math.cos(h) * s; hy += Math.sin(h) * s;
+    }
+    const band = bands[Math.min(2, Math.floor((i / 4) / 48 / 16))];
+    band[0] += r; band[1] += g; band[2] += b;
+  }
+  const n = d.length / 4;
+  bands.forEach(b => { b[0] /= n / 3; b[1] /= n / 3; b[2] /= n / 3; });
+  let hue = Math.atan2(hy, hx) * 180 / Math.PI; if (hue < 0) hue += 360;
+  return { lum: L / n, sat: S2 / n, hue, bands };
+}
+
+/* ---------- visuals ---------- */
+const field = $("esc-field"), fx = field.getContext("2d");
+const figure = $("esc-figure");
+const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+let palNow = listenMood().palette.map(hexRgb), palTo = palNow.map(c => c.slice());
+let photoLayer = null;
+function resize() { queueRender(); }
+addEventListener("resize", resize);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => queueRender());
+if (window.ResizeObserver) new ResizeObserver(resize).observe(figure);
+
+const blobs = [0, 1, 2, 3, 4].map(i => ({ a: rnd(0.5, 1.3), b: rnd(0.5, 1.3), ph: rnd(0, 6.28), ph2: rnd(0, 6.28), c: i % 3 }));
+const glowEl = $("esc-glow"), cueEl = $("esc-cue");
+let lvl = 0, lastCue = "", lastFrame = 0;
+const themeK = () => parseFloat(getComputedStyle(cssRoot()).getPropertyValue("--field-k")) || 1;
+
+function drawFieldOn(g, w, h, sec, brV, level, pal, photo, k) {
+  const t = sec * (REDUCED ? 0.005 : 0.025);
+  const col = (c, a) => `rgba(${c.map(v => Math.round(v * k)).join(",")},${a})`;
+  g.globalCompositeOperation = "source-over"; g.globalAlpha = 1;
+  g.fillStyle = col(pal[0], 1); g.fillRect(0, 0, w, h);
+  const R = Math.max(w, h);
+  blobs.forEach(b => {
+    const x = w * (0.5 + 0.42 * Math.sin(t * b.a + b.ph)), y = h * (0.5 + 0.4 * Math.cos(t * b.b + b.ph2));
+    const r = R * (0.38 + 0.1 * Math.sin(t * 0.7 + b.ph)) * (1 + level * 1.2 + brV * 0.05);
+    const gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, col(pal[b.c], 0.85)); gr.addColorStop(1, col(pal[b.c], 0));
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+  if (photo) {
+    g.globalAlpha = 0.8 * (k < 1 ? 0.75 : 1);
+    const s = Math.max(w / photo.width, h / photo.height) * (1.08 + brV * 0.02);
+    g.drawImage(photo, (w - photo.width * s) / 2, (h - photo.height * s) / 2, photo.width * s, photo.height * s);
+    g.globalAlpha = 1;
+  }
+}
+
+function frame(ms) {
+  const dt = Math.min(0.1, (ms - lastFrame) / 1000 || 0); lastFrame = ms;
+  const running = engine.ctx && engine.ctx.state === "running";
+  lvl += ((running ? engine.level() : 0) - lvl) * 0.05;
+  palNow = palNow.map((c, i) => c.map((v, j) => v + (palTo[i][j] - v) * 0.01));
+  const br = engine.breathValue();
+  if (br && state !== "idle") {
+    const b = (br.v + 1) / 2;
+    glowEl.style.transform = `scale(${(0.6 + b * 0.7).toFixed(3)})`;
+    glowEl.style.opacity = (0.55 + b * 0.45).toFixed(3);
+    const cue = br.rising ? "Inhale" : "Exhale";
+    if (cue !== lastCue) { lastCue = cue; cueEl.textContent = cue; }
+  }
+  tickerFrame(dt);
+  if (recorder) recorder.draw(ms);
+  requestAnimationFrame(frame);
+}
+
+function scatter(text) {
+  const layer = $("esc-scatter"), poster = $("esc-poster");
+  const W = poster.clientWidth;
+  let parts = phrases(text).flatMap(p => p.split(/[\s、。，．,.!?！？「」『』（）()]+/)).filter(Boolean);
+  parts = parts.flatMap(p => p.length > 8 ? p.match(/.{1,6}/gu) : [p]).slice(0, 16);
+  const fig = figure.getBoundingClientRect(), top0 = fig.top - poster.getBoundingClientRect().top + poster.scrollTop;
+  parts.forEach((word, i) => {
+    const el = document.createElement("span");
+    el.className = "w " + (i % 3 === 0 ? "gro" : "serif");
+    el.textContent = word;
+    el.style.left = `${Math.round(rnd(0.04, 0.7) * W)}px`;
+    el.style.top = `${Math.round(top0 + rnd(0.05, 0.9) * fig.height)}px`;
+    layer.append(el);
+    setTimeout(() => el.classList.add("on"), 40 + i * 90);
+    setTimeout(() => { el.classList.add("gone"); if (!REDUCED) el.style.transform = `translate(${rnd(-30, 30).toFixed(0)}px, ${rnd(-60, -15).toFixed(0)}px)`; }, 2600 + i * 90);
+    setTimeout(() => el.remove(), 30000);
+  });
+}
+
+/* ---------- the image frame as a poster: halftone of the photo, the photo itself, a colour square, the words in one line ---------- */
+let photo = null;                 // { img, stats } of the photo in the frame
+let layout = null;                // relative positions for this piece
+const cropCv = document.createElement("canvas");
+const tokens = () => { const c = getComputedStyle(cssRoot()); const g = n => c.getPropertyValue(n).trim(); return { paper: g("--paper-2"), ink: g("--ink"), blue: g("--type-blue"), dark: (parseFloat(g("--field-k")) || 1) < 1 }; };
+
+function squareColour(stats) {
+  // the most saturated band, pushed a little further; a muted photo gets the house red
+  let best = null, bs = 0;
+  for (const [r, g, b] of stats.bands) { const mx = Math.max(r, g, b), mn = Math.min(r, g, b), s = mx ? (mx - mn) / mx : 0; if (s > bs) { bs = s; best = [r, g, b]; } }
+  if (!best || bs < 0.22) return "#d8432b";
+  const m = (best[0] + best[1] + best[2]) / 3;
+  return hexOf(best.map(v => clamp(m + (v - m) * 1.9, 20, 235)));
+}
+
+function makeLayout(img, stats, fw, fh) {
+  const asp = pick([1, 0.8, 1.25, 1.5]);
+  let w = asp > 1 ? rnd(0.42, 0.52) : rnd(0.3, 0.38);
+  if (w * fw / asp > fh * 0.66) w = fh * 0.66 * asp / fw;
+  const h = w * fw / asp / fh;
+  // keep the photo clear of the numbers in the lower right
+  const l = rnd(0.06, Math.max(0.07, 0.62 - w)), t = rnd(0.14, Math.max(0.15, 0.8 - h));
+  const s = w * rnd(0.34, 0.5), sh = s * fw / fh;
+  const left = l + w > 0.5 ? true : Math.random() < 0.5, top = Math.random() < 0.4;
+  const sq = { x: clamp(left ? l - s * 0.35 : l + w - s * 0.65, 0.02, 0.98 - s), y: clamp(top ? t - sh * 0.35 : t + h - sh * 0.65, 0.04, 0.96 - sh), s };
+  const textY = rnd(0.2, 0.62);
+  const half = Math.random() < 0.5 ? { x: 0, w: 1 } : { x: rnd(0, 0.15), w: rnd(0.7, 0.95) };
+  return { l, t, w, asp, sq, sqColor: squareColour(stats), textY, half };
+}
+
+function crop(img, asp) {
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  let cw = iw, ch = iw / asp; if (ch > ih) { ch = ih; cw = ih * asp; }
+  cropCv.width = Math.round(Math.min(1000, cw)); cropCv.height = Math.round(cropCv.width / asp);
+  cropCv.getContext("2d").drawImage(img, (iw - cw) / 2, (ih - ch) * 0.4, cw, ch, 0, 0, cropCv.width, cropCv.height);
+}
+
+function composePoster(g, W, H, img, L, tk) {
+  g.save();
+  g.globalCompositeOperation = "source-over"; g.globalAlpha = 1;
+  g.fillStyle = tk.paper; g.fillRect(0, 0, W, H);
+  // halftone: the whole photo as ink dots, like a newsprint reproduction
+  const hx = L.half.x * W, hw = L.half.w * W;
+  const cell = Math.max(4, Math.round(Math.min(hw, H) / 52));
+  const cols = Math.ceil(hw / cell), rows = Math.ceil(H / cell);
+  const sm = document.createElement("canvas"); sm.width = cols; sm.height = rows;
+  const sx = sm.getContext("2d", { willReadFrequently: true });
+  const s = Math.max(cols / img.naturalWidth, rows / img.naturalHeight);
+  sx.drawImage(img, (cols - img.naturalWidth * s) / 2, (rows - img.naturalHeight * s) / 2, img.naturalWidth * s, img.naturalHeight * s);
+  const d = sx.getImageData(0, 0, cols, rows).data;
+  g.fillStyle = tk.ink; g.globalAlpha = tk.dark ? 0.22 : 0.26;
+  g.beginPath();
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    const i = (y * cols + x) * 4, lum = (0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2]) / 255;
+    const r = cell * 0.5 * Math.sqrt(tk.dark ? lum : 1 - lum) * 0.92;
+    if (r > 0.35) { const cx = hx + x * cell + cell / 2, cy = y * cell + cell / 2; g.moveTo(cx + r, cy); g.arc(cx, cy, r, 0, Math.PI * 2); }
+  }
+  g.fill();
+  g.globalAlpha = 1;
+  // the photo itself, untouched
+  const pw = L.w * W, ph = pw / L.asp;
+  g.drawImage(cropCv, L.l * W, L.t * H, pw, ph);
+  // a colour square laid over a corner, printed on top
+  g.globalCompositeOperation = tk.dark ? "screen" : "multiply"; g.globalAlpha = tk.dark ? 0.7 : 0.88;
+  g.fillStyle = L.sqColor; g.fillRect(L.sq.x * W, L.sq.y * H, L.sq.s * W, L.sq.s * W);
+  g.restore();
+}
+
+function renderFigure() {
+  if (!photo || !layout) return;
+  const r = figure.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  field.width = Math.max(8, Math.round(r.width * dpr)); field.height = Math.max(8, Math.round(r.height * dpr));
+  composePoster(fx, field.width, field.height, photo.img, layout, tokens());
+  placeOverlays();
+}
+let rfPending = false;
+function queueRender() { if (rfPending) return; rfPending = true; requestAnimationFrame(() => { rfPending = false; renderFigure(); }); }
+
+/* the words, in one line, never split */
+let worryTimers = [];
+function setWorry(text) {
+  const el = $("esc-worryline"), sp = el.firstElementChild;
+  worryTimers.forEach(clearTimeout); worryTimers = [];
+  el.classList.remove("vanish", "marquee");
+  sp.replaceChildren(...[...(text || "")].map((ch, i) => { const c = document.createElement("i"); c.textContent = ch; c.style.setProperty("--i", i); return c; }));
+  el.hidden = !text;
+  if (!text) return;
+  fitWorry();
+  // a few seconds to see it, then it comes apart
+  const dur = el.classList.contains("marquee") ? parseFloat(el.style.getPropertyValue("--dur")) * 1000 : 0;
+  const hold = dur ? Math.min(9000, dur * 0.7) : 4200;
+  worryTimers.push(setTimeout(() => el.classList.add("vanish"), hold));
+  worryTimers.push(setTimeout(() => { el.hidden = true; }, hold + 2400 + [...text].length * 55));
+}
+function fitWorry() {
+  const el = $("esc-worryline"), sp = el.firstElementChild, text = sp.textContent;
+  if (!text || !layout) return;
+  el.style.top = `${(layout.textY * 100).toFixed(1)}%`;
+  const avail = (el.clientWidth || figure.clientWidth - 20) - 16;
+  const ctx = fitWorry.c || (fitWorry.c = document.createElement("canvas").getContext("2d"));
+  let size = 15, w = 0;
+  for (; size >= 11; size--) { ctx.font = `500 ${size}px "Zen Kaku Gothic New", sans-serif`; w = ctx.measureText(text).width; if (w * 1.06 <= avail) break; }
+  size = Math.max(11, size); ctx.font = `500 ${size}px "Zen Kaku Gothic New", sans-serif`; w = ctx.measureText(text).width;
+  el.style.fontSize = `${size}px`;
+  const n = [...text].length;
+  if (w <= avail) {
+    // spread the characters across the line, like typewritten text set to full width
+    const ls = n > 1 ? Math.min(size * 1.6, (avail - w) / (n - 1)) : 0;
+    sp.style.letterSpacing = `${ls.toFixed(1)}px`; el.classList.remove("marquee");
+  } else {
+    sp.style.letterSpacing = `${(size * 0.08).toFixed(1)}px`;
+    el.classList.add("marquee");
+    el.style.setProperty("--from", `${avail}px`); el.style.setProperty("--to", `${-w * 1.1}px`);
+    el.style.setProperty("--dur", `${((avail + w) / 38).toFixed(1)}s`);
+  }
+}
+
+function placeOverlays() {
+  if (!layout) return;
+  const cap = $("esc-pcap"), h = layout.w * figure.clientWidth / layout.asp / figure.clientHeight;
+  const below = layout.t + h + 0.05 < 0.9;
+  cap.style.left = `${(layout.l * 100).toFixed(1)}%`;
+  cap.style.top = below ? `${((layout.t + h) * 100 + 1.5).toFixed(1)}%` : "";
+  cap.style.bottom = below ? "" : `${((1 - layout.t) * 100 + 1.5).toFixed(1)}%`;
+  fitWorry();
+}
+const MON = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+function captionText(born, scene) { return `${MON[born.getMonth()]}${born.getDate()} ${pad2(born.getHours())}:${pad2(born.getMinutes())} — ${scene}`; }
+
+function setPhoto(img, stats) {
+  photo = { img, stats };
+  const r = figure.getBoundingClientRect();
+  layout = makeLayout(img, stats, r.width || 360, r.height || 260);
+  crop(img, layout.asp);
+  figure.classList.remove("empty", "need");
+  renderFigure();
+}
+// a new piece re-sets the same photo with a new composition
+function relayout() { if (photo) setPhoto(photo.img, photo.stats); }
+
+/* ---------- reading band: always on while a piece plays ---------- */
+const band = $("esc-band"), bandwrap = $("esc-bandwrap"), track = $("esc-track");
+const ticker = { open: false, text: "", done: false, x: 0, loopW: 0, paused: false, speed: 0 };
+const SEP = "　　——　　";
+const CPS = 4.2;   // characters per second
+function tickerSet(text, done) {
+  ticker.text = text.replace(/\s*\n+\s*/g, "　"); ticker.done = done;
+  if (REDUCED) { bandwrap.classList.add("static"); setJa(track, ticker.text); return; }
+  track.replaceChildren();
+  const a = document.createElement("span"); a.textContent = ticker.text + (done ? SEP : "");
+  track.append(a);
+  if (done) track.append(a.cloneNode(true));
+  ticker.loopW = done ? a.offsetWidth : 0;
+  const fs = parseFloat(getComputedStyle(track).fontSize) || 19;
+  ticker.speed = fs * 1.06 * CPS;
+}
+function fmt(sec) { sec = Math.max(0, Math.round(sec)); return `${pad2(Math.floor(sec / 60))}:${pad2(sec % 60)}`; }
+function tickerFrame(dt) {
+  if (!ticker.open || REDUCED) return;
+  const W = band.clientWidth;
+  if (!ticker.paused) {
+    const end = track.scrollWidth - W * 0.35;   // while text is still arriving, wait at its end
+    if (ticker.done || -ticker.x < end) ticker.x -= ticker.speed * dt;
+    if (ticker.done && ticker.loopW && -ticker.x >= ticker.loopW) ticker.x += ticker.loopW;
+  }
+  track.style.transform = `translate3d(${ticker.x.toFixed(1)}px,0,0)`;
+  if (ticker.done && ticker.loopW) $("esc-bandTime").textContent = `${fmt(Math.max(0, W - ticker.x) / ticker.speed)} / ${fmt(ticker.loopW / ticker.speed)}`;
+}
+function openTicker() {
+  ticker.open = true; ticker.paused = false; ticker.x = band.clientWidth || 360;   // first words enter at the right edge
+  bandwrap.hidden = false; $("esc-bandState").textContent = "Reading · tap to pause"; $("esc-bandTime").textContent = "";
+}
+band.addEventListener("click", () => { ticker.paused = !ticker.paused; $("esc-bandState").textContent = ticker.paused ? "Paused · tap to read" : "Reading · tap to pause"; });
+
+// the band must not open by repeating the title or the one-line reply
+function cleanLong(text, m) {
+  let t = text.trimStart();
+  const first = (t.match(/^[^。！？]*[。！？]/) || [""])[0];
+  const core = (m.title || "").replace(/[\s、。・「」,.]/g, "");
+  const shares = (a, b) => { for (let i = 0; i + 4 <= b.length; i++) if (a.includes(b.slice(i, i + 4))) return true; return false; };
+  if (first && ((core.length >= 2 && (first.includes(core) || shares(first, core))) || (m.reflection && shares(first, m.reflection.replace(/[、。]/g, ""))))) t = t.slice(first.length).trimStart();
+  return t;
+}
+
+async function startReading(m) {
+  openTicker();
+  if (m.longText) { tickerSet(m.longText, true); return; }
+  m.longText = localLong(m);
+  tickerSet(m.longText, true);
+}
+
+/* ---------- video: rendered faster than real time, then handed to the save sheet ---------- */
+let downloadsPromise = null;
+const getDownloads = () => downloadsPromise || (downloadsPromise = (window.claude && window.claude.use) ? window.claude.use("downloads").catch(() => null) : Promise.resolve(null));
+const VW = 1280, VH = 720, FPS = 24, DUR = 15, VSR = 48000;
+let recorder = null, exporting = false;
+
+function loadScript(src) {
+  return new Promise((res, rej) => { if (window.Mp4Muxer) return res(); const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); });
+}
+async function pickCodecs() {
+  if (!window.VideoEncoder || !window.AudioEncoder || !window.VideoFrame || !window.AudioData) return null;
+  const ok = async (Enc, cfg) => { try { return (await Enc.isConfigSupported(cfg)).supported; } catch (e) { return false; } };
+  const v = [["avc", "avc1.42001f"], ["vp9", "vp09.00.31.08"]];
+  const a = [["aac", "mp4a.40.2"], ["opus", "opus"]];
+  let vc = null, ac = null;
+  for (const [m, codec] of v) if (await ok(VideoEncoder, { codec, width: VW, height: VH, bitrate: 5e6, framerate: FPS })) { vc = { m, codec }; break; }
+  for (const [m, codec] of a) if (await ok(AudioEncoder, { codec, sampleRate: VSR, numberOfChannels: 2, bitrate: 192000 })) { ac = { m, codec }; break; }
+  return vc && ac ? { vc, ac } : null;
+}
+
+function grainTile() {
+  const g = document.createElement("canvas"); g.width = g.height = 256;
+  const x = g.getContext("2d"), id = x.createImageData(256, 256);
+  for (let i = 0; i < id.data.length; i += 4) { const v = Math.random() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; }
+  x.putImageData(id, 0, 0); return g;
+}
+
+function wrapLines(ctx, text, maxW, ja) {
+  const units = ja ? phrases(text) : text.split(/(?<=\s)/);
+  const lines = []; let line = "";
+  for (let u of units) {
+    if (ctx.measureText(line + u).width <= maxW) { line += u; continue; }
+    if (line) { lines.push(line.trim()); line = ""; }
+    while (ctx.measureText(u).width > maxW) { let k = u.length; while (k > 1 && ctx.measureText(u.slice(0, k)).width > maxW) k--; lines.push(u.slice(0, k)); u = u.slice(k); }
+    line = u;
+  }
+  if (line.trim()) lines.push(line.trim());
+  return lines;
+}
+
+function makePainter(m) {
+  const cv = document.createElement("canvas"); cv.width = VW; cv.height = VH;
+  const x = cv.getContext("2d"), tile = grainTile(), css = getComputedStyle(cssRoot());
+  const paper = css.getPropertyValue("--paper").trim(), ink = css.getPropertyValue("--ink").trim(), ink2 = css.getPropertyValue("--ink-2").trim();
+  const gc = css.getPropertyValue("--glow-core").trim(), gh = css.getPropertyValue("--glow-halo").trim();
+  const fc = document.createElement("canvas"); fc.width = 700; fc.height = 590;
+  if (photo && layout) composePoster(fc.getContext("2d"), 700, 590, photo.img, layout, tokens());
+  const blue = getComputedStyle(cssRoot()).getPropertyValue("--type-blue").trim(), strip = getComputedStyle(cssRoot()).getPropertyValue("--strip").trim(), worry = m.userText || "", cap = captionText(m.born || new Date(), m.scene);
+  const info = engine.info(), born = m.born || new Date(), nums = numberSet(m, info, born);
+  const titleJa = hasJa(m.title), liner = $("esc-liner").textContent.toUpperCase(), pal = palTo.map(c => c.slice()), k = themeK();
+  const tickerText = (m.longText || m.reflection) + SEP;
+  // sec: time in the clip, brV: breath -1..1, level: loudness
+  const draw = (sec, brV, level) => {
+    x.globalCompositeOperation = "source-over"; x.globalAlpha = 1;
+    x.fillStyle = paper; x.fillRect(0, 0, VW, VH);
+    const ix = 40, iy = 40, iw = 700, ih = 590;
+    x.imageSmoothingQuality = "high"; x.drawImage(fc, ix, iy, iw, ih);
+    if (layout) {
+      // caption and the words, in one line
+      x.save(); x.beginPath(); x.rect(ix, iy, iw, ih); x.clip();
+      const ph = layout.w * iw / layout.asp, below = layout.t + ph / ih + 0.05 < 0.9;
+      x.fillStyle = ink; x.font = "11px 'IBM Plex Mono', monospace"; x.textBaseline = below ? "top" : "bottom"; x.textAlign = "left";
+      x.fillText(cap, ix + layout.l * iw, below ? iy + layout.t * ih + ph + 10 : iy + layout.t * ih - 10);
+      const wa = sec < 4 ? 1 : Math.max(0, 1 - (sec - 4) / 2.2);
+      if (worry && wa > 0) {
+        x.globalAlpha = 0.9 * wa; x.fillStyle = strip; x.fillRect(ix + 12, iy + layout.textY * ih - 4, iw - 24, 36);
+        x.globalAlpha = wa;
+        x.fillStyle = blue; x.font = "500 20px 'Zen Kaku Gothic New', sans-serif"; x.textBaseline = "middle";
+        const chars = [...worry], ws = chars.map(ch => x.measureText(ch).width), tw = ws.reduce((a, b) => a + b, 0), avail = iw - 40, y = iy + layout.textY * ih + 14;
+        let gap = chars.length > 1 ? Math.min(30, (avail - tw) / (chars.length - 1)) : 0, sx0 = ix + 20;
+        if (tw > avail) { gap = 2; sx0 = ix + iw - ((sec * 40) % (tw + chars.length * 2 + iw)); }
+        let cx = sx0; chars.forEach((ch, i) => { x.fillText(ch, cx, y - (sec > 4 ? (sec - 4) * 6 : 0)); cx += ws[i] + gap; });
+        x.globalAlpha = 1;
+      }
+      x.restore();
+    }
+    x.save(); x.beginPath(); x.rect(ix, iy, iw, ih); x.clip();
+    x.globalCompositeOperation = "difference"; x.fillStyle = "#fff"; x.textBaseline = "top"; x.textAlign = "left";
+    x.font = "11px 'IBM Plex Mono', monospace";
+    x.fillText(`FIG. ${pad2(piece)} — ${(TEX_LABEL[m.texture] || "").toUpperCase()} · ${(GENRES[m.genre] || GENRES.generative).label.toUpperCase()}`, ix + 16, iy + 16);
+    let nx = ix + iw - 26; x.textAlign = "center";
+    [...nums].reverse().forEach((n, j) => {
+      const digits = n.v.split(""), base = iy + ih - 34 - (j % 2) * 40;
+      x.font = "700 22px Archivo, sans-serif";
+      digits.forEach((d, q) => x.fillText(d, nx, base - (digits.length - q) * 23));
+      x.font = "9px 'IBM Plex Mono', monospace"; x.fillText(n.l.toUpperCase(), nx, base + 4);
+      nx -= 48;
+    });
+    x.restore();
+    const cx = 780, cw = 460, mid = cx + cw / 2;
+    x.textBaseline = "alphabetic"; x.textAlign = "left"; x.fillStyle = ink;
+    x.font = "800 15px Archivo, sans-serif"; x.fillText("ESCAPISM 現", cx, 64);
+    x.font = "11px 'IBM Plex Mono', monospace"; x.textAlign = "right"; x.fillStyle = ink2;
+    x.fillText(`NO. ${String(piece).padStart(3, "0")} · ${born.getFullYear()}.${pad2(born.getMonth() + 1)}.${pad2(born.getDate())} ${pad2(born.getHours())}:${pad2(born.getMinutes())}`, cx + cw, 64);
+    x.textAlign = "center";
+    const b = (brV + 1) / 2, r = 40 * (0.6 + b * 0.7);
+    x.save(); x.globalAlpha = 0.55 + b * 0.45; x.filter = "blur(5px)";
+    const gr = x.createRadialGradient(mid, 150, 0, mid, 150, r); gr.addColorStop(0, gc); gr.addColorStop(0.48, gh); gr.addColorStop(1, "rgba(0,0,0,0)");
+    x.fillStyle = gr; x.beginPath(); x.arc(mid, 150, r, 0, Math.PI * 2); x.fill(); x.restore();
+    x.fillStyle = ink2; x.font = "500 10px Archivo, sans-serif";
+    x.fillText((brV >= 0 ? "INHALE" : "EXHALE").split("").join(" "), mid, 196);
+    x.fillStyle = ink;
+    x.font = titleJa ? "700 34px 'Zen Kaku Gothic New', sans-serif" : "800 44px Archivo, sans-serif";
+    let y = 254;
+    wrapLines(x, titleJa ? m.title : m.title.toUpperCase(), cw, titleJa).slice(0, 3).forEach(l => { x.fillText(l, mid, y); y += titleJa ? 48 : 46; });
+    x.fillStyle = ink2; x.font = "500 12px Archivo, sans-serif"; x.fillText(m.scene.toUpperCase(), mid, y + 4); y += 44;
+    x.fillStyle = ink; x.font = "400 20px 'Zen Kaku Gothic New', sans-serif";
+    wrapLines(x, m.reflection, cw - 40, true).slice(0, 4).forEach(l => { x.fillText(l, mid, y); y += 36; });
+    y += 14; x.fillStyle = ink2; x.font = "10px 'IBM Plex Mono', monospace";
+    wrapLines(x, liner, cw, false).slice(0, 5).forEach(l => { x.fillText(l, mid, y); y += 16; });
+    x.textAlign = "left";
+    x.fillStyle = ink; x.fillRect(40, 652, VW - 80, 1); x.fillRect(40, 694, VW - 80, 1);
+    x.save(); x.beginPath(); x.rect(40, 653, VW - 80, 40); x.clip();
+    x.font = "500 22px 'Zen Kaku Gothic New', sans-serif"; x.textBaseline = "middle";
+    const tw = x.measureText(tickerText).width, sx = VW - 40 - sec * 22 * CPS;
+    x.fillText(tickerText, sx, 674); if (sx + tw < VW) x.fillText(tickerText, sx + tw, 674);
+    x.restore();
+    x.globalCompositeOperation = "overlay"; x.globalAlpha = 0.22;
+    x.save(); x.translate(-Math.random() * 256, -Math.random() * 256);
+    x.fillStyle = x.createPattern(tile, "repeat"); x.fillRect(0, 0, VW + 256, VH + 256); x.restore();
+    x.globalAlpha = 1; x.globalCompositeOperation = "source-over";
+  };
+  return { cv, draw };
+}
+
+async function renderAudio(mood, from) {
+  const off = new OfflineAudioContext(2, VSR * DUR, VSR);
+  const E = new Engine(off);
+  const m = { ...mood, start: { ...from }, settle: { ...from } };
+  E.load(m, { keep: true, from, arc: 60 });
+  await E.roomReady;
+  E.tick(true); await Promise.all(E.scene.pending);
+  E.master.gain.setTargetAtTime(0, DUR - 1.4, 0.35);
+  for (let t = 0.25; t < DUR; t += 0.25) {
+    off.suspend(t).then(async () => { E.tick(true); const pend = E.scene.pending.splice(0); if (pend.length) await Promise.all(pend); off.resume(); });
+  }
+  return off.startRendering();
+}
+
+async function exportFast(m, codecs, progress) {
+  await loadScript("https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.min.js");
+  progress(0.02, "書き出し中");
+  const audioJob = renderAudio(m, { ...engine.p });
+  const target = new Mp4Muxer.ArrayBufferTarget();
+  const muxer = new Mp4Muxer.Muxer({ target, video: { codec: codecs.vc.m, width: VW, height: VH }, audio: { codec: codecs.ac.m, numberOfChannels: 2, sampleRate: VSR }, fastStart: "in-memory" });
+  let fail = null;
+  // AudioSpecificConfig for AAC-LC 48 kHz stereo, written by hand (some encoders report a malformed one)
+  const ASC = new Uint8Array([0x11, 0x90]);
+  const aenc = new AudioEncoder({
+    output: (chunk, meta) => { if (codecs.ac.m === "aac" && meta && meta.decoderConfig) meta = { decoderConfig: { ...meta.decoderConfig, description: ASC } }; muxer.addAudioChunk(chunk, meta); },
+    error: e => { fail = e; }
+  });
+  aenc.configure({ codec: codecs.ac.codec, sampleRate: VSR, numberOfChannels: 2, bitrate: 192000 });
+  const painter = makePainter(m);
+  const venc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: e => { fail = e; } });
+  venc.configure({ codec: codecs.vc.codec, width: VW, height: VH, bitrate: 5e6, framerate: FPS, latencyMode: "realtime", ...(codecs.vc.m === "avc" ? { avc: { format: "avc" } } : {}) });
+  const frames = DUR * FPS;
+  for (let i = 0; i < frames; i++) {
+    if (fail) throw fail;
+    const sec = i / FPS;
+    painter.draw(sec, Math.sin(2 * Math.PI * (m.breath / 60) * sec), 0.12 + 0.04 * Math.sin(sec * 0.9));
+    const vf = new VideoFrame(painter.cv, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+    venc.encode(vf, { keyFrame: i % 60 === 0 }); vf.close();
+    if (i % 6 === 0) { progress(0.05 + 0.9 * i / frames, "書き出し中"); await tick0(); }
+    while (venc.encodeQueueSize > 8) await tick0();
+  }
+  await venc.flush();
+  progress(0.96, "書き出し中");
+  const audio = await audioJob;
+  const L = audio.getChannelData(0), R = audio.getChannelData(1), blockN = 4800;
+  for (let s = 0; s < L.length; s += blockN) {
+    const n = Math.min(blockN, L.length - s), data = new Float32Array(n * 2);
+    data.set(L.subarray(s, s + n), 0); data.set(R.subarray(s, s + n), n);
+    const ad = new AudioData({ format: "f32-planar", sampleRate: VSR, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.round(s * 1e6 / VSR), data });
+    aenc.encode(ad); ad.close();
+  }
+  await aenc.flush();
+  if (fail) throw fail;
+  muxer.finalize();
+  return { blob: new Blob([target.buffer], { type: "video/mp4" }), ext: "mp4" };
+}
+
+// fallback for browsers without WebCodecs: record the live output for 15 seconds
+async function exportRealtime(m, progress) {
+  const types = ["video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm"];
+  const type = window.MediaRecorder && HTMLCanvasElement.prototype.captureStream ? types.find(t => { try { return MediaRecorder.isTypeSupported(t); } catch (e) { return false; } }) : null;
+  if (!type) throw new Error("unsupported");
+  const painter = makePainter(m), stream = painter.cv.captureStream(30);
+  const dest = engine.ctx.createMediaStreamDestination(); engine.comp.connect(dest);
+  dest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6e6 }), chunks = [];
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  const t0 = performance.now();
+  recorder = { draw: ms => { const sec = (ms - t0) / 1000; const br = engine.breathValue(); painter.draw(sec, br ? br.v : 0, lvl); progress(sec / DUR, "録画中"); } };
+  rec.start(250);
+  await new Promise(r => setTimeout(r, DUR * 1000));
+  await new Promise(r => { rec.onstop = r; rec.stop(); });
+  recorder = null; try { engine.comp.disconnect(dest); } catch (e) {}
+  return { blob: new Blob(chunks, { type: type.split(";")[0] }), ext: type.startsWith("video/mp4") ? "mp4" : "webm" };
+}
+
+let readyFile = null;
+async function deliver(file, name) {
+  const st = $("esc-videoState"), downloads = await getDownloads();
+  if (downloads) { st.textContent = "保存先を選んでください"; await downloads.save({ filename: name, data: file.blob }); st.textContent = `Saved · ${file.ext}`; return; }
+  const f = new File([file.blob], name, { type: file.blob.type || "video/mp4" });
+  if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: "ESCAPISM" }); st.textContent = "Saved"; return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000); st.textContent = `Saved · ${file.ext}`;
+}
+async function exportVideo() {
+  if (readyFile) {
+    // second tap: the share sheet needs a fresh tap after the file is made
+    const rf = readyFile; readyFile = null;
+    try { await deliver(rf.file, rf.name); } catch (e) { $("esc-videoState").textContent = e && e.name === "AbortError" ? "保存しませんでした" : "保存できませんでした"; }
+    $("esc-videoBtn").firstChild.textContent = "動画で保存 ";
+    return;
+  }
+  if (exporting || !engine.scene || engine.scene.mood.listen) return;
+  const downloads = await getDownloads();
+  const btn = $("esc-videoBtn"), st = $("esc-videoState"), m = engine.scene.mood;
+  exporting = true; btn.disabled = true;
+  const progress = (k, label) => { st.textContent = `${label} ${Math.round(clamp(k) * 100)}%`; };
+  try {
+    await Promise.all(["800 44px Archivo", "700 34px 'Zen Kaku Gothic New'", "400 20px 'Zen Kaku Gothic New'", "400 11px 'IBM Plex Mono'"].map(f => document.fonts.load(f).catch(() => null)));
+    const codecs = await pickCodecs();
+    const file = codecs ? await exportFast(m, codecs, progress) : await exportRealtime(m, progress);
+    const born = m.born || new Date();
+    const stamp = `${born.getFullYear()}${pad2(born.getMonth() + 1)}${pad2(born.getDate())}-${pad2(born.getHours())}${pad2(born.getMinutes())}`;
+    const name = `escapism-${stamp}.${file.ext}`;
+    if (downloads) await deliver(file, name);
+    else { readyFile = { file, name }; btn.firstChild.textContent = "できました。タップして保存 "; st.textContent = `${file.ext} · 15s`; }
+  } catch (e) {
+    const code = e && e.code;
+    st.textContent = code === "declined" ? "保存しませんでした" : code === "rate_limited" ? "少し待ってからもう一度" : code === "too_large" ? "ファイルが大きすぎます" : code ? "この画面では保存できません" : "書き出しに失敗しました";
+    if (["unavailable", "not_granted", "capability_disabled", "capability_removed"].includes(code)) btn.hidden = true;
+  } finally {
+    exporting = false; btn.disabled = false;
+    // the save sheet may have taken the audio away; make sure it comes back
+    setTimeout(() => { if (engine.ctx && engine.ctx.state !== "running" && !engine.userPaused) { engine.ctx.resume().catch(() => {}); engine.watch(); } }, 300);
+  }
+}
+
+/* ---------- numbers that mean something ---------- */
+function numberSet(m, info, born) {
+  return [
+    { v: `${pad2(born.getMonth() + 1)}${pad2(born.getDate())}`, l: "Date" },
+    { v: `${pad2(born.getHours())}${pad2(born.getMinutes())}`, l: "Time" },
+    info && info.bpm ? { v: String(info.bpm), l: "BPM" } : { v: m.breath.toFixed(1), l: "Brth" },
+    { v: String(Math.round(info ? info.hz : 0)), l: "Hz" }
+  ];
+}
+
+/* ---------- UI ---------- */
+const engine = new Engine();
+let state = "idle", ctl = null, fadeTimer = null, piece = 0;
+let beatMode = store.get("escapism-beat") === "1";
+const els = { title: $("esc-title"), sub: $("esc-sub"), reflection: $("esc-reflection"), liner: $("esc-liner"), crisis: $("esc-crisis"), status: $("esc-status"), examples: $("esc-examples"), badges: $("esc-badges"), vnum: $("esc-vnum"), figcap: $("esc-figcap") };
+
+setJa(els.reflection, "いま頭の中にあることを、ここに置いていってください。言葉を書くか、目の前の景色を撮る。その瞬間のための音が流れはじめ、数分かけてゆっくり凪いでいきます。");
+setJa($("esc-privacy"), $("esc-privacy").textContent);
+["明日のプレゼンが不安で頭が回らない", "仕事のことがずっとぐるぐるしてる", "なんとなく寂しい夜", "眠れない", "今日はとにかく疲れた"].forEach(text => {
+  const b = document.createElement("button"); b.type = "button"; b.textContent = text;
+  b.addEventListener("click", () => { $("esc-worry").value = text; $("esc-worry").classList.remove("need"); if (photo) submitRelease(); else { figure.classList.remove("need"); void figure.offsetWidth; figure.classList.add("need"); setStatus("写真を入れたら「手放す」を押してください"); } });
+  els.examples.append(b);
+});
+els.badges.innerHTML = `<span class="badge">JI</span><span class="badge">∞</span><span class="badge">Live</span>`;
+
+function setMode(beat, live) {
+  beatMode = beat; store.set("escapism-beat", beat ? "1" : "0");
+  $("esc-modeAmbient").setAttribute("aria-pressed", String(!beat));
+  $("esc-modeBeat").setAttribute("aria-pressed", String(beat));
+  // switching while a piece plays changes that piece right away
+  if (live && state === "playing" && engine.scene && !engine.scene.mood.listen) {
+    const cur = engine.scene.mood;
+    const m = { ...cur, start: { ...cur.start }, settle: { ...cur.settle } };
+    applyBeat(m, beat);
+    engine.load(m, { keep: true, from: { ...engine.p, beat: m.start.beat } });
+    setStatus(beat ? `Beat on — ${m.beat_style} ${m.bpm} BPM` : "Ambient — no beat", true);
+    els.vnum.dataset.sig = "";
+    renderData();
+  }
+}
+$("esc-modeAmbient").addEventListener("click", () => { engine.ensure(); setMode(false, true); });
+$("esc-modeBeat").addEventListener("click", () => { engine.ensure(); setMode(true, true); });
+setMode(beatMode, false);
+
+function setStatus(text, live) { els.status.textContent = text; els.status.classList.toggle("live", !!live); }
+function onAudioStuck() { setStatus("画面をタップすると音が戻ります", true); }
+
+function prevMood() { const s = engine.scene; return s && !s.mood.listen ? s.mood : null; }
+
+function present(mood, note) {
+  state = "playing";
+  mood.born = new Date();
+  engine.load(mood);
+  recentTitles.push(mood.title); if (recentTitles.length > 6) recentTitles.shift();
+  palTo = mood.palette.map(hexRgb);
+  figure.classList.remove("empty");
+  els.examples.hidden = true;
+  $("esc-actions").hidden = false;
+  $("esc-playHint").hidden = false;
+  els.title.classList.toggle("ja", hasJa(mood.title));
+  if (hasJa(mood.title)) setJa(els.title, mood.title); else els.title.textContent = mood.title;
+  els.sub.textContent = mood.scene;
+  setJa(els.reflection, mood.reflection);
+  els.crisis.hidden = !mood.crisis;
+  els.figcap.textContent = `No.${String(piece).padStart(3, "0")} — ${TEX_LABEL[mood.texture] === "—" ? "no field" : TEX_LABEL[mood.texture]}`;
+  $("esc-pcap").textContent = captionText(mood.born, mood.scene); placeOverlays();
+  els.vnum.dataset.sig = "";
+  setStatus(note, true);
+  renderData();
+  startReading(mood);
+}
+
+function renderData() {
+  const i = engine.info(); if (!i) return;
+  const m = engine.scene.mood;
+  const loops = i.loops.map(x => x.toFixed(1)).join(" / ");
+  els.liner.textContent = [
+    `genre: ${i.genre}`, `form: ${i.form}`, `ensemble: ${i.ensemble}`, `${i.key} — 5-limit just intonation`,
+    loops ? `loops ${loops} s` : null, i.beat || null,
+    `IR ${i.room.toFixed(1)} s`, `tape ${i.tape}%`, `field: ${i.field}`, `breath ${i.breath.toFixed(1)}/min`,
+    `arc ${i.arc}% → still`, m.lineage ? `after ${m.lineage}` : null
+  ].filter(Boolean).join(" · ");
+  const nums = numberSet(m, i, m.born || new Date());
+  const sig = nums.map(n => n.v).join(",");
+  if (els.vnum.dataset.sig !== sig) {
+    els.vnum.dataset.sig = sig;
+    els.vnum.replaceChildren(...nums.map((n, k) => {
+      const s = document.createElement("span"); s.className = "vn"; s.style.marginBottom = `${(k % 2) * 30}px`;
+      const b = document.createElement("b"); b.textContent = n.v.split("").join("\n");
+      const l = document.createElement("i"); l.textContent = n.l;
+      s.append(b, l); return s;
+    }));
+    const digits = sig.replace(/\D/g, "").split("").map(Number);
+    let x = 0;
+    const rects = digits.map(d => { const w = 1 + (d % 3); const r = `<rect x="${x}" y="0" width="${w}" height="12"/>`; x += w + 1 + (d % 2); return r; }).join("");
+    const born = m.born || new Date();
+    els.badges.innerHTML = `<span class="badge">${born.getFullYear()}.${pad2(born.getMonth() + 1)}.${pad2(born.getDate())}</span><span class="badge">${i.bpm ? i.bpm + " BPM" : m.breath.toFixed(1) + " / min"}</span><svg viewBox="0 0 ${x} 12" width="${x}" aria-hidden="true">${rects}</svg><span class="badge">No.${String(piece).padStart(3, "0")}</span>`;
+  }
+}
+setInterval(() => { if (state === "playing") renderData(); }, 1000);
+
+let pendingPhoto = false;
+async function stagePhoto(file) {
+  let loaded;
+  try { loaded = await loadImage(file); } catch (e) { setStatus("この写真は読み込めませんでした。JPEGかPNGでもう一度試してください"); return; }
+  setPhoto(loaded.img, imageStats(loaded.img));
+  pendingPhoto = true;
+  if (state !== "playing") { $("esc-pcap").textContent = captionText(new Date(), "ready"); setWorry(""); }
+  setJa($("esc-cnote"), "景色を置きました。今の気持ちを書いて「手放す」を押してください。");
+  setStatus("Photo ready — add your words", false);
+  const ta = $("esc-worry"); if (!ta.value.trim()) { ta.classList.add("need"); ta.focus({ preventScroll: true }); }
+}
+
+function bloom() {
+  const poster = $("esc-poster"), btn = $("esc-send").getBoundingClientRect(), r = poster.getBoundingClientRect(), el = document.createElement("span");
+  el.className = "bloom";
+  el.style.left = `${btn.left + btn.width / 2 - r.left}px`; el.style.top = `${btn.top + btn.height / 2 - r.top + poster.scrollTop}px`;
+  $("esc-scatter").append(el); setTimeout(() => el.remove(), 2400);
+}
+
+async function submitRelease() {
+  const ta = $("esc-worry"), text = ta.value.trim();
+  if (!photo) {
+    figure.classList.remove("need"); void figure.offsetWidth; figure.classList.add("need");
+    setStatus("まず、目の前の景色の写真を入れてください");
+    return;
+  }
+  if (!text) { ta.classList.add("need"); ta.focus(); setStatus("写真と一緒に、今の気持ちも書いてください"); return; }
+  ta.classList.remove("need");
+  const beat = beatMode, stats = photo.stats;
+  if (!pendingPhoto) relayout();          // same photo, new composition for the new piece
+  pendingPhoto = false;
+  engine.userPaused = false;
+  engine.ensure();                        // unlock audio inside the tap; the music comes after the light
+  bloom();
+  if (engine.scene && engine.ctx) engine.scene.hold(engine.ctx.currentTime);
+  $("esc-transport").hidden = false; setPlayIcon(true);
+  piece += 1;
+  setWorry(text);
+  ta.value = "";
+  setJa($("esc-cnote"), "写真を入れて、今の気持ちを書いたら「手放す」。");
+  if (ctl) ctl.abort();
+  const my = ctl = new AbortController();
+  setStatus(beat ? "Releasing — beat on" : "Releasing", true);
+
+  const mood = localMood(text, stats, beat);
+  // let the light spread first, then the music
+  await new Promise(r => setTimeout(r, 1700));
+  if (my !== ctl) return;
+  Object.assign(mood, { userText: text.slice(0, 1200), input: text.slice(0, 1200) });
+  present(mood, "Now playing");
+}
+
+let crispPos = null;
+function showCrisp(img) {
+  const crisp = $("esc-crisp"), fr = figure.getBoundingClientRect();
+  const asp = pick([1, 0.8, 1.5, 1.25]), iw = img.naturalWidth, ih = img.naturalHeight;
+  let cw = iw, ch = iw / asp; if (ch > ih) { ch = ih; cw = ih * asp; }
+  crisp.width = Math.round(Math.min(900, cw)); crisp.height = Math.round(crisp.width / asp);
+  crisp.getContext("2d").drawImage(img, (iw - cw) / 2, (ih - ch) * 0.4, cw, ch, 0, 0, crisp.width, crisp.height);
+  let w = (asp > 1 ? rnd(0.44, 0.56) : rnd(0.3, 0.4));
+  const fw = fr.width || 360, fh = fr.height || 300;
+  if (w * fw / asp > fh * 0.72) w = fh * 0.72 * asp / fw;
+  const h = w * fw / asp / fh;
+  const l = rnd(0.06, Math.max(0.07, 0.94 - w - 0.12)), t = rnd(0.1, Math.max(0.11, 0.9 - h));
+  crisp.style.setProperty("--cx", `${(l * 100).toFixed(1)}%`); crisp.style.setProperty("--cy", `${(t * 100).toFixed(1)}%`); crisp.style.setProperty("--cw", `${(w * 100).toFixed(1)}%`);
+  crispPos = { l, t, w, asp };
+  crisp.hidden = false;
+}
+function hideCrisp() { $("esc-crisp").hidden = true; crispPos = null; }
+
+function showPhoto({ img }) {
+  showCrisp(img);
+  const cv = document.createElement("canvas"), s = 90 / Math.max(img.naturalWidth, img.naturalHeight);
+  cv.width = Math.max(1, Math.round(img.naturalWidth * s)); cv.height = Math.max(1, Math.round(img.naturalHeight * s));
+  const x = cv.getContext("2d"); x.filter = "blur(3px)"; x.drawImage(img, 0, 0, cv.width, cv.height);
+  photoLayer = cv;
+}
+void hideCrisp;
+
+$("esc-composer").addEventListener("submit", e => { e.preventDefault(); submitRelease(); });
+$("esc-worry").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submitRelease(); } });
+$("esc-worry").addEventListener("input", e => { if (e.target.value.trim()) e.target.classList.remove("need"); });
+$("esc-pick").addEventListener("change", () => { const input = $("esc-pick"), f = input.files && input.files[0]; input.value = ""; if (f) stagePhoto(f); });
+figure.addEventListener("dragover", e => { e.preventDefault(); figure.classList.add("drag"); });
+figure.addEventListener("dragleave", () => figure.classList.remove("drag"));
+figure.addEventListener("drop", e => {
+  e.preventDefault(); figure.classList.remove("drag");
+  const f = [...(e.dataTransfer && e.dataTransfer.files || [])].find(x => x.type.startsWith("image/"));
+  if (f) stagePhoto(f);
+});
+$("esc-videoBtn").addEventListener("click", exportVideo);
+getDownloads().then(d => { $("esc-videoBtn").hidden = !(d || window.VideoEncoder || window.MediaRecorder); });
+
+function setPlayIcon(playing) {
+  $("esc-playIcon").innerHTML = playing ? '<path d="M9 6v12M15 6v12"/>' : '<path d="M8 5.5l11 6.5-11 6.5z"/>';
+  $("esc-playBtn").setAttribute("aria-label", playing ? "一時停止" : "再生");
+}
+$("esc-playBtn").addEventListener("click", async () => {
+  if (!engine.ctx || recorder) return;
+  if (!engine.userPaused) { engine.userPaused = true; await engine.ctx.suspend(); setPlayIcon(false); setStatus("Paused"); }
+  else { engine.userPaused = false; engine.ensure(); if (engine.ctx) engine.master.gain.setTargetAtTime(0.9, engine.ctx.currentTime, 0.3); setPlayIcon(true); setStatus("Now playing", true); }
+});
+$("esc-vol").addEventListener("input", e => engine.setVolume(+e.target.value));
+$("esc-timer").addEventListener("change", e => {
+  clearTimeout(fadeTimer);
+  const min = +e.target.value; if (!min) return;
+  fadeTimer = setTimeout(() => {
+    engine.fadeOut(40); setStatus("Good night");
+    setTimeout(() => { engine.userPaused = true; engine.ctx.suspend(); setPlayIcon(false); e.target.value = "0"; }, 42000);
+  }, min * 60000);
+});
+
+// phones take the audio away (camera, share sheet, another app); bring it back on return or on the next tap
+const revive = () => { if (engine.ctx && !engine.userPaused && (engine.ctx.state !== "running" || engine.broken)) { engine.ensure(); if (state === "playing") setStatus("Now playing", true); } };
+document.addEventListener("pointerdown", revive, true);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { revive(); if (state !== "idle") keepAwake(); } });
+addEventListener("pageshow", revive);
+
+let wakeLock = null;
+async function keepAwake() { try { if (navigator.wakeLock && !wakeLock) { wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release", () => { wakeLock = null; }); } } catch (e) {} }
+document.addEventListener("click", keepAwake, { once: true });
+
+/* ---------- play: touch the empty parts of the poster ---------- */
+const posterEl = $("esc-poster");
+const INTERACTIVE = "button, a, input, textarea, select, label, .band, .crisis";
+let press = null, lastTap = 0;
+function ripple(x, y, kind) {
+  const r = posterEl.getBoundingClientRect(), el = document.createElement("span");
+  el.className = "ripple " + (kind || "");
+  el.style.left = `${x - r.left}px`; el.style.top = `${y - r.top + posterEl.scrollTop}px`;
+  $("esc-scatter").append(el); setTimeout(() => el.remove(), 2800);
+}
+posterEl.addEventListener("pointerdown", e => {
+  if (e.target.closest(INTERACTIVE) || state !== "playing" || !engine.scene) return;
+  const onFig = !!e.target.closest(".figure");
+  press = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), onFig, moved: false, held: false, swept: false };
+  press.timer = setTimeout(() => { if (press && !press.moved) { press.held = true; engine.hush(true); posterEl.classList.add("hush"); ripple(press.x, press.y, "hold"); setStatus("Hush — release to return", true); } }, 420);
+  if (onFig) { try { figure.setPointerCapture(e.pointerId); } catch (err) {} }
+});
+document.addEventListener("pointermove", e => {
+  if (!press || e.pointerId !== press.id) return;
+  if (!press.moved && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) { press.moved = true; clearTimeout(press.timer); }
+  if (press.moved && press.onFig && !press.held) {
+    const r = figure.getBoundingClientRect();
+    engine.sweep(clamp((e.clientX - r.left) / r.width), clamp((e.clientY - r.top) / r.height)); press.swept = true;
+  }
+});
+const endPress = e => {
+  if (!press || e.pointerId !== press.id) return;
+  clearTimeout(press.timer);
+  const dt = performance.now() - press.t, dx = e.clientX - press.x, dy = e.clientY - press.y;
+  if (press.held) { engine.hush(false); posterEl.classList.remove("hush"); setStatus("Now playing", true); }
+  else if (press.onFig && press.moved && dt < 320 && Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx) * 1.5) {
+    engine.release(); const root = engine.transpose(dy < 0 ? 1 : -1);
+    if (root) { setStatus(`Key → ${root} ${MODE_LABEL[engine.scene.mood.mode]}`, true); els.vnum.dataset.sig = ""; renderData(); }
+  }
+  else if (press.swept) engine.release();
+  else if (!press.moved && e.type === "pointerup") {
+    const now = performance.now();
+    if (now - lastTap < 320) { engine.glitch(); ripple(press.x, press.y, "glitch"); figure.classList.remove("jolt"); void figure.offsetWidth; figure.classList.add("jolt"); lastTap = 0; }
+    else { lastTap = now; const r = posterEl.getBoundingClientRect(); engine.tapNote((press.x - r.left) / r.width, (press.y - r.top) / r.height); ripple(press.x, press.y, "note"); }
+  }
+  press = null;
+};
+document.addEventListener("pointerup", endPress);
+document.addEventListener("pointercancel", endPress);
+
+$("esc-aboutBtn").addEventListener("click", () => { $("esc-sheet").hidden = false; $("esc-closeSheet").focus(); });
+$("esc-closeSheet").addEventListener("click", () => { $("esc-sheet").hidden = true; });
+$("esc-sheet").addEventListener("click", e => { if (e.target.id === "esc-sheet") $("esc-sheet").hidden = true; });
+addEventListener("keydown", e => { if (e.key === "Escape") $("esc-sheet").hidden = true; });
+
+requestAnimationFrame(frame);
+})();
+</script>

@@ -21,7 +21,15 @@
 | パス | 内容 |
 |---|---|
 | `src/page.html` | ページ本体（音のエンジン、デザイン、解析） |
-| `docs/index.html` | GitHub Pages で配信するファイル。`python3 tools/build.py` で `src/page.html` から生成 |
+| `docs/index.html` | 単体で開けるHTML（GitHub Pages など）。`python3 tools/build.py` で `src/page.html` から生成 |
+| `wordpress/escapism-wordpress.html` | WordPress のカスタムHTMLブロック用 |
+
+## WordPress で使う
+
+`wordpress/escapism-wordpress.html` の中身を、投稿や固定ページの「カスタムHTML」ブロックにそのまま貼り付けます（`python3 tools/build_wp.py` で `src/page.html` から生成）。
+
+- CSS はすべて `#escapism` の中だけに効き、要素の id には `esc-` が付き、スクリプトは関数の中で動くので、テーマや他のプラグインとぶつかりません。
+- 貼り付けには「unfiltered_html」の権限（管理者）が必要です。
 
 ## しくみ
 
